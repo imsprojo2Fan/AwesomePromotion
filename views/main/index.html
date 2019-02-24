@@ -236,8 +236,15 @@
             });
 
             $('#copyBtn').on('click',function () {
-                var html = document.getElementById('mainframe').contentDocument;
-                console.log(html);
+                console.log(document.activeElement);
+                var allframe = document.getElementsByTagName('iframe');
+                for (var i = 0; i < allframe.length; i++) {
+                    IframeOnClick.track(allframe[i], function () {
+                        //监听后你想做的
+                        alert('iframe['+this.name+"]被点击了");
+                    });
+                }
+                IframeOnClick.doit();
             });
 
         });
@@ -285,6 +292,7 @@
                 $(obj).find(".icon-submenu").attr("class","icon-submenu lnr lnr-chevron-up");
             }
         }
+
 
     </script>
 </body>
