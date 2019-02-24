@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AwesomePromotion</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- Favicon -->
+    <link rel="icon" type="image/ico" href="../../static/img/logo/logoPic.png">
+    <link rel="stylesheet" href="../../static/css/root.css">
+    <style>
+        .breadcrumb .active {
+            font-weight: normal;
+            color: #999;
+        }
+        /*下拉框宽度设置*/
+        .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+            width: 110px;
+            height: 34px;
+        }
+        .dropdown-menu>li>a{
+            padding: 10px 15px;
+        }
+        .form-horizontal .form-group {
+            margin-right: 0px;
+            margin-left: 0px;
+        }
+        table.dataTable tbody th, table.dataTable tbody td{
+            height: 45px;
+            line-height: 45px;
+            padding: 0px;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    {{/*<input type="hidden" value="{{ ._xsrf}}" id="token">*/}}
+    <div id="loading" class="loading-wrap" style="display: none;">
+        <div class="loader" >
+            <div class="la-ball-clip-rotate-multiple la-3x">
+                <div></div>
+                <div></div>
+            </div>
+            <div class="loaderTxt">数据交互中...</div>
+        </div>
+    </div>
+
+    <div class="panel panel-headline">
+        <div class="panel-heading " style="position: fixed;width: 100%;z-index: 99;background: #ffffff;">
+            <h3 class="panel-title">模板管理</h3>
+            <ol class="breadcrumb" style="margin-top: 25px;">
+                <li><a class="active" href="javascript:void(0)">数据列表</a></li>
+                <li><a href="javascript:void(0)">新增数据</a></li>
+            </ol>
+        </div>
+        <div class="panel-body" style="margin-top: 120px;padding-bottom: 20%">
+            <div id="tab1" class="row panel-heading">
+                <table id="myTable" class="table display">
+                    <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>样式风格</th>
+                        <th>url链接</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="tab2" class="row" style="display: none;margin-top: 30px;">
+                <form class="form-horizontal" autocomplete="off">
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label form-label">名称</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" maxlength="20" style="ime-mode:disabled" id="name"  placeholder="名称">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label form-label">Url链接</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" maxlength="20" style="ime-mode:disabled" id="url"  placeholder="Url链接">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label form-label">样式风格</label>
+                        <div class="col-sm-6">
+                            <select id="typeSelect" class="selectpicker" >
+                                <option selected value="现代商务">现代商务</option>
+                                <option value="时尚创意">时尚创意</option>
+                                <option value="经典大气">经典大气</option>
+                                <option value="文艺清新">文艺清新</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label form-label">缩略图</label>
+                        <div class="col-md-8">
+                            <input type="hidden" id="picVal">
+                            <button type="button" id="uploadPic" class="btn btn-default">上传图片</button>
+                            &nbsp;<span class="text-info" id="picName">建议尺寸:370*400，文件大小:小于100KB</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 25px">
+                        <div class="col-md-8 col-md-offset-2">
+                            <a href="javascript:add()" class="btn btn-default">提交</a>&nbsp;&nbsp;
+                            <a id="reset" href="javascript:reset()" class="btn btn-danger">重置</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        查看详情
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >eid：<span id="detail_eid"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >名称：<span id="detail_name"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >类型：<span id="detail_type"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >url：<span id="detail_url"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >缩略图：<span id="detail_img"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >查看数：<span id="detail_views"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >喜欢数：<span id="detail_likes"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >使用数：<span id="detail_mades"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >创建时间：<span id="detail_created"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >最近一次更新：<span id="detail_updated"></span></p>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="editModalLabel">
+                        编辑信息&nbsp;&nbsp;<span id="tip"></span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" autocomplete="off">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">Eid</label>
+                            <div class="col-md-8">
+                                <input id="edit_id" type="hidden">
+                                <input type="text" class="form-control" disabled style="ime-mode:disabled" id="edit_eid" >
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">名称</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" maxlength="20" style="ime-mode:disabled" id="edit_name"  placeholder="名称">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">Url链接</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" maxlength="20" disabled style="ime-mode:disabled" id="edit_url"  placeholder="Url链接">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label">样式风格</label>
+                            <div class="col-sm-6">
+                                <select id="edit_typeSelect" class="selectpicker" >
+                                    <option selected value="现代商务">现代商务</option>
+                                    <option value="时尚创意">时尚创意</option>
+                                    <option value="经典大气">经典大气</option>
+                                    <option value="文艺清新">文艺清新</option>
+                                    <option value="其他">其他</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label"></label>
+                            <div class="col-md-8">
+                                <input type="hidden" id="edit_picVal">
+                                <button type="button" id="edit_uploadPic" class="btn btn-default">替换图片</button>
+                                &nbsp;<span class="text-info" id="edit_picName"></span>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="edit()" class="btn btn-default">
+                        提交更新
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- Javascript -->
+    {{/*<script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>*/}}
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../static/plugins/datatables/datatables.min.js"></script>
+    <!--Bootstrap Select -->
+    <script type="text/javascript" src="../../static/plugins/bootstrap/bootstrap-select/bootstrap-select.js"></script>
+    <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script>
+        var myTable;
+        $(function () {
+
+            //由于调用父页面loading和swal可能导致token失效，所以使用全局token
+            $("#token", parent.document).val({{._xsrf}});
+
+            //tab导航栏切换
+            $(".breadcrumb a").each(function (i,item) {
+                $(item).on("click",function () {
+                    var isActive = $(item).attr("class");
+                    if(isActive){
+                        return
+                    }else{
+                        //移除所有已选中
+                        $(".breadcrumb a").each(function () {
+                            $(this).removeClass("active");
+                        });
+                        //选中当前项
+                        $(this).addClass("active");
+                        if(i==0){
+                            $('#tab2').hide(100);
+                            $("#tab1").show(100);
+                            refresh();
+                        }else{
+                            $('#tab1').hide(100);
+                            $("#tab2").show(100);
+                        }
+                    }
+                });
+            });
+
+            //datatable setting
+            myTable =$('#myTable').DataTable({
+                /*scrollY:        '100vh',*/
+                autoWidth: true,
+                scrollCollapse: true,
+                "processing": true,
+                "aLengthMenu": [[10, 25, 50, -1], [10, 25, 50,100]],
+                pageLength: 10,
+                serverSide: true,
+                //bSort:false,//排序
+                "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,4] }],//指定哪些列不排序
+                "order": [[ 3, "desc" ]],//默认排序
+                ajax: {
+                    url: '/main/resume/list',
+                    type: 'POST',
+                    data:{
+                        _xsrf:$("#token", parent.document).val()
+                    }
+                },
+                columns: [
+                    { data: 'Name'},
+                    { data: 'Theme',"render":function (data) {
+                            if(!data){
+                                data = "暂未填写";
+                            }
+                            return data;
+                        } },
+                    { data: 'Url',"render":function (data) {
+                            if(!data){
+                                data = "暂未填写";
+                            }
+                            return data;
+                        } },
+                    { data: 'Created',"render":function (data,type,row,meta) {
+                            var unixTimestamp = new Date(data) ;
+                            var commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
+                            return commonTime;
+                        }},
+                    { data: null,"render":function () {
+                            var html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
+                            html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
+                            html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
+                            return html;
+                        } }
+                ],
+                language: {
+                    url: '../../static/plugins/datatables/zh_CN.json'
+                },
+                "createdRow": function ( row, data, index ) {//回调函数用于格式化返回数据
+                    /*if(!data.name){
+                        $('td', row).eq(2).html("暂未填写");
+                    }*/
+                }
+            });
+
+            $('.dataTables_wrapper .dataTables_filter input').css("background","blue");
+
+            var rowData;
+            $('#myTable').on("click",".btn-default",function(e){//查看
+                rowData = myTable.row($(this).closest('tr')).data();
+                console.log(rowData);
+                $('#detail_eid').html(rowData.Eid);
+                $('#detail_name').html(rowData.Name);
+                var Theme = rowData.Theme;
+                $('#detail_type').html(Theme);
+                $('#detail_url').html(rowData.Url);
+                $('#detail_img').html(rowData.Img);
+                $('#detail_views').html(rowData.Views);
+                $('#detail_likes').html(rowData.Likes);
+                $('#detail_mades').html(rowData.Mades);
+                var created = rowData.Created;
+                var unixTimestamp = new Date(created) ;
+                var commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
+                $('#detail_created').html(commonTime);
+
+                var updated = rowData.Updated;
+                if(updated!=created){
+                    var unixTimestamp = new Date(updated) ;
+                    updated = unixTimestamp.toLocaleString('chinese',{hour12:false});
+                }else{
+                    updated = "暂无更新";
+                }
+
+                $('#detail_updated').html(updated);
+                $('#detailModal').modal("show");
+            });
+            $('#myTable').on("click",".btn-info",function(e){//编辑
+                rowData = myTable.row($(this).closest('tr')).data();
+                console.log(rowData);
+                $('#edit_id').val(rowData.Id);
+                $('#edit_eid').val(rowData.Eid);
+                $('#edit_name').val(rowData.Name);
+                $('#edit_url').val(rowData.Url);
+                $('#edit_picVal').val(rowData.Img);
+                $('#edit_picName').html(rowData.Img);
+                var type = rowData.Theme;
+                $("#edit_typeSelect").selectpicker('val',type);//默认选中 value=“1” 的option
+                $("#edit_typeSelect").selectpicker('refresh');
+                $('#tip').html("");
+                $('#editModal').modal("show");
+            });
+            $('#myTable').on("click",".btn-danger",function(e){//删除
+                rowData = myTable.row($(this).closest('tr')).data();
+                console.log(rowData);
+                var id = rowData.Id;
+
+                swal({
+                    title: "确定删除吗?",
+                    text: '删除将无法恢复该信息!',
+                    type: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff1200',
+                    cancelButtonColor: '#ff1200',
+                    confirmButtonText: '确定',
+                    cancelButtonText:'取消'
+                },function(){
+                    del(id);
+                });
+
+            });
+
+            $('#uploadPic').on('click',function () {
+                openWindow("/main/redirect?htmlName=uploadPic","AwesomePromotion",1000,600);
+            });
+
+            $('#edit_uploadPic').on('click',function () {
+                openWindow("/main/redirect?htmlName=uploadPic","AwesomePromotion",1000,600);
+            });
+
+        });
+
+        function add(){
+            var name = $('#name').val().trim();
+            var theme = $('#typeSelect').val().trim();
+            var url = $('#url').val().trim();
+            var img = $('#picVal').val();
+
+            if(!name){
+                swal("错误提示","名称不能为空!","error");
+                return
+            }
+
+            if(!url){
+                swal("错误提示","请填写url链接!","error");
+                return
+            }
+
+            if(!img){
+                swal("错误提示","请上传缩略图!","error");
+                return
+            }
+
+            $.ajax({
+                url : "/main/resume/insert",
+                type : "POST",
+                dataType : "json",
+                cache : false,
+                data : {
+                    _xsrf:$("#token", parent.document).val(),
+                    name:name,
+                    isTailor:isTailor,
+                    theme:theme,
+                    url:url,
+                    img:img
+                },
+                beforeSend:function(){
+                    $('#loading').fadeIn(200);
+                },
+                success : function(r) {
+                    var type = "error";
+                    if (r.code == 1) {
+                        $('#token').val(r.data);
+                        type = "success";
+                        reset();
+                    }
+                    swal(r.msg,"",type);
+                },
+                complete:function () {
+                    $('#loading').fadeOut(200);
+                }
+            })
+        }
+
+        function edit(){
+            var name = $('#edit_name').val().trim();
+            var theme = $('#edit_typeSelect').val().trim();
+            if(!name){
+                swal("错误提示","名称不能为空!","error");
+                return
+            }
+
+            $.ajax({
+                url : "/main/resume/edit",
+                type : "POST",
+                dataType : "json",
+                cache : false,
+                data : {
+                    id:$('#edit_id').val(),
+                    _xsrf:$("#token", parent.document).val(),
+                    name:name,
+                    theme:theme,
+                    img:$('#edit_picVal').val()
+                },
+                beforeSend:function(){
+                    //$('#loading').fadeIn(200);
+                    $('#tip').html("<p style='color: greenyellow'>提交数据中...</p>");
+                },
+                success : function(r) {
+                    var type = "error";
+                    if (r.code == 1) {
+                        $('#token').val(r.data);
+                        $('#tip').html("");
+                        type = "success";
+                        $('#editModal').modal("hide");
+                        //刷新表格
+                        refresh();
+                        swal(r.msg,' ',type);
+                    }else{
+                        $('#tip').html("<p style='color: red'>+"+r.msg+"</p>");
+                    }
+                },
+                complete:function () {
+                    //$('#loading').fadeOut(200);
+                }
+            })
+        }
+
+        function del(id){
+
+            $.ajax({
+                url : "/main/resume/delete",
+                type : "POST",
+                dataType : "json",
+                cache : false,
+                data : {
+                    _xsrf:$("#token", parent.document).val(),
+                    id:id
+                },
+                beforeSend:function(){
+                    $('#loading').fadeIn(200);
+                },
+                success : function(r) {
+                    if (r.code == 1) {
+                        $('#token').val(r.data);
+                        swal("删除成功", " ", "success");
+                        refresh();
+                    }else{
+                        swal("删除失败", "请稍后再试!", "error");
+                    }
+                },
+                complete:function () {
+                    $('#loading').fadeOut(200);
+                }
+            })
+        }
+
+        function reset() {
+            $(":input").each(function () {
+                $(this).val("");
+            });
+            $(".selectpicker").selectpicker('val',1);//下拉框选中 value=“1” 的option
+            $(".selectpicker").selectpicker('refresh');
+            $('#uploadPic').html("上传图片");
+            $('#picName').html("");
+        }
+
+        function refresh() {
+            myTable.ajax.reload();
+        }
+
+        function swal(title,msg,type) {
+            window.parent.swalInfo(title,msg,type);
+        }
+
+        //上传图片
+        function openWindow(url,name,iWidth,iHeight) {
+            var url; //转向网页的地址;
+            var name; //网页名称，可为空;
+            var iWidth; //弹出窗口的宽度;
+            var iHeight; //弹出窗口的高度;
+            var iTop = (window.screen.availHeight-30-iHeight)/2; //获得窗口的垂直位置;
+            var iLeft = (window.screen.availWidth-10-iWidth)/2; //获得窗口的水平位置;
+            var openWindow = window.open(url,name,'height='+iHeight+',,innerHeight='+iHeight+',width='+iWidth+',innerWidth='+iWidth+',top='+iTop+',left='+iLeft+',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no');
+            //alert(openWindow);
+        }
+
+    </script>
+</body>
+</html>

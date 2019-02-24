@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AwesomePromotion</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- Favicon -->
+    <link rel="icon" type="image/ico" href="../../static/img/logo/logoPic.png">
+    <link rel="stylesheet" href="../../static/css/root.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/awesome-bootstrap-checkbox/v0.2.3/awesome-bootstrap-checkbox.min.css">
+    <link href="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-slider/10.2.1/css/bootstrap-slider.min.css" rel="stylesheet">
+    <style>
+        .resume-item{
+            padding-bottom: 10px;
+            margin-bottom: 0px;
+            border: 1px solid #DCE6EB;
+            margin-bottom: 15px;
+            min-height: 355px;
+        }
+        .resume-item:hover{
+            border-color:#6195FF;
+        }
+        .resume-item img {
+            display: block;
+            margin: auto;
+            max-width: 100%;
+            height: auto;
+            transition: opacity 0.35s, -webkit-transform 0.35s;
+            transition: opacity 0.35s, transform 0.35s;
+            -o-transition: opacity 0.35s, -o-transform 0.35s;
+            vertical-align: middle;
+        }
+        .resume-item .head{
+            box-sizing:inherit;
+            width: 100%;
+            background: rgba(43, 51, 62, 0.95);
+            color: #ffffff;
+            position: relative;
+            top:0px;
+            padding:8px;
+        }
+        .resume-item .head h{
+            margin-bottom: 5px;
+        }
+        .resume-item .bottom{
+            width: calc(100% - 35px);
+            box-sizing:inherit;
+            text-align: center;
+            position: absolute;
+            bottom:5px;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .resume-item .used{
+            width: calc(100% - 32px);
+            box-sizing:inherit;
+            text-align: center;
+            position: absolute;
+            bottom:16px;
+            color: #ffffff;
+            font-size: 18px;
+            background: rgba(245,0,0,0.75);
+            padding-top: 15px;
+            padding-bottom: 14px;
+        }
+
+    </style>
+</head>
+<body style="padding-bottom: 15%">
+<div id="loading" class="loading-wrap" style="display: none;">
+    <div class="loader" >
+        <div class="la-ball-clip-rotate-multiple la-3x">
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loaderTxt">数据交互中...</div>
+    </div>
+</div>
+<div id="mainContent" class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">我的制作</h3>
+        <hr>
+        <p>温馨提示:如果您不想别人随意的查看您的简历,通过'编辑简历'重置简历分享链接即可.</p>
+    </div>
+    <div class="panel-body">
+        <div class="row" id="resumeWrap">
+            <div class="col-md-3" >
+                <div class="resume-item">
+                    <div class="head">
+                        <h4>全屏简约个人主页模板</h4>
+                        <div class="type">分类:时尚创意</div>
+                    </div>
+                    <img src="../../static/img/zooori.jpg">
+                    <div class="bottom">
+                        <button class="btn btn-primary">使用模板</button>&nbsp;&nbsp;&nbsp;
+                        <button class="btn btn-default">预览模板</button>
+                    </div>
+                    <div class="used" style="display: none">已使用</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-slider/10.2.1/bootstrap-slider.min.js"></script>
+<script src="../../static/plugins/citySelect/distpicker.data.js"></script>
+<script src="../../static/plugins/citySelect/distpicker.js"></script>
+<script src="../../static/js/util.js"></script>
+<script>
+
+    $(function () {
+        $("#token", parent.document).val({{._xsrf}});
+    });
+
+    //获取所有模板
+    var dataAll = [];
+    var dataMade = [];
+    var dataUse = [];
+    var parentWin = window.parent;
+    $.post("/index/resume/list", {_xsrf:{{._xsrf}}},function (r1) {
+        if(r1.code==1){
+            dataAll = r1.data;
+            //获取已使用模板
+            $.post("/main/resume/made", {_xsrf:{{._xsrf}}},function (r2) {
+                if(r2.code==1){
+                    dataMade = r2.data;
+                    for(var i=0;i<dataAll.length;i++){
+                        var eid = dataAll[i].Eid;
+                        dataAll[i].isUse = false;
+                        for(var j=0;j<dataMade.length;j++){
+                            var rid = dataMade[j].Rid;
+                            if(eid===rid){
+                                var obj = dataMade[j];
+                                obj.modelName = dataAll[i].Name;
+                                obj.Theme = dataAll[i].Theme;
+                                obj.Img = dataAll[i].Img;
+                                dataUse.push(obj);
+                                break;
+                            }
+                        }
+                    }
+                    $('#loading').fadeOut(200);
+                    //渲染ui
+                    $('#resumeWrap').html("");
+                    parentWin.GlobalDataArr = dataUse;
+                    for(var k=0;k<dataUse.length;k++){
+                        var obj = dataUse[k];
+                        var title = obj.modelName;
+                        var type = obj.Theme;
+                        var imgUrl = "/file/"+obj.Img;
+                        var uid = obj.Uid;
+                        var rid = obj.Rid;
+                        $('#resumeWrap').append('<div class="col-md-3" >\n' +
+                                '                <div class="resume-item">\n' +
+                                '                    <div class="head">\n' +
+                                '                        <h4 style="margin-bottom: 5px;margin-top: 5px;">'+title+'</h4>\n' +
+                                '                        <div class="type">分类:'+type+'</div>\n' +
+                                '                    </div>\n' +
+                                '                    <img src="'+imgUrl+'">\n' +
+                                '                    <div class="bottom">\n' +
+                                '                        <button onclick="edit('+k+')" class="btn btn-primary"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;编辑简历</button>&nbsp;&nbsp;&nbsp;\n' +
+                                '                        <button onclick="preview('+k+')" class="btn btn-success"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;预览简历</button>\n' +
+                                '                    </div>\n' +
+                                '                </div>\n' +
+                                '            </div>')
+                    }
+
+                }
+            });
+        }
+
+    });
+
+    function edit(index) {
+        var resume = dataUse[index];
+        resume.Index = index;
+        parentWin.renderForm(index);  //method为父页面的方法
+        $('#wrapper',parent.document).hide(200);
+        $('#madeModal',parent.document).modal("show");
+    }
+    function preview(index) {
+        var sid = parentWin.GlobalDataArr[index].Sid;
+        var url = "/share?v="+sid;
+        window.open(url,"_blank");
+    }
+
+</script>
+
+</body>
+</html>

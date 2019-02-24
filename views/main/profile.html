@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AwesomePromotion</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- Favicon -->
+    <link rel="icon" type="image/ico" href="../../static/img/logo/logoPic.png">
+    <link rel="stylesheet" href="../../static/css/root.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/awesome-bootstrap-checkbox/v0.2.3/awesome-bootstrap-checkbox.min.css">
+    <link href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
+    <script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>
+    <style>
+        .red{
+            color:red;
+        }
+        .help-block{
+            font-size: 12px;
+            color: #999999;
+        }
+        .sweet-alert{
+            margin-top: -325px!important;
+        }
+        /* 2. Small devices (tablets, 767px and Down) */
+        @media (max-width: 767px) {
+
+        }
+        #editCode{
+            width: 115px;
+            display: inline-block;
+            float: left;
+        }
+        #editCodeBtn{
+            margin-left: 35px;
+            float: left;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body style="padding-bottom: 15%;">
+<div id="loading" class="loading-wrap" style="display: none;">
+    <div class="loader" >
+        <div class="la-ball-clip-rotate-multiple la-3x">
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loaderTxt">数据交互中...</div>
+    </div>
+</div>
+<input type="hidden" id="token" value="{{._xsrf}}">
+<div id="mainContent" class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">个人设置</h3>
+        <hr>
+    </div>
+    <div class="panel-body" style="padding-bottom: 6%;margin-top: -25px;">
+        <div class="row" >
+            <div class="col-md-12" >
+                <form class="form-horizontal" autocomplete="off">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">账号<span class="red">*</span></label>
+                        <div class="col-sm-6">
+                            <input type="hidden" id="id">
+                            <input type="text" class="form-control" maxlength="30" style="ime-mode:disabled" id="account" placeholder="至少6个字符,将不可更改" >
+                            <span class="help-block text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">密码<span class="red">*</span></label>
+                        <div class="col-sm-6">
+                            <input type="password" class="form-control" onfocus="javascript:this.value = ''" maxlength="30" style="ime-mode:disabled" id="password" placeholder="至少6个字符" >
+                            <span class="help-block text-success"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">确认密码<span class="red">*</span></label>
+                        <div class="col-sm-6">
+                            <input type="password" class="form-control" maxlength="30" onfocus="javascript:this.value = ''" style="ime-mode:disabled" id="password2" placeholder="至少6个字符" >
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label form-label">邮箱地址<span class="red">*</span></label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" maxlength="30" style="ime-mode:disabled" id="email" placeholder="" >
+                            <button id="operate4mail" type="button" style="margin-top: 10px;float: right" class="btn btn-default btn-sm">验证邮箱</button>
+                            <span class="help-block">邮箱地址未验证,将用于找回密码</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-12">
+                <hr style="margin-top: 60px;">
+                <div class="col-sm-12" style="text-align: center;">
+                    <button id="submit" type="button" class="btn btn-success">提交更新</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--模态框（Modal） -->
+<div class="modal fade" id="emailModal" style="overflow-y: auto" tabindex="-1"  data-backdrop="static" role="dialog" aria-labelledby="madeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" id="modalClose" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h3 style="font-weight: 700" class="modal-title" id="editModalLabel">
+                    更新邮箱
+                </h3>
+                <span class="form-label" id="modalTip"></span>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" autocomplete="off">
+                    <div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label form-label">邮箱地址<span class="red"></span></label>
+                            <div class="col-sm-8" >
+                                <input type="text" onfocus="javascript:$('#modalTip').html('')" class="form-control" id="editEmail" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label form-label">验证码<span class="red"></span></label>
+                            <div class="col-sm-8">
+                                <input type="text" onfocus="javascript:$('#modalTip').html('')" class="form-control" maxlength="6" style="ime-mode:disabled;text-align: center" id="editCode" placeholder="验证码" >
+                                <button type="button" id="editCodeBtn" class="btn btn-default">获取验证码</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="editSubmit" class="btn btn-success">
+                    提交更新
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../../static/js/util.js"></script>
+<script>
+    var parentWin = window.parent;
+    var userInfo;
+    $(function () {
+        renderForm();
+        $('#submit').on("click",function () {
+            var account = $('#account').val().trim();
+            var password1 = $('#password').val().trim();
+            var password2 = $('#password2').val().trim();
+            var email = $('#email').val().trim();
+            if(!account){
+                tipTip($('#account').parent().find("span"),"请填写账号!");
+                return
+            }
+            if(account.length<6){
+                tipTip($('#account').parent().find("span"),"账号信息过简单!");
+                return
+            }
+            if(!password1){
+                tipTip($('#password').parent().find("span"),"请填写密码!");
+                return
+            }
+            if(!password2){
+                tipTip($('#password2').parent().find("span"),"请确认密码!");
+                return
+            }
+            if(password1!==password2){
+                tipTip($('#password').parent().find("span"),"请确认两次密码一致!");
+                return
+            }
+            if(password1==="********"){
+                password1 = userInfo.Password;
+            }
+            if(!email){
+                tipTip($('#email').parent().find("span"),"邮箱地址不能为空!");
+                return
+            }
+            if(!checkEmail(email)){
+                tipTip($('#email').parent().find("span"),"邮箱地址格式不正确!");
+                return
+            }
+
+            $.ajax({
+                url:"/main/user/update",
+                type:"POST",
+                data:{
+                    id:userInfo.Id,
+                    account:account,
+                    password:password1,
+                    name:name,
+                    gender:gender,
+                    birthday:birthday,
+                    phone:phone,
+                    email:email,
+                    created:new Date(new Date(userInfo.Created)).getTime(),
+                    _xsrf:$('#token').val()
+                },
+                beforeSend:function () {
+                    $('#loading').fadeIn(200);
+                },
+                success:function (r) {
+                    if(r.code===1){
+                        renderForm();
+                        parentWin.swalInfo("即刻提示",r.msg,"success");
+                    }else{
+                        parentWin.swalInfo("即刻提示",r.msg,"error");
+                    }
+                },
+                complete:function () {
+                    $('#loading').fadeOut(200);
+                }
+            });
+
+        });
+        $('#operate4mail').on("click",function () {
+           var txt = $(this).html();
+           if(txt==="验证邮箱"){
+               $.post("/main/user/validate4mail",{_xsrf:$('#token').val(),email:$('#email').val().trim()},function (r) {
+                  if(r.code==1){
+                      swal({
+                          title: "<h3>请输入邮箱验证码</h3>",
+                          text: "<input style='text-align: center' maxlength='6' placeholder='6位验证码' type='text' id='code'>",
+                          html:true,
+                          showCancelButton: true,
+                          closeOnConfirm: true,
+                          confirmButtonColor: "#6397ff",
+                          confirmButtonText: "提交",
+                          cancelButtonText: "取消",
+                          animation: "slide-from-top",
+                          type: "prompt",
+                          inputPlaceholder:"6位验证码"
+                      }, function(){
+                          var code_ = $('#code').val().trim();
+                          if(!code_){
+                              parentWin.swalInfo("即刻提示","验证码不能为空!","error");
+                          }
+                          $.post("/main/user/mail4confirm",{_xsrf:$('#token').val(),code:code_},function (r) {
+                                if(r.code==1){
+                                    parentWin.swalInfo("即刻提示",r.msg,"success");
+                                    renderForm();
+                                }else{
+                                    parentWin.swalInfo("即刻提示",r.msg,"error");
+                                }
+                          });
+                      });
+                  }else{
+                      parentWin.swalInfo("即刻提示",r.msg,"error");
+                  }
+               });
+
+           }else{
+               $('#emailModal').modal("show");
+           }
+        });
+        $('#editCodeBtn').on('click',function () {
+           var email = $('#editEmail').val().trim();
+           if(!email){
+               $('#modalTip').html('<p class="text-danger">您未填写邮箱地址!</p>');
+               return
+           }
+           $('#editCodeBtn').prop("disabled","disabled");
+           var num = 60;
+           var str;
+           var timer = setInterval(function () {
+               if(num===1){
+                   window.clearInterval(timer);
+                   $('#editCodeBtn').prop("disabled",false);
+                   $('#editCodeBtn').html("获取验证码");
+                   return
+               }
+               num--;
+               str = num;
+               if(num<10){
+                   str = "0"+num;
+               }
+               $('#editCodeBtn').html("剩余: "+str+" s");
+           },800);
+            $.post("/main/user/validate4mail",{_xsrf:$('#token').val(),email:email},function (r) {
+                if(r.code===1){
+                    $('#modalTip').html('<p class="text-success">'+r.msg+'</p>');
+                }else{
+                    window.clearInterval(timer);
+                    $('#editCodeBtn').prop("disabled",false);
+                    $('#editCodeBtn').html("获取验证码");
+                    $('#modalTip').html('<p class="text-danger">'+r.msg+'</p>');
+                }
+            });
+        });
+        $('#editSubmit').on('click',function () {
+            $.post("/main/user/mail4confirm",{_xsrf:$('#token').val(),code:$('#editCode').val().trim(),changeMail:$('#editEmail').val().trim(),type:"edit"},function (r) {
+                if(r.code==1){
+                    $('#editEmail').val("");
+                    $('#editCode').val("");
+                    $('#emailModal').modal("hide");
+                    parentWin.swalInfo("即刻提示",r.msg,"success");
+                    renderForm();
+                }else{
+                    parentWin.swalInfo("即刻提示",r.msg,"error");
+                }
+            });
+        });
+    });
+    function renderForm() {
+        $.post("/main/user/listOne",{_xsrf:$('#token').val()},function (r) {
+            userInfo = r.data;
+            $('#id').val(userInfo.Id);
+            var account = userInfo.Account;
+            if(account){
+                $('#account').val(account);
+                $('#account').attr("disabled","disabled");
+            }
+            var password = userInfo.Password;
+            if(password){
+                $('#password').val("********");
+                $('#password2').val("********");
+            }
+            $('#name').val(userInfo.Name);
+            var gender = userInfo.Gender;
+            if(gender==="男"){
+                $('#radio1').prop("checked",true);
+                $('#radio2').prop("checked",false);
+            }else{
+                $('#radio2').prop("checked",true);
+                $('#radio1').prop("checked",false);
+            }
+            $('#birthday').val(userInfo.Birthday);
+            $('#phone').val(userInfo.Phone);
+            var actived = userInfo.Actived;
+            $('#email').val(userInfo.Email);
+            if(actived===0&&userInfo.Email){
+                var dom = $('#email').parent().find("span");
+                $(dom).html("邮箱地址未验证,该地址将用于找回密码");
+                $(dom).addClass("text-danger");
+            }else if(actived===1&&userInfo.Email){
+                var dom = $('#email').parent().find("span");
+                $(dom).html("邮箱地址将用于找回密码");
+                $('#email').attr("disabled","disabled");
+                var dom2 = $('#email').parent().find("button");
+                $(dom2).html("更换邮箱");
+            }else{
+                var dom = $('#email').parent().find("span");
+                $(dom).html("邮箱地址将用于找回密码");
+                var dom2 = $('#email').parent().find("button");
+                $(dom2).remove();
+            }
+        });
+    }
+    function tipTip(dom,str) {
+        parentWin.swalInfo("即刻提示",str,"error");
+    }
+</script>
+</body>
+</html>

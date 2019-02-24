@@ -1,0 +1,292 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>AwesomePromotion</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- Favicon -->
+    <link rel="icon" type="image/ico" href="../../static/img/logo/logoPic.png">
+    <link rel="stylesheet" href="../../static/css/root.css">
+	<link rel="stylesheet" href="../../static/css/main-index.css">
+    <link href="https://cdn.bootcss.com/bootstrap-slider/10.2.1/css/bootstrap-slider.min.css" rel="stylesheet">
+    <style>
+
+    </style>
+</head>
+
+<body>
+	<div id="loading" class="loading-wrap" style="display: block;">
+		<div class="loader" >
+			<div class="la-ball-clip-rotate-multiple la-3x">
+				<div></div>
+				<div></div>
+			</div>
+			<div class="loaderTxt">数据交互中...</div>
+		</div>
+	</div>
+	<input type="hidden" id="token">
+	<!-- WRAPPER -->
+	<div id="wrapper">
+		<!-- NAVBAR -->
+		<nav id="navbar-menu" class="navbar navbar-default navbar-fixed-top" style="height: 80px;">
+			<div class="brand" style="padding: 0px 50px;line-height: 80px;background: none">
+                <a href="/main"><p style="font-family: Panxiang;font-size: 26px">AwesomePromotion</a>
+			</div>
+			<div class="container-fluid">
+				<div class="navbar-btn" style="line-height: 90px;padding: 0px 0px;margin-top: 0px">
+					<button type="button" class="btn-toggle-fullwidth"><i class="lnr lnr-arrow-left-circle"></i></button>
+				</div>
+
+				<div id="navbar-menu">
+					<ul class="nav navbar-nav navbar-right" style="height: 80px;">
+
+						<li onclick="changeDrop(this)" class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../../static/img/avatar.png" style="width: 35px;" class="avatar" alt="Avatar"> <span id="account">{{.account}}</span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
+							<ul class="dropdown-menu">
+								<li><a href="javascript:$('#profileSetting').click();"><i class="lnr lnr-user"></i> <span>个人设置</span></a></li>
+								<li><a href="javascript:$('#message').click();"><i class="lnr lnr-envelope"></i> <span>消息提醒</span></a></li>
+								<li><a href="javascript:void(0);"><i class="lnr lnr-cog"></i> <span>系统设置</span></a></li>
+								<li ><a href="/timeout" style="color: red"><i class="lnr lnr-exit"></i> <span >退出</span></a></li>
+							</ul>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<!-- END NAVBAR -->
+
+		<!-- LEFT SIDEBAR -->
+		<div id="sidebar-nav" class="sidebar">
+			<div class="sidebar-scroll">
+				<nav>
+					<ul id="navUl" class="nav">
+						<li id="home" onclick="redirect('home',this)"><i class="lnr lnr-home"></i> <span>首页</span></li>
+                        <li id="made" onclick="redirect('mades',this)"><i class="lnr lnr-hand"></i> <span>我的制作</span></li>
+						<li id="message" onclick="redirect('news',this)"><i class="lnr lnr-envelope"></i> <span>消息提醒</span></li>
+						<li id="profileSetting" onclick="redirect('profile',this)"><i class="lnr lnr-user"></i> <span>个人设置</span></li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+		<!-- END LEFT SIDEBAR -->
+
+		<!-- MAIN -->
+		<div class="main">
+            <iframe  id="mainframe" name="myFrame" width="100%" height="100%" src="" frameborder="0" data-id="" ></iframe>
+		</div>
+		<!-- END MAIN -->
+
+        <div id="navBtn" style="position: fixed;right:150px;bottom: 18px;display: none;">
+            <button class="btn btn-default">切换导航页</button>
+        </div>
+
+        <div id="copyBtn" style="position: fixed;right:18px;bottom: 18px;display: none;">
+            <button class="btn btn-primary">拷贝当前页</button>
+        </div>
+
+		<div class="clearfix"></div>
+
+        <!-- 切换导航页-模态框（Modal） -->
+        <div class="modal fade" id="myModal" style="overflow-y: auto;z-index: 9999" tabindex="-1" data-backdrop="static"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" id="modalClose" class="close" data-dismiss="modal"
+                                aria-hidden="true">×
+                        </button>
+                        <h3 style="font-weight: 700" class="modal-title" id="editModalLabel">
+                            切换导航页
+                        </h3>
+
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" autocomplete="off">
+
+                            <div class="page" >
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label form-label">选择导航</label>
+                                    <div class="col-sm-8">
+                                        <div class="radio" style="float: left;border: 0px solid red;height: 35px;line-height: 18px;">
+                                            <input style="outline: none !important;" type="radio" name="radio" id="radio1" value="https://www.starnavi.cn/">
+                                            <label for="radio1">
+                                                简约导航
+                                            </label>
+                                        </div>
+                                        <div class="radio" style="float: left;border: 0px solid red;height: 35px;line-height: 18px;margin-left: 8px;">
+                                            <input tabindex="-1" type="radio" name="radio" id="radio2" value="https://www.starnavi.cn/">
+                                            <label for="radio2">
+                                                星空导航
+                                            </label>
+                                        </div>
+                                        <div class="radio" style="float: left;border: 0px solid red;height: 35px;line-height: 18px;margin-left: 8px;">
+                                            <input tabindex="-1" type="radio" name="radio" id="radio3" value="https://hao.360.cn/">
+                                            <label for="radio3">
+                                                360导航
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label form-label"></label>
+                                    <div class="col-sm-8">
+                                        <div class="radio" style="float: left;border: 0px solid red;height: 35px;line-height: 18px;margin-left: 0px;">
+                                            <input tabindex="-1" type="radio" name="radio" checked id="radio4" value="https://www.hao123.com/">
+                                            <label for="radio4">
+                                                hao123导航
+                                            </label>
+                                        </div>
+                                        <div class="radio" style="float: left;border: 0px solid red;height: 35px;line-height: 18px;margin-left: 8px;">
+                                            <input tabindex="-1" type="radio" name="radio" id="radio5" value="https://www.2345.com/">
+                                            <label for="radio5">
+                                                2345导航
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label form-label"></label>
+                                    <div class="col-sm-8">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="confirm" class="btn btn-default" >
+                            确定
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+	</div>
+	<!-- END WRAPPER -->
+
+    <!-- Javascript -->
+    <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script src="../../static/back/assets/vendor/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="../../static/back/assets/scripts/klorofil-common.js"></script>
+    <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
+	<script src="../../static/js/util.js"></script>
+    <script src="../../static/js/iframeClick.js"></script>
+
+	<script>
+		var userInfo;
+		var gUrl;
+        //动态更改iframe高度
+        $(window.parent.document).find("#mainframe").load(function(){
+            var main = $(window.parent.document).find("#mainframe");
+            var thisHeight = window.innerHeight-80;
+            //var width = window.innerWidth;
+            main.height(thisHeight);
+        });
+
+		$(function () {
+			userInfo = {{.userInfo}};
+            if(userInfo.Type>2){
+                $('#last').show();
+            }
+            //$('#account').html(userInfo.Account);
+            if(isPhone()){//设置导航栏箭头方向
+                $('.btn-toggle-fullwidth').find("i").removeClass("lnr-arrow-left-circle");
+                $('.btn-toggle-fullwidth').find("i").addClass("lnr-arrow-right-circle");
+            }
+
+            var myFrame = document.getElementById('mainframe');
+            myFrame.onload = myFrame.onreadystatechange = function () {
+                if (this.readyState && this.readyState != 'complete') {
+                    //console.log("加载中。。。");
+                }
+                else {
+                    //console.log("加载完成。。。");
+                    $('#loading').hide();
+                }
+
+            }
+
+
+
+            //默认选中
+            $('#home').click();
+
+            $('#navBtn').on('click',function () {
+                $('#myModal').modal('show');
+            });
+            $('#confirm').on('click',function () {
+                var url = $('input:radio:checked').val();
+                gUrl = url;
+                //$('#mainframe').attr("src",url);
+                $('#myModal').modal("hide");
+                $('#home').click();
+            });
+
+            $('#mainframe').on('click',function () {
+                console.log($(this));
+            });
+
+            $('#copyBtn').on('click',function () {
+                var html = document.getElementById('mainframe').contentDocument;
+                console.log(html);
+            });
+
+        });
+        function redirect(htmlName,obj){
+            if(htmlName){
+                $('#loading').show(200);
+            }
+            $('#navUl li').each(function (index) {//全置默认
+				$(this).removeClass("navItemActive");
+                $(this).find("i").removeClass("navItemActive4span");
+                $(this).find("span").removeClass("navItemActive4span");
+
+            });
+            //设置选中
+            $(obj).addClass("navItemActive");
+            $(obj).find("i").addClass("navItemActive4span");
+            $(obj).find("span").addClass("navItemActive4span");
+            if(isPhone()){
+                $('.btn-toggle-fullwidth').click();
+			}
+            if(!htmlName){
+                return;
+			}
+            var url = "/main/redirect?htmlName="+htmlName;
+            if(htmlName==="home"){
+                if(!gUrl){
+                    url = "https://www.baidu.com";
+                }else{
+                    url = gUrl;
+                }
+                $('#copyBtn').show(200);
+                $('#navBtn').show(200);
+            }else{
+                $('#copyBtn').hide(200);
+                $('#navBtn').hide(200);
+            }
+            $('#mainframe').attr("src",url);
+        }
+
+        function changeDrop(obj) {
+            var class_ = $(obj).attr("class");
+            if(class_!="dropdown"){
+                $(obj).find(".icon-submenu").attr("class","icon-submenu lnr lnr-chevron-down");
+            }else{
+                $(obj).find(".icon-submenu").attr("class","icon-submenu lnr lnr-chevron-up");
+            }
+        }
+
+    </script>
+</body>
+
+</html>

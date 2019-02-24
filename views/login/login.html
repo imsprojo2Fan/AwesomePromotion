@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en" class="fullscreen-bg">
+
+<head>
+	<title>AwesomePromotion</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0" />
+    <!-- Favicon -->
+    <link rel="icon" type="image/ico" href="../../static/img/logo/logoPic.png">
+
+    <!--Sweet alert-->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.css">
+    <script src="../../static/plugins/sweetalert/sweetalert.min.js"></script>
+	<!-- VENDOR CSS -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../../static/back/assets/vendor/linearicons/style.css">
+	<!-- MAIN CSS -->
+	<link rel="stylesheet" href="../../static/back/assets/css/main.css">
+	<!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
+	<link rel="stylesheet" href="../../static/back/assets/css/demo.css">
+	<!-- GOOGLE FONTS -->
+	{{/*<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">*/}}
+	<!-- ICONS -->
+	<link rel="apple-touch-icon" sizes="76x76" href="../../static/back/assets/img/apple-icon.png">
+
+	<link rel="stylesheet" href="../../static/css/util.css">
+    <link href="https://cdn.bootcss.com/bootstrap-switch/4.0.0-alpha.1/css/bootstrap-switch.min.css" rel="stylesheet">
+
+
+	<style>
+        @font-face {
+            font-family: Panxiang;
+            src: url('../../static/font/Panxiang.eot');
+            src:
+                    url('../../static/font/Panxiang.eot?#font-spider') format('embedded-opentype'),
+                    url('../../static/font/Panxiang.woff2') format('woff2'),
+                    url('../../static/font/Panxiang.woff') format('woff'),
+                    url('../../static/font/Panxiang.ttf') format('truetype'),
+                    url('../../static/font/Panxiang.svg') format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+		a{
+			color: #676a6d;
+		}
+		a:hover{
+			color: #6195FF;
+		}
+
+        button:focus{
+            outline:none !important;
+        }
+        .bootstrap-switch-handle-off bootstrap-switch-primary{
+            background: #0b0b0b;
+            color: #ffffff;
+        }
+
+	</style>
+
+</head>
+
+<body>
+<input type="hidden" value="{{ ._xsrf}}" id="token">
+<input type="hidden" value="{{ .timeout}}" id="timeout">
+<div id="loading" class="loading-wrap" style="display: none">
+    <div class="loader" >
+        <div class="la-fire la-3x">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loaderTxt">账号登录中...</div>
+    </div>
+</div>
+
+	<!-- WRAPPER -->
+	<div id="wrapper">
+		<div class="vertical-align-wrap">
+			<div class="vertical-align-middle">
+				<div class="auth-box ">
+					<div class="left">
+						<div class="content">
+							<div class="header">
+								<div class="logo text-center"><a href="/"><h3 style="font-family: Panxiang">Keep Inner Peace</h3></a></div>
+								<p class="lead">快乐大抵相同,悲伤却千万种</p>
+							</div>
+							<form class="form-auth-small" autocomplete="off" onsubmit="return checkLength()">
+                                <div id="normalLogin">
+                                    <div class="form-group">
+                                        <label for="account" class="control-label sr-only">账号</label>
+                                        <input type="text" maxlength="20" class="form-control" id="account" value="" placeholder="账号">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" class="control-label sr-only">密码</label>
+                                        <input type="password" class="form-control" id="password" value="" placeholder="密码">
+                                    </div>
+                                </div>
+
+								<div class="form-group clearfix" style="border: 0px solid red;line-height: 31px;">
+									<label class="fancy-checkbox element-left">
+										<input id="checkbox" type="checkbox">
+										<span>记住账号</span>
+									</label>
+
+								</div>
+								<button type="button" id="loginBtn" style="background: #333333c7;border: none" class="btn btn-primary btn-lg btn-block">登录</button>
+							</form>
+						</div>
+					</div>
+					<div class="right">
+						<div class="overlay"></div>
+						<div class="content text">
+							<h3 class="heading" style="line-height: 35px;">我们曾如此渴望命运的波澜,到最后才发现,人生最曼妙的风景竟是内心的淡定与从容.</h3>
+							<p>We have been so eager for the wave of destiny, and finally found that the most beautiful scenery in life is actually calm and calm.</p>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END WRAPPER -->
+    <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="../../static/js/util.js"></script>
+	<script src="../../static/js/login.js"></script>
+	<script>
+        var isPassKeyLogin = false;
+		$(function () {
+
+            if(top.location!=self.location){
+                console.log(("exit"));
+                window.parent.location.href = "/login";
+            }else{
+                console.log(("no exit"));
+            }
+
+			//获取本地存储信息
+			var account = getCookieValue("account");
+			var password = getCookieValue("password");
+			if(account&&password){
+			    $('#account').val(account);
+			    $('#password').val(password);
+			    $('#checkbox').attr("checked","checked");
+			}
+
+			$('#loginBtn').on("click",function () {
+			    var passKey,account,password;
+			    if(isPassKeyLogin){
+                    passKey = $('#passKey').val().trim();
+                    if(!passKey){
+                        sweetAlert(
+                                '即刻提示',
+                                '登录密钥不能为空！',
+                                'warning'
+                        )
+                        $(".swal2-confirm").trigger("blur");
+                        return
+                    }
+                }else{
+                    account = $('#account').val().trim();
+                    password = $('#password').val().trim();
+                    if(!account){
+                        sweetAlert(
+                                '即刻提示',
+                                '账号不能为空！',
+                                'warning'
+                        )
+                        $(".swal2-confirm").trigger("blur");
+                        return
+                    }
+                    if(!password){
+                        sweetAlert(
+                                '即刻提示',
+                                '请填写密码！',
+                                'warning'
+                        )
+                        $(".swal2-confirm").trigger("blur");
+                        return
+                    }
+
+                    var objChk = document.getElementById("checkbox");
+                    if(objChk.checked){
+                        //添加cookie
+                        addCookie("account",account,7,"/");
+                        addCookie("password",password,7,"/");
+                        addCookie("check",1,7,"/");
+                        //swal("记住了你的密码登录。",' ',"success");
+                    }else{
+                        deleteCookie("account",'/');
+                        deleteCookie("password",'/');
+                        deleteCookie("check",'/');
+                        //swal("不记密码登录。",' ',"error");
+                    }
+                }
+
+                $.ajax({
+                    url : "/validate",
+                    type : "POST",
+                    data : {
+                        type:"login",
+                        account:account,
+						password:password,
+                        passKey:passKey,
+                        _xsrf:$('#token').val()
+					},
+                    dataType : "json",
+                    cache : false,
+                    beforeSend:function(){
+                        $('#loading').fadeIn(100);
+                    },
+                    success : function(r,status) {
+                        if (r.code == 1) {
+                            window.location.href = "/main";
+                            //swal("登录成功!",' ',"success");
+                        } else {
+                            sweetAlert("即刻提示",r.msg,"error");
+                            $(".swal2-confirm").trigger("blur");
+                        }
+                    },
+                    error:function(){
+                        swal("会话已失效!",'请刷新页面重试',"error");
+                    },
+                    complete:function () {
+                        $('#loading').fadeOut(100);
+                    }
+                });
+
+            })
+        });
+		function forget() {
+            swal({
+                title: "<h3>请输入预留邮箱地址</h3>",
+                text: "<input  type='text' id='email'>",
+                html:true,
+                showCancelButton: true,
+                closeOnConfirm: true,
+                confirmButtonColor: "#6397ff",
+                confirmButtonText: "提交",
+                cancelButtonText: "取消",
+                animation: "slide-from-top",
+                type: "prompt",
+                inputPlaceholder:"邮箱地址"
+            }, function(){
+                var email = $('#email').val().trim();
+                if(!email){
+                    setTimeout(function () {
+                        swal("即刻提示","您似乎什么都没填","error");
+                    },200);
+                    return
+                }
+                if(!checkEmail(email)){
+                    setTimeout(function () {
+                        swal("即刻提示","邮箱格式好像不正确","error");
+                    },200);
+                    return
+                }
+
+                $.post('/forget',{_xsrf:$('#token').val(),email:email},function (r) {
+                    if(r.code===1){
+                        setTimeout(function () {
+                            swal({
+                                title: "<h3>请输入验证码和密码</h3>",
+                                text: "<input style='text-align: center' id='code' placeholder='验证码' type='text' maxlength='6'>"+"<input placeholder='至少6个字符密码' style='text-align: center' type='password' id='ePassword' maxlength='40'>"+"",
+                                html:true,
+                                showCancelButton: true,
+                                closeOnConfirm: true,
+                                confirmButtonColor: "#6397ff",
+                                confirmButtonText: "提交",
+                                cancelButtonText: "取消",
+                                animation: "slide-from-top",
+                                type: "prompt",
+                                inputPlaceholder:"6位数验证码"
+                            }, function(){
+                                var password = $('#ePassword').val().trim();
+                                var code = $('#code').val().trim();
+                                if(!password){
+                                    setTimeout(function () {
+                                        swal("即刻提示","您未填写密码!","error");
+                                    },200);
+                                    return
+                                }
+                                if(password.length<6){
+                                    setTimeout(function () {
+                                        swal("即刻提示","密码过简单了!","error");
+                                    },200);
+                                    return
+                                }
+                                if(!code){
+                                    setTimeout(function () {
+                                        swal("即刻提示","验证码不能为空!","error");
+                                    },200);
+                                    return
+                                }
+                                $.post("/reset",{_xsrf:$('#token').val(),email:email,password:password,code:code},function (r) {
+                                    if(r.code===1){
+                                        setTimeout(function () {
+                                            swal("即刻提示",r.msg,"success");
+                                        },200);
+                                    }else{
+                                        setTimeout(function () {
+                                            swal("即刻提示",r.msg,"error");
+                                        },200);
+                                    }
+                                })
+                            });
+                        },200);
+
+                    }else{
+                        setTimeout(function () {
+                            swal("即刻提示",r.msg,"error");
+                        },200);
+                    }
+                })
+            });
+        }
+	</script>
+</body>
+
+</html>

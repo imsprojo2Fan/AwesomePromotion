@@ -1,0 +1,29 @@
+/* === Icons === */
+/* Font Awesome */
+/*@import url('font-awesome.min.css');*/
+@import url('https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css');
+/* ================================================
+Main Css
+================================================ */
+/* Bootstrap Main Css File (unedited) */
+@import url('https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css');
+@import url('../../static/back/assets/vendor/linearicons/style.css');
+@import url('../../static/back/assets/css/main.css');
+@import url('../../static/css/util.css');
+/* ================================================
+Plugin Css
+================================================ */
+@import url('../../static/plugins/bootstrap/awesome-bootstrap-checkbox.css');
+/* Bootstrap Select */
+@import url('../../static/plugins/bootstrap/bootstrap-select/bootstrap-select.css');
+
+@import url('../../static/plugins/bootstrap/bootstrap-toggle/bootstrap-toggle.min.css');
+
+/* Sweet Alert */
+@import url('https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.css');
+
+/* Data Tables */
+@import url('../../static/plugins/datatables/datatables.css');
+
+
+
