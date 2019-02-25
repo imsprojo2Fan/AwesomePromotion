@@ -12,7 +12,11 @@
 	<link rel="stylesheet" href="../../static/css/main-index.css">
     <link href="https://cdn.bootcss.com/bootstrap-slider/10.2.1/css/bootstrap-slider.min.css" rel="stylesheet">
     <style>
-
+        textarea {
+            padding: 10px 10px;
+            min-height: 120px;
+            resize: vertical;
+        }
     </style>
 </head>
 
@@ -26,7 +30,7 @@
 			<div class="loaderTxt">数据交互中...</div>
 		</div>
 	</div>
-	<input type="hidden" id="token">
+	<input type="hidden" value="{{ ._xsrf}}" id="token">
 	<!-- WRAPPER -->
 	<div id="wrapper">
 		<!-- NAVBAR -->
@@ -67,6 +71,7 @@
                         <li id="made" onclick="redirect('mades',this)"><i class="lnr lnr-hand"></i> <span>我的制作</span></li>
 						<li id="message" onclick="redirect('news',this)"><i class="lnr lnr-envelope"></i> <span>消息提醒</span></li>
 						<li id="profileSetting" onclick="redirect('profile',this)"><i class="lnr lnr-user"></i> <span>个人设置</span></li>
+                        <li id="profileSetting" onclick="redirect('test',this)"><i class="lnr lnr-user"></i> <span>测试</span></li>
 					</ul>
 				</nav>
 			</div>
@@ -84,7 +89,7 @@
         </div>
 
         <div id="copyBtn" style="position: fixed;right:18px;bottom: 18px;display: none;">
-            <button class="btn btn-primary">拷贝当前页</button>
+            <button class="btn btn-primary">新建模板页</button>
         </div>
 
 		<div class="clearfix"></div>
@@ -160,7 +165,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="confirm" class="btn btn-default" >
+                        <button type="button" id="confirm" class="btn btn-success" >
                             确定
                         </button>
                     </div>
@@ -168,7 +173,69 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-	</div>
+        <!-- 新建模板页-模态框（Modal） -->
+        <div class="modal fade" id="myModal02" style="overflow-y: auto;z-index: 9999" tabindex="-1" role="dialog" aria-labelledby="myModal02Label" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" id="modalClose" class="close" data-dismiss="modal"
+                                aria-hidden="true">×
+                        </button>
+                        <h3 style="font-weight: 700" class="modal-title" id="editModalLabel">
+                            新建模板页<span id="tip" style="font-size: 13px;font-weight: normal;"><span style="color: red">*</span>为必填</span>
+                        </h3>
+
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" autocomplete="off">
+
+                            <div >
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label form-label">链接地址<span style="color: red">*</span></label>
+                                    <div class="col-sm-8">
+                                        <input id="urlInput" type="text" class="form-control" placeholder="请输入要拷贝的网页地址">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label form-label">关键字<span style="color: red">*</span></label>
+                                    <div class="col-sm-8">
+                                        <input id="keyword" type="text" class="form-control" placeholder="请输入关键字">
+                                        {{/*<label class="checkbox-inline">
+                                            <input type="checkbox" id="inlineCheckbox1" value="option1"> 选项 1
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" id="inlineCheckbox2" value="option2"> 选项 2
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" id="inlineCheckbox3" value="option3"> 选项 3
+                                        </label>*/}}
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label form-label">备注信息</label>
+                                    <div class="col-sm-8">
+                                        <textarea id="remark" class="form-control" placeholder=""></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="addTemplete" class="btn btn-default" >
+                            提交
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+    </div>
 	<!-- END WRAPPER -->
 
     <!-- Javascript -->
@@ -179,7 +246,6 @@
     <script src="../../static/back/assets/scripts/klorofil-common.js"></script>
     <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
 	<script src="../../static/js/util.js"></script>
-    <script src="../../static/js/iframeClick.js"></script>
 
 	<script>
 		var userInfo;
@@ -213,9 +279,7 @@
                     $('#loading').hide();
                 }
 
-            }
-
-
+            };
 
             //默认选中
             $('#home').click();
@@ -231,20 +295,35 @@
                 $('#home').click();
             });
 
-            $('#mainframe').on('click',function () {
-                console.log($(this));
+            $('#addTemplete').on('click',function () {
+                var url = $('#urlInput').val().trim();
+                var keyword = $('#keyword').val().trim();
+                if(!url||!IsURL(url)){
+                    tipTip("tip","错误提示:请输入正确的网页地址!");
+                    return
+                }
+                if(!keyword){
+                    tipTip("tip","错误提示:请填写关键字!");
+                    return
+                }
+                var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(url)[0];
+                $.post("/main/template/add",{_xsrf:$('#token').val(),inputUrl:url,keyword:keyword,domain:origin,remark:$('#remark').val().trim()},function (res) {
+                   if(res.code===0){
+                       $('#myModal02').modal("hide");
+                       $('#urlInput').val("");
+                       $('#keyword').val("");
+                       $('#remark').val("");
+                       swal("系统提示",res.msg,"success");
+                   }else{
+                       tipTip("tip",res.msg);
+                   }
+
+                });
+
             });
 
             $('#copyBtn').on('click',function () {
-                console.log(document.activeElement);
-                var allframe = document.getElementsByTagName('iframe');
-                for (var i = 0; i < allframe.length; i++) {
-                    IframeOnClick.track(allframe[i], function () {
-                        //监听后你想做的
-                        alert('iframe['+this.name+"]被点击了");
-                    });
-                }
-                IframeOnClick.doit();
+                $('#myModal02').modal('show');
             });
 
         });
@@ -291,6 +370,19 @@
             }else{
                 $(obj).find(".icon-submenu").attr("class","icon-submenu lnr lnr-chevron-up");
             }
+        }
+
+        function tipTip(id,msg) {
+            $('#'+id).show();
+            $('#'+id).html(msg);
+            $('#'+id).css({
+                "color":"#ff0002b5",
+                "font-size":"13px",
+                "margin-left":"12px"
+            });
+            setTimeout(function () {
+                $('#'+id).hide();
+            },2000);
         }
 
 

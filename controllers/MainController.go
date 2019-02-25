@@ -21,10 +21,7 @@ func(this *MainController) Index()  {
 	userInfo := session.Get("user")
 	this.Data["userInfo"] = userInfo
 	this.Data["account"] = session.Get("account")
-	this.Data["is2made"] = session.Get("is2made")//设置登录成功即跳转到我的制作页面
-	session.Set("is2made",false)
-	this.Data["is2setting"] = session.Get("is2setting")//设置登录成功即跳转到我的制作页面
-	session.Set("is2setting",false)
+	this.Data["_xsrf"] = this.XSRFToken()
 	this.TplName = "main/index.html"
 }
 

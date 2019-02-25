@@ -4,10 +4,10 @@ import (
 	"github.com/astaxie/beego"
 	"fmt"
 	"AwesomePromotion/enums"
-
 	"AwesomePromotion/models/other"
 	"net/smtp"
 	"strings"
+	"AwesomePromotion/models"
 )
 
 type IndexController struct {
@@ -31,19 +31,19 @@ func (c *IndexController) Index() {
 
 func (this *IndexController) Redirect() {
 
-	/*eid := this.GetString("v")
+	url := this.GetString("v")
 	//查询resume表获取模板url
-	resume:= new(models.Resume)
-	resume.Eid = eid
-	resume.SelectByEid(resume)
-	if resume.Url==""{
+	template:= new(models.Template)
+	template.Url = url
+	template.SelectByCol(template,"url")
+	if template.Id==0{
 		this.TplName = "tip/404.html"
 		return
 	}
 	//设置token
 	this.Data["_xsrf"] = this.XSRFToken()
-	htmlName:= "resume/"+resume.Url+".html"
-	this.TplName = htmlName*/
+	htmlName:= "template/"+url+".html"
+	this.TplName = htmlName
 
 }
 
