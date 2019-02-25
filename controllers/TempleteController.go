@@ -46,7 +46,7 @@ func(this *TemplateController) Add()  {
 		this.jsonResult(200,-1,"模板页已存在!",nil)
 	}
 	//爬虫获取网页dom信息
-	bMap := Reptile(inputUrl)
+	bMap := Reptile(inputUrl,template.Domain)
 	template.Label = (bMap["title"]).(string)
 	template.Content = (bMap["content"]).(string)
 	//生成html文件
@@ -57,7 +57,7 @@ func(this *TemplateController) Add()  {
 
 	id :=template.ReadOrCreate(*template)//插入记录
 	if id>0{
-		this.jsonResult(200,0,"插入成功!",nil)
+		this.jsonResult(200,0,"插入成功!",template.Url)
 	}else{
 		this.jsonResult(200,-1,"数据库操作失败,请稍后再试!",nil)
 	}
@@ -120,7 +120,7 @@ func (c *TemplateController) jsonResult(status enums.JsonResultCode,code int, ms
 	return
 }
 
-func Reptile(rUrl string) (map[string]interface{}) {
+func Reptile(rUrl,domain string) (map[string]interface{}) {
 
 	bMap := make(map[string]interface{})
 
@@ -165,7 +165,12 @@ func Reptile(rUrl string) (map[string]interface{}) {
 		fmt.Println("response received", resp.StatusCode)
 		// goquery直接读取resp.Body的内容
 		htmlDoc, err := goquery.NewDocumentFromReader(bytes.NewReader(resp.Body))
-		htmlDoc.Find("head").AppendHtml("<")
+		//添加域名获取样式等
+		htmlDoc.Find("title").AfterHtml("<base href=\""+domain+"\"/>")
+		//添加定制容器
+		htmlDoc.Find("div").First().AfterHtml("<div id=\"myWrap\"></div>")
+		//添加定制js
+		htmlDoc.Find("body").AppendHtml("<script src=\"../../static/js/design.js\"></script>")
 		if err != nil {
 			log.Fatal(err)
 		}

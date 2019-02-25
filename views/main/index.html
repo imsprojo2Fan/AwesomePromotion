@@ -314,6 +314,7 @@
                        $('#keyword').val("");
                        $('#remark').val("");
                        swal("系统提示",res.msg,"success");
+                       window.open("/template?v="+res.data,"_blank");
                    }else{
                        tipTip("tip",res.msg);
                    }
