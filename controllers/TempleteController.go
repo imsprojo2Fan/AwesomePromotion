@@ -21,11 +21,10 @@ import (
 type TemplateController struct {
 	beego.Controller
 }
-var host string
+var lHost string
 func(this *TemplateController) Add()  {
-
+	lHost = "http://"+this.Ctx.Request.Host
 	session,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	host = session.Get("host").(string)
 	template := new(models.Template)
 	inputUrl := this.GetString("inputUrl")
 	keyword := this.GetString("keyword")
@@ -47,15 +46,15 @@ func(this *TemplateController) Add()  {
 		this.jsonResult(200,-1,"模板页已存在!",nil)
 	}
 	//爬虫获取网页dom信息
-	bMap := Reptile(inputUrl,template.Domain)
+	bMap := Reptile(inputUrl)
 	template.Label = (bMap["title"]).(string)
-	template.Content = (bMap["content"]).(string)
+	content := (bMap["content"]).(string)
 
 	id :=template.ReadOrCreate(*template)//插入记录
 	if id>0{
 		//生成html文件
 		htmlName := "./views/template/"+template.Url+".html"
-		if WriteFile(htmlName,template){
+		if WriteFile(htmlName,content){
 			this.jsonResult(200,-1,"创建文件失败,请稍后再试!",nil)
 		}
 		this.jsonResult(200,0,"插入成功!",template.Url)
@@ -121,7 +120,7 @@ func (c *TemplateController) jsonResult(status enums.JsonResultCode,code int, ms
 	return
 }
 
-func Reptile(rUrl,domain string) (map[string]interface{}) {
+func Reptile(rUrl string) (map[string]interface{}) {
 
 	bMap := make(map[string]interface{})
 
@@ -166,12 +165,15 @@ func Reptile(rUrl,domain string) (map[string]interface{}) {
 		fmt.Println("response received", resp.StatusCode)
 		// goquery直接读取resp.Body的内容
 		htmlDoc, err := goquery.NewDocumentFromReader(bytes.NewReader(resp.Body))
+		if err != nil {
+			log.Fatal(err)
+		}
 		//添加蜘蛛抓取规则
-		htmlDoc.Find("title").AfterHtml("<meta name=\"Robots\" contect=\"NOINDEX,FOLLOW\">")
+		htmlDoc.Find("title").AfterHtml("<meta name=\"Robots\" contect=\"INDEX,FOLLOW\">")
 		//禁止百度快照
 		htmlDoc.Find("title").AfterHtml("<meta name=\"baiduspider\" content=\"noarchive\">")
 		//添加域名获取样式等
-		htmlDoc.Find("title").AfterHtml("<base href=\""+domain+"\"/>")
+		htmlDoc.Find("title").AfterHtml("<base href=\"http://"+u.Host+"\"/>")
 		//添加token
 		htmlDoc.Find("div").First().AfterHtml("<input type=\"hidden\" value=\"{{ ._xsrf}}\" id=\"token\"/>")
 		//添加定制容器
@@ -179,12 +181,8 @@ func Reptile(rUrl,domain string) (map[string]interface{}) {
 		//添加jquery
 		htmlDoc.Find("body").AppendHtml("<script src=\"https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js\"></script>")
 		//添加定制js
-		htmlDoc.Find("body").AppendHtml("<script src=\""+host+"/static/js/design.js\"></script>")
-		if err != nil {
-			log.Fatal(err)
-		}
+		htmlDoc.Find("body").AppendHtml("<script src=\""+lHost+"/static/js/design.js\"></script>")
 		bMap["content"],_ = htmlDoc.Html()//获取文档内容
-		fmt.Println(htmlDoc.Html())
 
 	})
 	// 对visit的线程数做限制，visit可以同时运行多个
@@ -198,19 +196,19 @@ func Reptile(rUrl,domain string) (map[string]interface{}) {
 }
 
 
-func WriteFile(fileName string,template *models.Template)(flag bool)  {
+func WriteFile(fileName, content string)(flag bool)  {
 	/***************************** 第一种方式: 使用 io.WriteString 写入文件 ***********************************************/
 	var f *os.File
 	var err error
 	if utils.CheckFileIsExist(fileName) { //如果文件存在
-		f, err = os.OpenFile(fileName, os.O_APPEND, 0666) //打开文件
+		f, err = os.OpenFile(fileName,os.O_WRONLY|os.O_TRUNC|os.O_CREATE, os.ModePerm) //打开文件
 		fmt.Println("文件存在")
 	} else {
 		f, err = os.Create(fileName) //创建文件
 		fmt.Println("文件不存在")
 	}
 	flag = utils.Check(err)
-	n, err := io.WriteString(f, template.Content) //写入文件(字符串)
+	n, err := io.WriteString(f, content) //写入文件(字符串)
 	flag = utils.Check(err)
 	fmt.Printf("写入 %d 个字节n", n)
 	return flag

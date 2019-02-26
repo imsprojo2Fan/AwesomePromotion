@@ -102,11 +102,11 @@ func(this *Template) SelectByCol(model *Template,col string) {
 	o.Read(model,col)
 }
 
-func(this *Template) SelectByKey(model *Template)[]orm.ParamsList {
-	var lists []orm.ParamsList
+func(this *Template) SelectByKey(model *Template)[]orm.Params {
+	var maps []orm.Params
 	o := orm.NewOrm()
-	o.Raw("SELECT k.keyword,k.url FROM template t,keyword k,keyword2template kt WHERE t.id = kt.tid and  kt.kid=k.id and t.url=?", model.Url).ValuesList(&lists)
-	return lists
+	o.Raw("SELECT k.keyword,k.description,k.url FROM template t,keyword k,keyword2template kt WHERE t.id = kt.tid and  kt.kid=k.id and t.url=?", model.Url).Values(&maps)
+	return maps
 }
 
 

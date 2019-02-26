@@ -73,7 +73,7 @@ func(this *LoginController) Validate()  {
 		session.Set("user",user)
 		session.Set("account",user.Account)
 		session.Set("id",user.Id)
-		session.Set("host","http://"+host)
+		utils.GlobalRedis.Put("host",host,1000000*time.Hour)
 		fmt.Println("Account:",user.Account)
 		fmt.Println("id:",session.Get("id"))
 		this.jsonResult(http.StatusOK,1, "账号验证登录成功!", user.Id)
