@@ -49,16 +49,24 @@
         .btn:hover{
             background-color: #f8f8f8;border: 1px solid #c6c6c6;box-shadow: 0 1px 1px rgba(0,0,0,0.1);color: #222;
         }
+        input:hover{
+            box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28);
+            border-color: rgba(223,225,229,0);
+        }
+        input:focus{
+            box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28);
+            border-color: rgba(223,225,229,0);
+        }
     </style>
 </head>
 
 <body>
     <input type="hidden" id="token" value="{{._xsrf}}">
-    <div style="margin-top:10%;text-align: center">
+    <div style="margin-top:10.5%;text-align: center">
         <img src="../static/img/logo/logPic.png">
     </div>
     <div style="border: 0px solid red;height: 75px;text-align: center;margin-top: 20px;">
-        <input style="width: 584px;border-radius: 80px;border: 1px solid #e0e0e0;height: 44px;padding-left: 15px;font-size: 18px;">
+        <input style="width: 584px;border-radius: 80px;border: 1px solid #e0e0e0;height: 44px;padding-left: 20px;font-size: 18px;">
         <img style="position: relative;z-index: 99;right: 40px;" width="24" src="../static/img/logo/googlemic_color_24dp.png">
     </div>
 

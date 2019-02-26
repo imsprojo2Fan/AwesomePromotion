@@ -21,10 +21,11 @@ import (
 type TemplateController struct {
 	beego.Controller
 }
-
+var host string
 func(this *TemplateController) Add()  {
 
 	session,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	host = session.Get("host").(string)
 	template := new(models.Template)
 	inputUrl := this.GetString("inputUrl")
 	keyword := this.GetString("keyword")
@@ -49,14 +50,14 @@ func(this *TemplateController) Add()  {
 	bMap := Reptile(inputUrl,template.Domain)
 	template.Label = (bMap["title"]).(string)
 	template.Content = (bMap["content"]).(string)
-	//生成html文件
-	htmlName := "./views/template/"+template.Url+".html"
-	if WriteFile(htmlName,template){
-		this.jsonResult(200,-1,"创建文件失败,请稍后再试!",nil)
-	}
 
 	id :=template.ReadOrCreate(*template)//插入记录
 	if id>0{
+		//生成html文件
+		htmlName := "./views/template/"+template.Url+".html"
+		if WriteFile(htmlName,template){
+			this.jsonResult(200,-1,"创建文件失败,请稍后再试!",nil)
+		}
 		this.jsonResult(200,0,"插入成功!",template.Url)
 	}else{
 		this.jsonResult(200,-1,"数据库操作失败,请稍后再试!",nil)
@@ -165,12 +166,20 @@ func Reptile(rUrl,domain string) (map[string]interface{}) {
 		fmt.Println("response received", resp.StatusCode)
 		// goquery直接读取resp.Body的内容
 		htmlDoc, err := goquery.NewDocumentFromReader(bytes.NewReader(resp.Body))
+		//添加蜘蛛抓取规则
+		htmlDoc.Find("title").AfterHtml("<meta name=\"Robots\" contect=\"NOINDEX,FOLLOW\">")
+		//禁止百度快照
+		htmlDoc.Find("title").AfterHtml("<meta name=\"baiduspider\" content=\"noarchive\">")
 		//添加域名获取样式等
 		htmlDoc.Find("title").AfterHtml("<base href=\""+domain+"\"/>")
+		//添加token
+		htmlDoc.Find("div").First().AfterHtml("<input type=\"hidden\" value=\"{{ ._xsrf}}\" id=\"token\"/>")
 		//添加定制容器
 		htmlDoc.Find("div").First().AfterHtml("<div id=\"myWrap\"></div>")
+		//添加jquery
+		htmlDoc.Find("body").AppendHtml("<script src=\"https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js\"></script>")
 		//添加定制js
-		htmlDoc.Find("body").AppendHtml("<script src=\"../../static/js/design.js\"></script>")
+		htmlDoc.Find("body").AppendHtml("<script src=\""+host+"/static/js/design.js\"></script>")
 		if err != nil {
 			log.Fatal(err)
 		}

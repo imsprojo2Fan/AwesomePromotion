@@ -47,6 +47,21 @@ func (this *IndexController) Redirect() {
 
 }
 
+func (this *IndexController) KeyWord() {
+
+	key := this.GetString("key")
+	if key==""{
+		this.jsonResult(200,0,"参数错误!",nil)
+	}
+	//var dataList []map[string]interface{}
+	//查询resume表获取模板url
+	template:= new(models.Template)
+	template.Url = key
+	dataList := template.SelectByKey(template)
+	this.jsonResult(200,0,"查询成功!",dataList)
+
+}
+
 func (this *IndexController) Mail4Index()  {
 	contact := this.GetString("contact")
 	message := this.GetString("message")

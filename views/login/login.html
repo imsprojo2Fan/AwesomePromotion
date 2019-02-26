@@ -130,6 +130,8 @@
         var isPassKeyLogin = false;
 		$(function () {
 
+		    console.log(location.host);
+
             if(top.location!=self.location){
                 console.log(("exit"));
                 window.parent.location.href = "/login";
@@ -203,6 +205,7 @@
                         type:"login",
                         account:account,
 						password:password,
+                        host:location.host,
                         _xsrf:$('#token').val()
 					},
                     dataType : "json",

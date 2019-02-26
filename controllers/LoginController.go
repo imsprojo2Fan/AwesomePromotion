@@ -53,6 +53,8 @@ func(this *LoginController) Validate()  {
 	if oType=="login"{
 		account := this.GetString("account")
 		password := this.GetString("password")
+		//用于模板页获取js文件路径
+		host := this.GetString("host")
 		if account==""||password==""{
 			this.jsonResult(http.StatusOK,-1, "账号或密码不能为空!", nil)
 		}
@@ -71,6 +73,7 @@ func(this *LoginController) Validate()  {
 		session.Set("user",user)
 		session.Set("account",user.Account)
 		session.Set("id",user.Id)
+		session.Set("host","http://"+host)
 		fmt.Println("Account:",user.Account)
 		fmt.Println("id:",session.Get("id"))
 		this.jsonResult(http.StatusOK,1, "账号验证登录成功!", user.Id)

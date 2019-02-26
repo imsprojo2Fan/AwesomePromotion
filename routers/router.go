@@ -18,6 +18,7 @@ func init() {
 
 	//模板页相关
 	beego.Router("/template", &controllers.IndexController{},"*:Redirect")
+	beego.Router("/template/keyword", &controllers.IndexController{},"POST:KeyWord")
 	beego.Router("/main/template/add",&controllers.TemplateController{},"POST:Add")
 	beego.Router("/main/template/update",&controllers.TemplateController{},"POST:Update")
 
