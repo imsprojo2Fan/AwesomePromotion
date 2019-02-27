@@ -4,6 +4,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	"time"
 	"fmt"
+	"strconv"
 )
 
 
@@ -104,6 +105,40 @@ func(this *KeyWord) SelectByKey(model *KeyWord)[]orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
 	o.Raw("SELECT k.keyword,k.description,k.url FROM template t,keyword k,keyword2template kt WHERE t.id = kt.tid and  kt.kid=k.id and t.url=?", model.Url).Values(&maps)
+	return maps
+}
+
+func(this *KeyWord) Count(qMap map[string]interface{})int64{
+
+	o := orm.NewOrm()
+	cnt,_ := o.QueryTable(new(KeyWord)).Filter("keyword__startswith",qMap["searchKey"]).Filter("uid",qMap["uid"]).Count() // SELECT COUNT(*) FROM USER
+	//cnt,_ := o.QueryTable("resume").Count()
+	//var count[] Resume
+	//o.Raw("select count(*) from resume where 1=1 and name like %?%",searchKey).QueryRows(count)
+	return cnt
+}
+
+func(this *KeyWord) ListByPage(qMap map[string]interface{})[]orm.Params{
+	var maps []orm.Params
+	o := orm.NewOrm()
+	//qs := o.QueryTable("login_log")
+	sql := "select * from key_word where 1=1 and uid="+qMap["uid"].(string)
+	if qMap["searchKey"]!=""{
+		sql = sql+" and keyword like '%"+qMap["searchKey"].(string)+"%'"
+	}
+	if qMap["sortCol"]!=""{
+		sortCol := qMap["sortCol"].(string)
+		sortType := qMap["sortType"].(string)
+		sql = sql+" order by "+sortCol+" "+sortType
+	}else{
+		sql = sql+" order by id desc"
+	}
+	pageNow := qMap["pageNow"].(int64)
+	pageNow_ := strconv.FormatInt(pageNow,10)
+	pageSize := qMap["pageSize"].(int64)
+	pageSize_ := strconv.FormatInt(pageSize,10)
+	sql = sql+" LIMIT "+pageNow_+","+pageSize_
+	o.Raw(sql).Values(&maps)
 	return maps
 }
 

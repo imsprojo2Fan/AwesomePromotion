@@ -389,6 +389,18 @@
             },2000);
         }
 
+        function swalInfo(title,msg,type){
+            swal(title,msg,type);
+        }
+
+        function loading(flag) {
+            if(flag){
+                $('#loading').show();
+            }else{
+                $('#loading').hide();
+            }
+        }
+
 
     </script>
 </body>

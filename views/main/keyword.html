@@ -11,8 +11,13 @@
             overflow-y:auto;
             overflow-x: hidden;
         }
+        .page-header {
+            padding-bottom: 0px;
+            margin: 40px 0 20px;
+            border-bottom: 0px solid #eee;
+        }
         .content{
-            padding-top:209px;
+            padding-top:140px;
         }
         /*下拉框宽度设置*/
         .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
@@ -49,15 +54,24 @@
         }
         .table.dataTable thead th, table.dataTable td{
             text-align: center;
+            vertical-align: middle;
+        }
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: middle;
+            border-top: 1px solid #ddd;
         }
         textarea {
             padding: 10px 10px;
-            min-height: 120px;
+            min-height: 60px;
+            max-height: 60px;
             resize: vertical;
         }
     </style>
 </head>
 <body style="padding-bottom: 8%">
+<input type="hidden" value="{{ ._xsrf}}" id="token">
 <div id="loading" class="loading-wrap">
     <div class="loader" >
         <div class="la-ball-clip-rotate-multiple la-3x">
@@ -68,9 +82,7 @@
     </div>
 </div>
 
-<div style="position: fixed;top:0px;width: 100%;z-index: 99">
-
-    <div class="transparent_class" id="blank" style="width: 100%;height: 60px;background-color:#6195ff"></div>
+<div style="position: fixed;top:0px;width: 100%;z-index: 99;background: #f5f5f5;">
     <!-- Start Page Header -->
     <div class="page-header" style="padding-left: 15px;">
         <h2 class="title">关键词管理</h2>
@@ -98,10 +110,10 @@
                         <table id="myTable" class="table display">
                             <thead>
                             <tr>
-                                <th>账号</th>
-                                <th>密码</th>
-                                <th>姓名</th>
-                                <th>账号类型</th>
+                                <th>关键字</th>
+                                <th>外链</th>
+                                <th>描述信息</th>
+                                <th>所属分类</th>
                                 <th>创建时间</th>
                                 <th>操作</th>
                             </tr>
@@ -192,6 +204,9 @@
                         <p class="form-control-static" >关键词：<span id="detail_keyword"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
+                        <p class="form-control-static" >所属分类：<span id="detail_type"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
                         <p class="form-control-static" >外链：<span id="detail_url"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
@@ -247,7 +262,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label form-label">所属分组</label>
+                            <label class="col-sm-2 control-label form-label">所属分类</label>
                             <div class="col-sm-6">
                                 <select id="type_edit" class="selectpicker" >
                                     <option selected value="1">默认分组</option>
@@ -258,7 +273,7 @@
                             <label class="col-sm-2 control-label form-label"><span class="red">*</span>外链地址</label>
                             <div class="col-sm-6">
                                 <select id="url_edit" class="selectpicker" >
-                                    <option selected value="1">url01</option>
+                                    <option selected value="http://www.zooori.cn">url01</option>
                                 </select>
                             </div>
                         </div>
@@ -345,18 +360,33 @@ Data Tables
             "order": [[ 4, "desc" ]],//默认排序
             ajax: {
                 url: '/main/keyword/list',
-                type: 'POST'
+                type: 'POST',
+                data:{
+                    _xsrf:$("#token", parent.document).val()
+                }
             },
             columns: [
                 { data: 'keyword'},
-                { data: 'url' },
+                { data: 'url',"render":function (data) {
+                        var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(data)[0];
+                        return "<a target='_blank' href='"+data+"' title='"+data+"'>"+origin+"</a>";
+                    } },
                 { data: 'description',"render":function (data) {
+                    var temp = data;
+                        if(!data){
+                            data = "暂未填写";
+                        }else if(data.length>10){
+                            data = data.substring(0,6)+"...";
+                        }
+                        return "<span title='"+temp+"'>"+data+"</span>";
+                    } },
+                /*{ data: 'type',"render":function (data) {
                         if(!data){
                             data = "暂未填写";
                         }
                         return data;
-                    } },
-                { data: 'remark',"render":function (data) {
+                    } },*/
+                { data: 'type',"render":function (data) {
                         return data;
                     } },
                 { data: 'created',"render":function (data,type,row,meta) {
@@ -372,7 +402,7 @@ Data Tables
                     } }
             ],
             language: {
-                url: '../plugins/datatables/zh_CN.json'
+                url: '../../static/plugins/datatables/zh_CN.json'
             },
             "createdRow": function ( row, data, index ) {//回调函数用于格式化返回数据
                 /*if(!data.name){
@@ -387,8 +417,11 @@ Data Tables
         $('#myTable').on("click",".btn-default",function(e){//查看
             rowData = myTable.row($(this).closest('tr')).data();
             console.log(rowData);
-            $('#detail_keyword').html(rowData.account);
-            $('#detail_url').html(rowData.password);
+            $('#detail_keyword').html(rowData.keyword);
+            var url = rowData.url;
+            var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(url)[0];
+            var dom =  "<a target='_blank' href='"+url+"'>"+origin+"</a>";
+            $('#detail_url').html(dom);
             var type = rowData.type;
             $('#detail_type').html(type);
             var description = rowData.description;
@@ -443,8 +476,8 @@ Data Tables
                 text: '删除将无法恢复该信息!',
                 type: 'info',
                 showCancelButton: true,
-                confirmButtonColor: '#6195FF',
-                cancelButtonColor: '#ff1200',
+                confirmButtonColor: '#ff1200',
+                cancelButtonColor: '#474747',
                 confirmButtonText: '确定',
                 cancelButtonText:'取消'
             },function(){
@@ -471,6 +504,7 @@ Data Tables
             dataType : "json",
             cache : false,
             data : {
+                _xsrf:$("#token", parent.document).val(),
                 keyword:keyword,
                 type:type,
                 url:url,
@@ -497,7 +531,7 @@ Data Tables
     function edit(){
         var id = $('#id_edit').val();
         var keyword = $('#keyword_edit').val().trim();
-        var type = $('#type_eidt').val();
+        var type = $('#type_edit').val();
         var url = $('#url_edit').val().trim();
         var description = $('#description_edit').val().trim();
         var remark = $('#remark_edit').val().trim();
@@ -511,6 +545,7 @@ Data Tables
             dataType : "json",
             cache : false,
             data : {
+                _xsrf:$("#token", parent.document).val(),
                 id:id,
                 keyword:keyword,
                 type:type,
@@ -522,6 +557,7 @@ Data Tables
                 $('#loading').fadeIn(200);
             },
             success : function(r) {
+                $('#editModal').modal("hide");
                 var type = "error";
                 if (r.code == 1) {
                     type = "success";
@@ -543,6 +579,7 @@ Data Tables
             dataType : "json",
             cache : false,
             data : {
+                _xsrf:$("#token", parent.document).val(),
                 id:id
             },
             beforeSend:function(){

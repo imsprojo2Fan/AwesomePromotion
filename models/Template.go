@@ -105,7 +105,7 @@ func(this *Template) SelectByCol(model *Template,col string) {
 func(this *Template) SelectByKey(model *Template)[]orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	o.Raw("SELECT k.keyword,k.description,k.url FROM template t,keyword k,keyword2template kt WHERE t.id = kt.tid and  kt.kid=k.id and t.url=?", model.Url).Values(&maps)
+	o.Raw("SELECT k.keyword,k.description,k.url FROM template t,key_word k,keyword2template kt WHERE t.id = kt.tid and  kt.kid=k.id and t.url=?", model.Url).Values(&maps)
 	return maps
 }
 

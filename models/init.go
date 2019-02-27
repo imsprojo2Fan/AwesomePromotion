@@ -30,6 +30,6 @@ func TemplateTBName() string {
 
 //获取对应的表名称
 func KeyWordTBName() string {
-	return TableName("keyword")
+	return TableName("key_word")
 }
 

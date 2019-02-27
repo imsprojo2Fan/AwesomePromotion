@@ -7,10 +7,57 @@ import (
 	"AwesomePromotion/enums"
 	"AwesomePromotion/models/other"
 	"time"
+	"strconv"
+	"github.com/astaxie/beego/orm"
 )
 
 type KeywordController struct {
 	beego.Controller
+}
+var GlobalDraw int
+func(this *KeywordController) List()  {
+	sesion,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	uid := sesion.Get("id").(int64)
+	uids := strconv.FormatInt(uid, 10)
+	//{"recordsFiltered":1,"data":[{"password":"9f593c69b108dedf0f56e4907d46eff1","phone":"13922305912","created":"2018-08-06 10:06:36","nickname":"范tel青年","id":6,"type":3,"updated":"2018-09-26 17:46:15","account":"admin","email":"imsprojo2fan@gmail.com"}],"draw":17,"recordsTotal":1}
+	GlobalDraw++
+	qMap := make(map[string]interface{})
+	var dataList []orm.Params
+	backMap := make(map[string]interface{})
+
+	pageNow,err2 := this.GetInt64("start")
+	pageSize,err := this.GetInt64("length")
+
+	if err!=nil || err2!=nil{
+		pageNow = 1
+		pageSize = 20
+		//this.jsonResult(http.StatusOK,-1, "rows or page should be number", nil)
+	}
+	sortType := this.GetString("order[0][dir]")
+	sortCol := "created"
+	searchKey := this.GetString("search[value]")
+
+	qMap["pageNow"] = pageNow
+	qMap["pageSize"] = pageSize
+	qMap["sortCol"] = sortCol
+	qMap["sortType"] = sortType
+	qMap["searchKey"] = searchKey
+	qMap["uid"] = uids
+
+	obj := new(models.KeyWord)
+
+	//获取总记录数
+	records := obj.Count(qMap)
+	backMap["draw"] = GlobalDraw
+	backMap["recordsTotal"] = records
+	backMap["recordsFiltered"] = records
+	dataList = obj.ListByPage(qMap)
+	backMap["data"] = dataList
+
+	this.Data["json"] = backMap
+	this.ServeJSON()
+	this.StopRun()
+	//this.jsonResult(200,0,"查询成功！",backMap)
 }
 
 func(this *KeywordController) Add()  {
@@ -32,7 +79,7 @@ func(this *KeywordController) Add()  {
 	}
 	id :=obj.ReadOrCreate(*obj)//插入表记录
 	if id>0{
-		this.jsonResult(200,0,"插入成功",nil)
+		this.jsonResult(200,1,"插入成功",nil)
 	}else{
 		this.jsonResult(200,-1,"插入失败",nil)
 	}
