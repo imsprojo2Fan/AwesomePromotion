@@ -10,7 +10,7 @@ func init() {
 	beego.Router("/", &controllers.IndexController{},"*:Index")
 	beego.Router("/index/mail4index", &controllers.IndexController{},"*:Mail4Index")
 	//登录相关
-	beego.Router("/login_", &controllers.LoginController{},"*:LoginIndex")
+	beego.Router("/login", &controllers.LoginController{},"*:LoginIndex")
 	beego.Router("/validate", &controllers.LoginController{},"*:Validate")
 	beego.Router("/timeout", &controllers.LoginController{},"*:Timeout")
 	beego.Router("/forget", &controllers.LoginController{},"POST:Forget")
@@ -21,6 +21,12 @@ func init() {
 	beego.Router("/template/keyword", &controllers.IndexController{},"POST:KeyWord")
 	beego.Router("/main/template/add",&controllers.TemplateController{},"POST:Add")
 	beego.Router("/main/template/update",&controllers.TemplateController{},"POST:Update")
+
+	//关键字相关
+	beego.Router("/main/keyword/add",&controllers.KeywordController{},"POST:Add")
+	beego.Router("/main/keyword/update",&controllers.KeywordController{},"POST:Update")
+	beego.Router("/main/keyword/delete",&controllers.KeywordController{},"POST:Delete")
+	beego.Router("/main/keyword/list",&controllers.KeywordController{},"POST:List")
 
 	//后台管理相关
     beego.Router("/main",&controllers.MainController{},"*:Index")

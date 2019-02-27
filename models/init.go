@@ -9,6 +9,7 @@ import (
 func init() {
 	orm.RegisterModel(new(User))
 	orm.RegisterModel(new(Template))
+	orm.RegisterModel(new(KeyWord))
 }
 
 //下面是统一的表名管理
@@ -25,5 +26,10 @@ func UserTBName() string {
 //获取对应的表名称
 func TemplateTBName() string {
 	return TableName("template")
+}
+
+//获取对应的表名称
+func KeyWordTBName() string {
+	return TableName("keyword")
 }
 
