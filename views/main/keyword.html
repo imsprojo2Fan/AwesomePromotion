@@ -62,6 +62,9 @@
             vertical-align: middle;
             border-top: 1px solid #ddd;
         }
+        table.dataTable.no-footer {
+            border-bottom: 1px solid #ddd;
+        }
         textarea {
             padding: 10px 10px;
             min-height: 60px;
@@ -150,10 +153,16 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label form-label"><span class="red">*</span>外链地址</label>
-                                    <div class="col-sm-6">
-                                        <select id="url" class="selectpicker" >
-                                            <option selected value="1">url01</option>
-                                        </select>
+                                    <div class="col-sm-10">
+                                        <div style="margin: 8px 0px">
+                                            <input type="radio" checked name="switch" value="0"/><label class="margin">手动输入</label>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="switch" value="1"/><label class="margin">下拉选择</label>
+                                        </div>
+                                        <div id="ourlHtml">
+                                            <input type="text" class="form-control" style="ime-mode:disabled" id="oUrl" placeholder="请输入外链链接">
+                                        </div>
+
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -219,7 +228,7 @@
                         <p class="form-control-static" >创建时间：<span id="detail_created"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >最近一次更新：<span id="detail_updated"></span></p>
+                        <p class="form-control-static" >最近更新：<span id="detail_updated"></span></p>
                     </div>
 
                 </div>
@@ -271,10 +280,16 @@
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label form-label"><span class="red">*</span>外链地址</label>
-                            <div class="col-sm-6">
-                                <select id="url_edit" class="selectpicker" >
-                                    <option selected value="http://www.zooori.cn">url01</option>
-                                </select>
+                            <div class="col-sm-10">
+                                <div style="margin: 8px 0px">
+                                    <input type="radio" checked name="switch_edit" value="0"/><label class="margin">手动输入</label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="switch_edit" value="1"/><label class="margin">下拉选择</label>
+                                </div>
+                                <div id="ourlHtml_edit">
+                                    <input type="text" class="form-control" style="ime-mode:disabled" id="oUrl_edit" placeholder="请输入外链链接">
+                                </div>
+
                             </div>
                         </div>
                         <div class="form-group">
@@ -309,6 +324,7 @@
 <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
 <script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
 <script src="../../static/js/util.js"></script>
 
 <!-- ================================================
@@ -345,6 +361,36 @@ Data Tables
                 $(this).removeClass("active");
                 $('#tab1').fadeOut(100);
                 $("#tab2").fadeIn(100);
+            }
+        });
+
+        $('input[type=radio]').iCheck({
+            checkboxClass: 'icheckbox_flat-blue',  // 注意square和blue的对应关系
+            radioClass: 'iradio_flat-blue'
+        });
+
+        $('input[name=switch]').on('ifChecked', function(event){ //ifCreated 事件应该在插件初始化之前绑定
+            var val = $(this).val();
+            if(val==0){
+                $('#ourlHtml').html('<input type="text" class="form-control" style="ime-mode:disabled" id="oUrl" placeholder="请输入外链链接">');
+            }else{
+                $('#ourlHtml').html('<select id="oUrl" class="selectpicker" >\n' +
+                        '                <option selected value="1">url01</option>\n' +
+                        '             </select>');
+                $("#oUrl").selectpicker('refresh');
+            }
+        });
+        var tempDom;
+        $('input[name=switch_edit]').on('ifChecked', function(event){ //ifCreated 事件应该在插件初始化之前绑定
+            var val = $(this).val();
+            if(val==0){
+                $('#ourlHtml_edit').html(tempDom);
+            }else{
+                tempDom = $('#oUrl_edit').clone();
+                $('#ourlHtml_edit').html('<select id="oUrl_edit" class="selectpicker" >\n' +
+                        '                <option selected value="1">url01</option>\n' +
+                        '             </select>');
+                $("#oUrl_edit").selectpicker('refresh');
             }
         });
 
@@ -459,8 +505,18 @@ Data Tables
             $("#type_edit").selectpicker('val',type);//默认选中 value=“1” 的option
             $("#type_edit").selectpicker('refresh');
             var url = rowData.url;
-            $("#url_edit").selectpicker('val',url);//默认选中 value=“1” 的option
-            $("#url_edit").selectpicker('refresh');
+            var urlType = rowData.url_type;
+            $('input[name=switch_edit]').each(function () {
+                if($(this).val()==urlType){
+                    $(this).click();
+                }
+            });
+            if(urlType==0){//手动输入
+                $('#oUrl_edit').val(url);
+            }else{
+                $("#oUrl_edit").selectpicker('val',url);
+                $("#oUrl_edit").selectpicker('refresh');
+            }
             $('#description_edit').val(rowData.description);
             $('#remark_edit').val(rowData.remark);
             $('#tip').html("");
@@ -491,7 +547,8 @@ Data Tables
     function add(){
         var keyword = $('#keyword').val().trim();
         var type = $('#type').val();
-        var url = $('#url').val().trim();
+        var url = $('#oUrl').val().trim();
+        var urlType = $('input:radio[name=switch]:checked').val();
         var description = $('#description').val().trim();
         var remark = $('#remark').val().trim();
         if (!keyword){
@@ -508,6 +565,7 @@ Data Tables
                 keyword:keyword,
                 type:type,
                 url:url,
+                urlType:urlType,
                 description:description,
                 remark:remark
             },
@@ -533,6 +591,7 @@ Data Tables
         var keyword = $('#keyword_edit').val().trim();
         var type = $('#type_edit').val();
         var url = $('#url_edit').val().trim();
+        var urlType = $('input:radio[name=switch_edit]:checked').val();
         var description = $('#description_edit').val().trim();
         var remark = $('#remark_edit').val().trim();
         if (!keyword){
@@ -550,6 +609,7 @@ Data Tables
                 keyword:keyword,
                 type:type,
                 url:url,
+                urlType:urlType,
                 description:description,
                 remark:remark
             },

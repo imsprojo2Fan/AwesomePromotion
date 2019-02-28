@@ -11,11 +11,11 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-type KeywordController struct {
+type AdController struct {
 	beego.Controller
 }
-var GlobalDraw int
-func(this *KeywordController) List()  {
+//var GlobalDraw int
+func(this *AdController) List()  {
 	sesion,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	uid := sesion.Get("id").(int64)
 	uids := strconv.FormatInt(uid, 10)
@@ -47,7 +47,7 @@ func(this *KeywordController) List()  {
 		qMap["uid"] = uids
 	}
 
-	obj := new(models.KeyWord)
+	obj := new(models.Ad)
 
 	//获取总记录数
 	records := obj.Count(qMap)
@@ -66,25 +66,28 @@ func(this *KeywordController) List()  {
 	//this.jsonResult(200,0,"查询成功！",backMap)
 }
 
-func(this *KeywordController) Add()  {
+func (this *AdController) All() {
+
+	obj:= new(models.Ad)
+	dataList := obj.All()
+	this.jsonResult(200,0,"查询成功!",dataList)
+
+}
+
+func(this *AdController) Add()  {
 	sesion,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	uid := sesion.Get("id").(int64)
-	obj := new(models.KeyWord)
+	obj := new(models.Ad)
 	obj.Uid = uid
 	obj.Keyword = this.GetString("keyword")
 	obj.Description = this.GetString("description")
-	obj.Url = this.GetString("url")
-	obj.UrlType = this.GetString("urlType")
-	obj.Type = this.GetString("type")
+	obj.Url = utils.RandomString(16)
+	obj.Title = this.GetString("title")
 	obj.Remark = this.GetString("remark")
-	if obj.Keyword==""{
-		this.jsonResult(200,-1,"参数错误！",nil)
+	if obj.Title==""{
+		this.jsonResult(200,-1,"页面标题不能为空！",nil)
 	}
-	obj.SelectByCol(obj,"keyword")//查询关键词是否已被用
-	if obj.Id>0{
-		this.jsonResult(200,-1,"当前关键词已存在！",nil)
-	}
-	id :=obj.ReadOrCreate(*obj)//插入表记录
+	id :=obj.ReadOrCreate(obj)//插入表记录
 	if id>0{
 		this.jsonResult(200,1,"插入成功",nil)
 	}else{
@@ -92,17 +95,18 @@ func(this *KeywordController) Add()  {
 	}
 }
 
-func(this *KeywordController) Update() {
-	obj := new(models.KeyWord)
+func(this *AdController) Update() {
+	obj := new(models.Ad)
 	obj.Id,_ = this.GetInt64("id")
 	obj.Keyword = this.GetString("keyword")
 	obj.Description = this.GetString("description")
-	obj.Url = this.GetString("url")
-	obj.UrlType = this.GetString("urlType")
-	obj.Type = this.GetString("type")
+	obj.Title = this.GetString("title")
 	obj.Remark = this.GetString("remark")
-	if obj.Id==0|| obj.Keyword==""{
-		this.jsonResult(200,-1,"参数错误！",nil)
+	if obj.Id==0{
+		this.jsonResult(200,-1,"id不能为空！",nil)
+	}
+	if obj.Title==""{
+		this.jsonResult(200,-1,"页面标题不能为空！",nil)
 	}
 	obj.Updated = time.Now()
 	if obj.Update(obj){
@@ -112,12 +116,12 @@ func(this *KeywordController) Update() {
 	}
 }
 
-func(this *KeywordController) Delete() {
-	obj := new(models.KeyWord)
+func(this *AdController) Delete() {
+	obj := new(models.Ad)
 	obj.Id,_ = this.GetInt64("id")
 
 	if obj.Id==0{
-		this.jsonResult(200,-1,"参数错误！",nil)
+		this.jsonResult(200,-1,"id不能为空！",nil)
 	}
 	if obj.Delete(obj){
 		this.jsonResult(200,1,"删除数据成功！",nil)
@@ -126,16 +130,23 @@ func(this *KeywordController) Delete() {
 	}
 }
 
-func (this *KeywordController) All() {
-
-	obj:= new(models.KeyWord)
-	dataList := obj.All()
-	this.jsonResult(200,0,"查询成功!",dataList)
-
+func(this *AdController) Redirect()  {
+	url := this.GetString("v")
+	//查询resume表获取模板url
+	obj:= new(models.Ad)
+	obj.Url = url
+	obj.SelectByCol(obj,"url")
+	if obj.Id==0{
+		this.TplName = "tip/404.html"
+		return
+	}
+	//设置token
+	this.Data["_xsrf"] = this.XSRFToken()
+	htmlName:= "ad/"+url+".html"
+	this.TplName = htmlName
 }
 
-
-func (c *KeywordController) jsonResult(status enums.JsonResultCode,code int, msg string, data interface{}) {
+func (c *AdController) jsonResult(status enums.JsonResultCode,code int, msg string, data interface{}) {
 	r := &other.JsonResult{status, code, msg,data}
 	c.Data["json"] = r
 	c.ServeJSON()

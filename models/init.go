@@ -10,6 +10,7 @@ func init() {
 	orm.RegisterModel(new(User))
 	orm.RegisterModel(new(Template))
 	orm.RegisterModel(new(KeyWord))
+	orm.RegisterModel(new(Ad))
 }
 
 //下面是统一的表名管理
@@ -31,5 +32,10 @@ func TemplateTBName() string {
 //获取对应的表名称
 func KeyWordTBName() string {
 	return TableName("key_word")
+}
+
+//获取对应的表名称
+func AdTBName() string {
+	return TableName("ad")
 }
 

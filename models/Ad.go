@@ -8,85 +8,82 @@ import (
 )
 
 
-type KeyWord struct {
+type Ad struct {
 	Id       int64
 	Uid  	 int64
-	Type	 string
+	Url      string
+	Title	 string
 	Keyword  string
 	Description string
-	Url      string
-	UrlType  string
 	Remark string
 	Updated time.Time `orm:"auto_now_add;type(datetime)"`
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
-func (this *KeyWord) KeyWordTBName() string {
-	return KeyWordTBName()
+func (this *Ad) AdTBName() string {
+	return AdTBName()
 }
 
-func(this *KeyWord) Insert(model *KeyWord) int {
+func(this *Ad) Insert(model *Ad) int {
 
 	o := orm.NewOrm()
 
-	if model.Keyword !=""{
-		o.Read(model,"keyword")
-		if model.Id>0{
-			return -2//关键词已存在
-		}
-	}
-
 	_,err := o.Insert(model)
 	if err!=nil{
+		fmt.Println(err)
 		return -1
 	}else{
 		return 1
 	}
 }
 
-func(this *KeyWord) Update(KeyWord *KeyWord) bool {
+func(this *Ad) Update(Ad *Ad) bool {
 
 	o := orm.NewOrm()
-	_,err := o.Update(KeyWord,"keyword","description","type","url","url_type","remark","updated")
+	_,err := o.Update(Ad,"title","keyword","description","remark","updated")
 	if err!=nil{
+		fmt.Println(err)
 		return false
 	}else{
 		return true
 	}
 }
 
-func(this *KeyWord) Delete(KeyWord *KeyWord) bool {
+func(this *Ad) Delete(Ad *Ad) bool {
 
 	o := orm.NewOrm()
-	_,err := o.Delete(KeyWord)
+	_,err := o.Delete(Ad)
 	if err!=nil{
+		fmt.Println(err)
 		return false
 	}else{
 		return true
 	}
 }
 
-func(this *KeyWord) Read(KeyWord *KeyWord) bool {
+func(this *Ad) Read(Ad *Ad) bool {
 
 	o := orm.NewOrm()
-	err := o.Read(KeyWord)
+	err := o.Read(Ad)
 	if err == orm.ErrNoRows {
+		fmt.Println(err)
 		fmt.Println("查询不到")
 		return false
 	} else if err == orm.ErrMissPK {
 		fmt.Println("找不到主键")
 		return false
 	} else {
-		fmt.Println(KeyWord.Id)
+		fmt.Println(Ad.Id)
 		return true
 	}
 }
 
-func(this *KeyWord) ReadOrCreate(model KeyWord) int64  {
+func(this *Ad) ReadOrCreate(model *Ad) int64  {
 	o := orm.NewOrm()
 	// 三个返回参数依次为：是否新创建的，对象 Id 值，错误
 	var ID int64
-	if created, id, err := o.ReadOrCreate(&model, "id"); err == nil {
+	 created, id, err := o.ReadOrCreate(model, "id");
+	if err == nil {
 		ID = id
 		if created {
 			fmt.Println("New Insert an object. Id:", id)
@@ -94,29 +91,23 @@ func(this *KeyWord) ReadOrCreate(model KeyWord) int64  {
 			fmt.Println("Get an object. Id:", id)
 		}
 	}
+	fmt.Println(err)
 	return ID
 }
 
-func(this *KeyWord) SelectByCol(model *KeyWord,col string) {
+func(this *Ad) SelectByCol(model *Ad,col string) {
 	o := orm.NewOrm()
 	o.Read(model,col)
 }
 
-func(this *KeyWord) All()[]orm.Params {
-	var maps []orm.Params
-	o := orm.NewOrm()
-	o.Raw("SELECT id,keyword from key_word").Values(&maps)
-	return maps
-}
-
-func(this *KeyWord) Count(qMap map[string]interface{})int64{
-    var count int64
+func(this *Ad) Count(qMap map[string]interface{})int64{
+	var count int64
 	o := orm.NewOrm()
 	if qMap["uid"]!=""{
-		cnt,_ := o.QueryTable(new(KeyWord)).Filter("keyword__startswith",qMap["searchKey"]).Filter("uid",qMap["uid"]).Count() // SELECT COUNT(*) FROM USER
+		cnt,_ := o.QueryTable(new(Ad)).Filter("title__startswith",qMap["searchKey"]).Filter("uid",qMap["uid"]).Count() // SELECT COUNT(*) FROM USER
 		count = cnt
 	}else{
-		cnt,_ := o.QueryTable(new(KeyWord)).Filter("keyword__startswith",qMap["searchKey"]).Count() // SELECT COUNT(*) FROM USER
+		cnt,_ := o.QueryTable(new(Ad)).Filter("title__startswith",qMap["searchKey"]).Count() // SELECT COUNT(*) FROM USER
 		count = cnt
 	}
 	//cnt,_ := o.QueryTable("resume").Count()
@@ -125,16 +116,16 @@ func(this *KeyWord) Count(qMap map[string]interface{})int64{
 	return count
 }
 
-func(this *KeyWord) ListByPage(qMap map[string]interface{})[]orm.Params{
+func(this *Ad) ListByPage(qMap map[string]interface{})[]orm.Params{
 	var maps []orm.Params
 	o := orm.NewOrm()
 	//qs := o.QueryTable("login_log")
-	sql := "select * from key_word where 1=1"
+	sql := "select * from ad where 1=1"
 	if qMap["uid"]!=""{
 		sql = sql+ " and uid="+qMap["uid"].(string)
 	}
 	if qMap["searchKey"]!=""{
-		sql = sql+" and keyword like '%"+qMap["searchKey"].(string)+"%'"
+		sql = sql+" and title like '%"+qMap["searchKey"].(string)+"%'"
 	}
 	if qMap["sortCol"]!=""{
 		sortCol := qMap["sortCol"].(string)
@@ -149,6 +140,13 @@ func(this *KeyWord) ListByPage(qMap map[string]interface{})[]orm.Params{
 	pageSize_ := strconv.FormatInt(pageSize,10)
 	sql = sql+" LIMIT "+pageNow_+","+pageSize_
 	o.Raw(sql).Values(&maps)
+	return maps
+}
+
+func(this *Ad) All()[]orm.Params {
+	var maps []orm.Params
+	o := orm.NewOrm()
+	o.Raw("SELECT id,title from ad").Values(&maps)
 	return maps
 }
 

@@ -17,8 +17,7 @@ func init() {
 	beego.Router("/reset", &controllers.LoginController{},"POST:Reset")
 
 	//模板页相关
-	beego.Router("/template", &controllers.IndexController{},"*:Redirect")
-	beego.Router("/template/keyword", &controllers.IndexController{},"POST:KeyWord")
+	beego.Router("/template", &controllers.TemplateController{},"*:Redirect")
 	beego.Router("/main/template/add",&controllers.TemplateController{},"POST:Add")
 	beego.Router("/main/template/update",&controllers.TemplateController{},"POST:Update")
 
@@ -27,6 +26,15 @@ func init() {
 	beego.Router("/main/keyword/update",&controllers.KeywordController{},"POST:Update")
 	beego.Router("/main/keyword/delete",&controllers.KeywordController{},"POST:Delete")
 	beego.Router("/main/keyword/list",&controllers.KeywordController{},"POST:List")
+	beego.Router("/main/keyword/all", &controllers.KeywordController{},"POST:All")
+
+	//广告页相关
+	beego.Router("/ad",&controllers.AdController{},"*:Redirect")
+	beego.Router("/main/ad/add",&controllers.AdController{},"POST:Add")
+	beego.Router("/main/ad/update",&controllers.AdController{},"POST:Update")
+	beego.Router("/main/ad/delete",&controllers.AdController{},"POST:Delete")
+	beego.Router("/main/ad/list",&controllers.AdController{},"POST:List")
+	beego.Router("/main/ad/ads", &controllers.AdController{},"POST:All")
 
 	//后台管理相关
     beego.Router("/main",&controllers.MainController{},"*:Index")

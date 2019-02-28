@@ -73,6 +73,7 @@ func(this *LoginController) Validate()  {
 		session.Set("user",user)
 		session.Set("account",user.Account)
 		session.Set("id",user.Id)
+		session.Set("type",user.Type)
 		utils.GlobalRedis.Put("host",host,1000000*time.Hour)
 		fmt.Println("Account:",user.Account)
 		fmt.Println("id:",session.Get("id"))
