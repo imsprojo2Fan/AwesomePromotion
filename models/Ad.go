@@ -146,7 +146,7 @@ func(this *Ad) ListByPage(qMap map[string]interface{})[]orm.Params{
 func(this *Ad) All()[]orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	o.Raw("SELECT id,title from ad").Values(&maps)
+	o.Raw("SELECT id,title,url from ad").Values(&maps)
 	return maps
 }
 

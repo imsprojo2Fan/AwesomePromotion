@@ -109,5 +109,17 @@ func(this *Template) SelectByKey(model *Template)[]orm.Params {
 	return maps
 }
 
+func(this *Template) Insert4k2t(qMap map[string]interface{}) int64 {
+	var count int64
+	o := orm.NewOrm()
+	res, err := o.Raw("insert into keyword2template(kid,tid) values(?,?)", qMap["kid"],qMap["tid"]).Exec()
+	if err == nil {
+		num, _ := res.RowsAffected()
+		count = num
+		fmt.Println("mysql row affected nums: ", num)
+	}
+	return count
+}
+
 
 

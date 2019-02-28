@@ -18,13 +18,14 @@ import (
 	"io"
 	"github.com/astaxie/beego/orm"
 	"io/ioutil"
+	"strings"
 )
 
 type TemplateController struct {
 	beego.Controller
 }
 
-func (this *IndexController) Redirect() {
+func (this *TemplateController) Redirect() {
 	//session,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	//utils.Global#fffis.Get("host")
 
@@ -47,11 +48,12 @@ func (this *IndexController) Redirect() {
 	var description string
 	for _,item := range dataList{
 		keyword := item["keyword"]
-		ks = ks+"|"+keyword.(string)
+		ks = ks+","+keyword.(string)
 		description = (item["description"]).(string)
 		kArr = append(kArr,keyword.(string))
 		urlArr = append(urlArr,(item["url"]).(string))
 	}
+	//ks = utils.Substr(ks,1,len(ks))
 
 	if len(dataList)==0{
 		//设置token
@@ -77,7 +79,9 @@ func (this *IndexController) Redirect() {
 		name, _ := metaArr.Eq(i).Attr("name")
 		content, _ := metaArr.Eq(i).Attr("content")
 		if name=="keywords"{//添加keywords
-			metaArr.Eq(i).SetAttr("content",content+","+ks)
+		if strings.Index(content,ks)<1{
+			metaArr.Eq(i).SetAttr("content",content+ks)
+		}
 		}
 		if name=="description"{
 			metaArr.Eq(i).SetAttr("content",description)
@@ -117,6 +121,18 @@ func (this *IndexController) Redirect() {
 		keyWord01 := kArr[0]
 		keyWord02 := kArr[1]
 		keyWord03 := kArr[2]
+		h1Arr :=htmlDoc.Find("h1")
+		if h1Arr.Length()<3{
+			htmlDoc.Find("#myWrap01").ReplaceWithHtml("<h1 style='color:#fff;background:#5e6cd9;font-size:30px;'>"+keyWord01+"</h1>")
+		}
+		h2Arr :=htmlDoc.Find("h2")
+		if h2Arr.Length()<3{
+			htmlDoc.Find("#myWrap02").ReplaceWithHtml("<h2 style='color:#fff;background:#d719c7;font-size:26px;'>"+keyWord02+"</h2>")
+		}
+		h3Arr :=htmlDoc.Find("h3")
+		if h3Arr.Length()<3{
+			htmlDoc.Find("#myWrap03").ReplaceWithHtml("<h3 style='color:#fff;background:#54d17b;font-size:23px;'>"+keyWord03+"</h3>")
+		}
 		//更改h1标题
 		htmlDoc.Find("h1").Each(func(i int, selection *goquery.Selection) {
 			selection.ReplaceWithHtml("<h1 style='color:#fff;background:#5e6cd9'>"+keyWord01+"</h1>")
@@ -172,7 +188,8 @@ func(this *TemplateController) Add()  {
 	session,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	template := new(models.Template)
 	inputUrl := this.GetString("inputUrl")
-	keyword := this.GetString("keyword")
+	keyword := this.GetString("keywords")
+
 	if inputUrl==""{
 		this.jsonResult(200,-1,"请输入正确的url地址！",nil)
 	}
@@ -184,6 +201,7 @@ func(this *TemplateController) Add()  {
 	template.Url = utils.RandomString(12)
 	template.Domain = this.GetString("domain")
 	template.Remark = this.GetString("remark")
+	keyArr := strings.Split(keyword, ",")
 
 
 	template.SelectByCol(template,"murl")//查询网页模板是否已存在
@@ -194,15 +212,20 @@ func(this *TemplateController) Add()  {
 	bMap := Reptile(inputUrl)
 	template.Label = (bMap["title"]).(string)
 	content := (bMap["content"]).(string)
-
 	id :=template.ReadOrCreate(*template)//插入记录
 	if id>0{
+		for _,item:=range keyArr{//插入关键词及模板页关联表
+			qMap := make(map[string]interface{})
+			qMap["kid"] = item
+			qMap["tid"] = id
+			template.Insert4k2t(qMap)
+		}
 		//生成html文件
 		htmlName := "./views/template/"+template.Url+".html"
 		if WriteFile(htmlName,content){
 			this.jsonResult(200,-1,"创建文件失败,请稍后再试!",nil)
 		}
-		this.jsonResult(200,0,"插入成功!",template.Url)
+		this.jsonResult(200,1,"插入成功!",template.Url)
 	}else{
 		this.jsonResult(200,-1,"数据库操作失败,请稍后再试!",nil)
 	}
@@ -321,8 +344,12 @@ func Reptile(rUrl string) (map[string]interface{}) {
 		htmlDoc.Find("title").AfterHtml("<base href=\"http://"+u.Host+"\"/>")
 		//添加token
 		htmlDoc.Find("div").First().AfterHtml("<input type=\"hidden\" value=\"{{ ._xsrf}}\" id=\"token\"/>")
-		//添加定制容器
-		htmlDoc.Find("div").First().AfterHtml("<div id=\"myWrap\"></div>")
+		//添加定制容器01
+		htmlDoc.Find("div").First().AfterHtml("<div style='position:fixed;z-index:9999;left:3%;top:6%;' id=\"myWrap01\"></div>")
+		//添加定制容器02
+		htmlDoc.Find("div").First().AfterHtml("<div style='position:fixed;z-index:9999;left:3%;top:8%;' id=\"myWrap02\"></div>")
+		//添加定制容器03
+		htmlDoc.Find("div").First().AfterHtml("<div style='position:fixed;z-index:9999;left:3%;top:10%;' id=\"myWrap03\"></div>")
 		//添加jquery
 		htmlDoc.Find("body").AppendHtml("<script src=\"https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js\"></script>")
 		//添加定制js

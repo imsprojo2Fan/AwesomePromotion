@@ -131,3 +131,21 @@ func interface2String(inter interface{}) {
 	}
 
 }
+
+func Substr(str string, start int, end int) string {
+
+	//fmt.Println("start-->",start)
+	//fmt.Println("end-->",end)
+	rs := []rune(str)
+	length := len(rs)
+
+	if start < 0 || start > length {
+		fmt.Println("start is wrong")
+	}
+
+	if end < 0 || end > length {
+		fmt.Println("end is wrong")
+	}
+
+	return string(rs[start:end])
+}

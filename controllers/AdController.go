@@ -142,7 +142,7 @@ func(this *AdController) Redirect()  {
 	}
 	//设置token
 	this.Data["_xsrf"] = this.XSRFToken()
-	htmlName:= "ad/"+url+".html"
+	htmlName:= "ad/ad.html"
 	this.TplName = htmlName
 }
 

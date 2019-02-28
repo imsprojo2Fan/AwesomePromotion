@@ -114,7 +114,7 @@
                             <thead>
                             <tr>
                                 <th>关键字</th>
-                                <th>外链</th>
+                                <th>广告外链</th>
                                 <th>描述信息</th>
                                 <th>所属分类</th>
                                 <th>创建时间</th>
@@ -152,7 +152,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label form-label"><span class="red">*</span>外链地址</label>
+                                    <label class="col-sm-2 control-label form-label"><span class="red">*</span>广告外链</label>
                                     <div class="col-sm-10">
                                         <div style="margin: 8px 0px">
                                             <input type="radio" checked name="switch" value="0"/><label class="margin">手动输入</label>
@@ -216,7 +216,7 @@
                         <p class="form-control-static" >所属分类：<span id="detail_type"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
-                        <p class="form-control-static" >外链：<span id="detail_url"></span></p>
+                        <p class="form-control-static" >广告外链：<span id="detail_url"></span></p>
                     </div>
                     <div class="col-sm-offset-1">
                         <p class="form-control-static" >描述信息：<span id="detail_description"></span></p>
@@ -334,7 +334,11 @@ Data Tables
 
 <script>
     var myTable;
+    var ads;
     $(document).ready(function() {
+
+        ads = {{.ads}}
+        console.log(ads);
 
         //调用父页面弹窗通知
         //window.parent.swalInfo('TEST',666,'error')
@@ -375,21 +379,30 @@ Data Tables
                 $('#ourlHtml').html('<input type="text" class="form-control" style="ime-mode:disabled" id="oUrl" placeholder="请输入外链链接">');
             }else{
                 $('#ourlHtml').html('<select id="oUrl" class="selectpicker" >\n' +
-                        '                <option selected value="1">url01</option>\n' +
+                        '                <option selected value="0">暂无可选项</option>\n' +
                         '             </select>');
+                //渲染下拉框
+                if(ads.length!=0){
+                    $('#oUrl').html('');
+                    for(var i=0;i<ads.length;i++){
+                        var item = ads[i];
+                        $('#oUrl').append('<option value="'+item.url+'">'+item.title+'</option>');
+                    }
+                }
+
                 $("#oUrl").selectpicker('refresh');
             }
         });
         var tempDom;
+        var tempDom2;
         $('input[name=switch_edit]').on('ifChecked', function(event){ //ifCreated 事件应该在插件初始化之前绑定
             var val = $(this).val();
             if(val==0){
+                tempDom2 = $('#oUrl_edit').clone();
                 $('#ourlHtml_edit').html(tempDom);
             }else{
                 tempDom = $('#oUrl_edit').clone();
-                $('#ourlHtml_edit').html('<select id="oUrl_edit" class="selectpicker" >\n' +
-                        '                <option selected value="1">url01</option>\n' +
-                        '             </select>');
+                $('#ourlHtml_edit').html(tempDom2);
                 $("#oUrl_edit").selectpicker('refresh');
             }
         });
@@ -413,9 +426,15 @@ Data Tables
             },
             columns: [
                 { data: 'keyword'},
-                { data: 'url',"render":function (data) {
-                        var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(data)[0];
-                        return "<a target='_blank' href='"+data+"' title='"+data+"'>"+origin+"</a>";
+                { data: 'url',"render":function (url) {
+                        var dom = "";
+                        if(url.indexOf("http")>-1){
+                            var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(url)[0];
+                            dom =  "<a target='_blank' href='"+url+"'>"+origin+"</a>";
+                        }else{
+                            dom =  "<a target='_blank' href='/ad?v="+url+"'>点击预览</a>";
+                        }
+                        return dom;
                     } },
                 { data: 'description',"render":function (data) {
                     var temp = data;
@@ -426,12 +445,6 @@ Data Tables
                         }
                         return "<span title='"+temp+"'>"+data+"</span>";
                     } },
-                /*{ data: 'type',"render":function (data) {
-                        if(!data){
-                            data = "暂未填写";
-                        }
-                        return data;
-                    } },*/
                 { data: 'type',"render":function (data) {
                         return data;
                     } },
@@ -465,8 +478,13 @@ Data Tables
             console.log(rowData);
             $('#detail_keyword').html(rowData.keyword);
             var url = rowData.url;
-            var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(url)[0];
-            var dom =  "<a target='_blank' href='"+url+"'>"+origin+"</a>";
+            var dom = "";
+            if(url.indexOf("http")>-1){
+                var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(url)[0];
+                dom =  "<a target='_blank' href='"+url+"'>"+origin+"</a>";
+            }else{
+                dom =  "<a target='_blank' href='/ad?v="+url+"'>点击预览</a>";
+            }
             $('#detail_url').html(dom);
             var type = rowData.type;
             $('#detail_type').html(type);
@@ -506,15 +524,31 @@ Data Tables
             $("#type_edit").selectpicker('refresh');
             var url = rowData.url;
             var urlType = rowData.url_type;
-            $('input[name=switch_edit]').each(function () {
+            $('input[name=switch_edit]').each(function () {//选中radio
                 if($(this).val()==urlType){
-                    $(this).click();
+                    $(this).iCheck('check');
                 }
             });
             if(urlType==0){//手动输入
+
                 $('#oUrl_edit').val(url);
             }else{
-                $("#oUrl_edit").selectpicker('val',url);
+                $('#ourlHtml_edit').html('<select id="oUrl_edit" class="selectpicker" >\n' +
+                        '                <option selected value="0">暂无可选项</option>\n' +
+                        '             </select>');
+                //渲染下拉框
+                if(ads!=0){
+                    $('#oUrl_edit').html('');
+                    for(var i=0;i<ads.length;i++){
+                        var item = ads[i];
+                        if(item.url==url){
+                            $('#oUrl_edit').append('<option selected value="'+item.url+'">'+item.title+'</option>');
+                        }else{
+                            $('#oUrl_edit').append('<option value="'+item.url+'">'+item.title+'</option>');
+                        }
+                    }
+                }
+
                 $("#oUrl_edit").selectpicker('refresh');
             }
             $('#description_edit').val(rowData.description);
@@ -590,7 +624,7 @@ Data Tables
         var id = $('#id_edit').val();
         var keyword = $('#keyword_edit').val().trim();
         var type = $('#type_edit').val();
-        var url = $('#url_edit').val().trim();
+        var url = $('#oUrl_edit').val().trim();
         var urlType = $('input:radio[name=switch_edit]:checked').val();
         var description = $('#description_edit').val().trim();
         var remark = $('#remark_edit').val().trim();
@@ -621,7 +655,7 @@ Data Tables
                 var type = "error";
                 if (r.code == 1) {
                     type = "success";
-                    reset();
+                    refresh();
                 }
                 swal(r.msg,' ',type);
             },

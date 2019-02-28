@@ -10,6 +10,7 @@ import (
 	"os"
 	"time"
 	"strconv"
+	"AwesomePromotion/models"
 )
 
 type MainController struct {
@@ -21,6 +22,9 @@ func(this *MainController) Index()  {
 	userInfo := session.Get("user")
 	this.Data["userInfo"] = userInfo
 	this.Data["account"] = session.Get("account")
+	//获取所有关键词
+	keyword := new(models.KeyWord)
+	this.Data["dataList"] = keyword.All()
 	this.Data["_xsrf"] = this.XSRFToken()
 	this.TplName = "main/index.html"
 }
@@ -28,6 +32,11 @@ func(this *MainController) Index()  {
 func(this *MainController) Redirect()  {
 	htmlName := this.GetString("htmlName")
 	this.Data["_xsrf"] = this.XSRFToken()
+	if htmlName=="keyword"{
+		//获取广告页可选项
+		ad := new(models.Ad)
+		this.Data["ads"] = ad.All()
+	}
 	htmlName = "main/"+htmlName+".html"
 	this.TplName = htmlName
 }
