@@ -11,7 +11,6 @@ type Template struct {
 	Id       int64
 	Uid  	 int64
 	Url      string
-	OUrl  	 string
 	Label    string
 	Domain   string
 	MUrl	 string
@@ -106,6 +105,13 @@ func(this *Template) SelectByKey(model *Template)[]orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
 	o.Raw("SELECT k.keyword,k.description,k.url FROM template t,key_word k,keyword2template kt WHERE t.id = kt.tid and  kt.kid=k.id and t.url=?", model.Url).Values(&maps)
+	return maps
+}
+
+func(this *Template) SelectLatest()[]orm.Params {
+	var maps []orm.Params
+	o := orm.NewOrm()
+	o.Raw("SELECT label,url FROM template  order by id desc limit 0,100").Values(&maps)
 	return maps
 }
 

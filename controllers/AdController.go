@@ -43,8 +43,10 @@ func(this *AdController) List()  {
 	qMap["sortCol"] = sortCol
 	qMap["sortType"] = sortType
 	qMap["searchKey"] = searchKey
-	if uType>2{//账号类型小于3的用户可查看所有信息
+	if uType<=2{//账号类型小于3的用户可查看所有信息
 		qMap["uid"] = uids
+	}else{
+		qMap["uid"] = ""
 	}
 
 	obj := new(models.Ad)
@@ -67,9 +69,15 @@ func(this *AdController) List()  {
 }
 
 func (this *AdController) All() {
-
+	sesion,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	uid := sesion.Get("id").(int64)
+	uids := strconv.FormatInt(uid, 10)
+	uType := sesion.Get("type").(int)
 	obj:= new(models.Ad)
-	dataList := obj.All()
+	if uType>2{
+		uids = ""
+	}
+	dataList := obj.All(uids)
 	this.jsonResult(200,0,"查询成功!",dataList)
 
 }
@@ -89,9 +97,9 @@ func(this *AdController) Add()  {
 	}
 	id :=obj.ReadOrCreate(obj)//插入表记录
 	if id>0{
-		this.jsonResult(200,1,"插入成功",nil)
+		this.jsonResult(200,1,"提交成功",nil)
 	}else{
-		this.jsonResult(200,-1,"插入失败",nil)
+		this.jsonResult(200,-1,"提交失败",nil)
 	}
 }
 

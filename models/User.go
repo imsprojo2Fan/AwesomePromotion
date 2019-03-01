@@ -4,6 +4,7 @@ import (
 	"time"
 	"github.com/astaxie/beego/orm"
 	"fmt"
+	"strconv"
 )
 
 type User struct {
@@ -51,7 +52,7 @@ func(this *User) Insert(user *User) int {
 func(this *User) Update(User *User) bool {
 
 	o := orm.NewOrm()
-	_,err := o.Update(User)
+	_,err := o.Update(User,"actived","password","type","email","remark","created")
 	if err!=nil{
 		return false
 	}else{
@@ -90,7 +91,7 @@ func(this *User) ReadOrCreate(user User) int64  {
 	o := orm.NewOrm()
 	// 三个返回参数依次为：是否新创建的，对象 Id 值，错误
 	var ID int64
-	if created, id, err := o.ReadOrCreate(&user, "uid"); err == nil {
+	if created, id, err := o.ReadOrCreate(&user, "id"); err == nil {
 		ID = id
 		if created {
 			fmt.Println("New Insert an object. Id:", id)
@@ -99,6 +100,40 @@ func(this *User) ReadOrCreate(user User) int64  {
 		}
 	}
 	return ID
+}
+
+func(this *User) Count(qMap map[string]interface{})int64{
+
+	o := orm.NewOrm()
+	cnt,_ := o.QueryTable(new(User)).Filter("account__startswith",qMap["searchKey"]).Count() // SELECT COUNT(*) FROM USER
+	//cnt,_ := o.QueryTable("resume").Count()
+	//var count[] Resume
+	//o.Raw("select count(*) from resume where 1=1 and name like %?%",searchKey).QueryRows(count)
+	return cnt
+}
+
+func(this *User) ListByPage(qMap map[string]interface{})[]orm.Params{
+	var maps []orm.Params
+	o := orm.NewOrm()
+	//qs := o.QueryTable("login_log")
+	sql := "select * from user where 1=1"
+	if qMap["searchKey"]!=""{
+		sql = sql+" and account like '%"+qMap["searchKey"].(string)+"%'"
+	}
+	if qMap["sortCol"]!=""{
+		sortCol := qMap["sortCol"].(string)
+		sortType := qMap["sortType"].(string)
+		sql = sql+" order by "+sortCol+" "+sortType
+	}else{
+		sql = sql+" order by id desc"
+	}
+	pageNow := qMap["pageNow"].(int64)
+	pageNow_ := strconv.FormatInt(pageNow,10)
+	pageSize := qMap["pageSize"].(int64)
+	pageSize_ := strconv.FormatInt(pageSize,10)
+	sql = sql+" LIMIT "+pageNow_+","+pageSize_
+	o.Raw(sql).Values(&maps)
+	return maps
 }
 
 func(this *User) Login(user *User) bool{

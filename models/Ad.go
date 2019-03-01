@@ -143,10 +143,14 @@ func(this *Ad) ListByPage(qMap map[string]interface{})[]orm.Params{
 	return maps
 }
 
-func(this *Ad) All()[]orm.Params {
+func(this *Ad) All(uid string)[]orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	o.Raw("SELECT id,title,url from ad").Values(&maps)
+	if uid==""{
+		o.Raw("SELECT id,title,url from ad").Values(&maps)
+	}else{
+		o.Raw("SELECT id,title,url from ad where uid="+uid).Values(&maps)
+	}
 	return maps
 }
 

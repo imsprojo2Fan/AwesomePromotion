@@ -43,8 +43,11 @@ func init() {
 	beego.Router("/main/upload4pic",&controllers.MainController{},"POST:Upload4Pic")
 
 	//用户信息管理
-	beego.Router("/main/user/listOne",&controllers.UserController{},"POST:ListOne")
+	beego.Router("/main/user/list",&controllers.UserController{},"POST:List")
+	beego.Router("/main/user/add",&controllers.UserController{},"POST:Add")
 	beego.Router("/main/user/update",&controllers.UserController{},"POST:Update")
+	beego.Router("/main/user/delete",&controllers.UserController{},"POST:Delete")
+	beego.Router("/main/user/listOne",&controllers.UserController{},"POST:ListOne")
 	beego.Router("/main/user/validate4mail",&controllers.UserController{},"POST:Validate4mail")
 	beego.Router("/main/user/mail4confirm",&controllers.UserController{},"POST:Mail4confirm")
 	//定制错误页

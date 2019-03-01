@@ -92,59 +92,63 @@ func (this *TemplateController) Redirect() {
 		keyWord := kArr[0]
 		//更改h1标题
 		htmlDoc.Find("h1").Each(func(i int, selection *goquery.Selection) {
-			selection.ReplaceWithHtml("<h1 style='color:#fff;background:#5e6cd9'>"+keyWord+"</h1>")
+			selection.ReplaceWithHtml("<h4 style='color:#fff;background:#5e6cd9;padding:8px;'>"+keyWord+"</h4>")
 		})
 		//更改h2标题
 		htmlDoc.Find("h2").Each(func(i int, selection *goquery.Selection) {
-			selection.ReplaceWithHtml("<h2 style='color:#fff;background:#d719c7'>"+keyWord+"</h2>")
+			selection.ReplaceWithHtml("<h2 style='color:#fff;background:#c3d719;padding:8px;'>"+keyWord+"</h2>")
 		})
 		//更改h3标题
 		htmlDoc.Find("h3").Each(func(i int, selection *goquery.Selection) {
-			selection.ReplaceWithHtml("<h3 style='color:#fff;background:#54d17b'>"+keyWord+"</h3>")
+			selection.ReplaceWithHtml("<h3 style='color:#fff;background:#54d17b;padding:8px;'>"+keyWord+"</h3>")
 		})
 	}else if len(kArr)==2{
 		keyWord01 := kArr[0]
 		keyWord02 := kArr[1]
 		//更改h1标题
 		htmlDoc.Find("h1").Each(func(i int, selection *goquery.Selection) {
-			selection.ReplaceWithHtml("<h1 style='#fff:#fff;background:#5e6cd9'>"+keyWord01+"</h1>")
+			selection.ReplaceWithHtml("<h4 style='#fff:#fff;background:#5e6cd9;padding:8px;'>"+keyWord01+"</h4>")
 		})
 		//更改h2标题
 		htmlDoc.Find("h2").Each(func(i int, selection *goquery.Selection) {
-			selection.ReplaceWithHtml("<h2 style='color:#fff;background:#f17be7'>"+keyWord02+"</h2>")
+			selection.ReplaceWithHtml("<h2 style='color:#fff;background:#c3d719;padding:8px;'>"+keyWord02+"</h2>")
 		})
 		//更改h3标题
 		htmlDoc.Find("h3").Each(func(i int, selection *goquery.Selection) {
-			selection.ReplaceWithHtml("<h3 style='color:#fff;background:#2e5853'>"+keyWord01+"</h3>")
+			selection.ReplaceWithHtml("<h3 style='color:#fff;background:#2e5853;padding:8px;'>"+keyWord01+"</h3>")
 		})
 	}else{
 		keyWord01 := kArr[0]
 		keyWord02 := kArr[1]
 		keyWord03 := kArr[2]
-		h1Arr :=htmlDoc.Find("h1")
+		//更改h1标题
+		h1Arr :=htmlDoc.Find("h4")
 		if h1Arr.Length()<3{
-			htmlDoc.Find("#myWrap01").ReplaceWithHtml("<h1 style='color:#fff;background:#5e6cd9;font-size:30px;'>"+keyWord01+"</h1>")
+			htmlDoc.Find("#myWrap01").ReplaceWithHtml("<div id='myWrap01' style='position:fixed;z-index:9999;left:3%;top:25%;padding:8px;color:#fff;background:#5e6cd9;font-size:30px;'>"+keyWord01+"</div>")
+		}else{
+			htmlDoc.Find("h4").Each(func(i int, selection *goquery.Selection) {
+				selection.ReplaceWithHtml("<h4 style='color:#fff;background:#5e6cd9;padding:8px;'>"+keyWord01+"</h4>")
+			})
 		}
+		//更改h2标题
 		h2Arr :=htmlDoc.Find("h2")
 		if h2Arr.Length()<3{
-			htmlDoc.Find("#myWrap02").ReplaceWithHtml("<h2 style='color:#fff;background:#d719c7;font-size:26px;'>"+keyWord02+"</h2>")
+			htmlDoc.Find("#myWrap02").ReplaceWithHtml("<div id='myWrap02' style='position:fixed;z-index:9999;left:3%;top:50%;padding:8px;color:#fff;background:#c3d719;font-size:26px;'>"+keyWord02+"</div>")
+		}else{
+			htmlDoc.Find("h2").Each(func(i int, selection *goquery.Selection) {
+				selection.ReplaceWithHtml("<h2 style='color:#fff;background:#c3d719;padding:8px;'>"+keyWord02+"</h2>")
+			})
 		}
+		//更改h3标题
 		h3Arr :=htmlDoc.Find("h3")
 		if h3Arr.Length()<3{
-			htmlDoc.Find("#myWrap03").ReplaceWithHtml("<h3 style='color:#fff;background:#54d17b;font-size:23px;'>"+keyWord03+"</h3>")
+			htmlDoc.Find("#myWrap03").ReplaceWithHtml("<div id='myWrap03' style='position:fixed;z-index:9999;left:3%;top:75%;padding:8px;color:#fff;background:#54d17b;font-size:23px;'>"+keyWord03+"</div>")
+		}else{
+			htmlDoc.Find("h3").Each(func(i int, selection *goquery.Selection) {
+				selection.ReplaceWithHtml("<h3 style='color:#fff;background:#54d17b;padding:8px;'>"+keyWord03+"</h3>")
+			})
 		}
-		//更改h1标题
-		htmlDoc.Find("h1").Each(func(i int, selection *goquery.Selection) {
-			selection.ReplaceWithHtml("<h1 style='color:#fff;background:#5e6cd9'>"+keyWord01+"</h1>")
-		})
-		//更改h2标题
-		htmlDoc.Find("h2").Each(func(i int, selection *goquery.Selection) {
-			selection.ReplaceWithHtml("<h2 style='color:#fff;background:#d719c7'>"+keyWord02+"</h2>")
-		})
-		//更改h3标题
-		htmlDoc.Find("h3").Each(func(i int, selection *goquery.Selection) {
-			selection.ReplaceWithHtml("<h3 style='color:#fff;background:#54d17b'>"+keyWord03+"</h3>")
-		})
+
 	}
 
 	hrefArr := htmlDoc.Find("a")
@@ -211,6 +215,7 @@ func(this *TemplateController) Add()  {
 	//爬虫获取网页dom信息
 	bMap := Reptile(inputUrl)
 	template.Label = (bMap["title"]).(string)
+	template.Content = (bMap["content"]).(string)
 	content := (bMap["content"]).(string)
 	id :=template.ReadOrCreate(*template)//插入记录
 	if id>0{
@@ -225,7 +230,7 @@ func(this *TemplateController) Add()  {
 		if WriteFile(htmlName,content){
 			this.jsonResult(200,-1,"创建文件失败,请稍后再试!",nil)
 		}
-		this.jsonResult(200,1,"插入成功!",template.Url)
+		this.jsonResult(200,1,"提交成功!",template.Url)
 	}else{
 		this.jsonResult(200,-1,"数据库操作失败,请稍后再试!",nil)
 	}
@@ -345,11 +350,11 @@ func Reptile(rUrl string) (map[string]interface{}) {
 		//添加token
 		htmlDoc.Find("div").First().AfterHtml("<input type=\"hidden\" value=\"{{ ._xsrf}}\" id=\"token\"/>")
 		//添加定制容器01
-		htmlDoc.Find("div").First().AfterHtml("<div style='position:fixed;z-index:9999;left:3%;top:6%;' id=\"myWrap01\"></div>")
+		htmlDoc.Find("div").First().AfterHtml("<div id=\"myWrap01\"></div>")
 		//添加定制容器02
-		htmlDoc.Find("div").First().AfterHtml("<div style='position:fixed;z-index:9999;left:3%;top:8%;' id=\"myWrap02\"></div>")
+		htmlDoc.Find("div").First().AfterHtml("<div id=\"myWrap02\"></div>")
 		//添加定制容器03
-		htmlDoc.Find("div").First().AfterHtml("<div style='position:fixed;z-index:9999;left:3%;top:10%;' id=\"myWrap03\"></div>")
+		htmlDoc.Find("div").First().AfterHtml("<div id=\"myWrap03\"></div>")
 		//添加jquery
 		htmlDoc.Find("body").AppendHtml("<script src=\"https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js\"></script>")
 		//添加定制js

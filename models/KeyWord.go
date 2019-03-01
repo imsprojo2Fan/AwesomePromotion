@@ -58,10 +58,19 @@ func(this *KeyWord) Update(KeyWord *KeyWord) bool {
 func(this *KeyWord) Delete(KeyWord *KeyWord) bool {
 
 	o := orm.NewOrm()
+	o.Begin()
+	//删除模板-关键字关联表
+	_, err01 := o.Raw("delete from keyword2template where kid=?",KeyWord.Id).Exec()
+	if err01!=nil{
+		o.Rollback()
+		return false
+	}
 	_,err := o.Delete(KeyWord)
 	if err!=nil{
+		o.Rollback()
 		return false
 	}else{
+		o.Commit()
 		return true
 	}
 }
@@ -102,10 +111,14 @@ func(this *KeyWord) SelectByCol(model *KeyWord,col string) {
 	o.Read(model,col)
 }
 
-func(this *KeyWord) All()[]orm.Params {
+func(this *KeyWord) All(uid string)[]orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	o.Raw("SELECT id,keyword from key_word").Values(&maps)
+	if uid==""{
+		o.Raw("SELECT id,keyword from key_word").Values(&maps)
+	}else{
+		o.Raw("SELECT id,keyword from key_word where uid="+uid).Values(&maps)
+	}
 	return maps
 }
 
