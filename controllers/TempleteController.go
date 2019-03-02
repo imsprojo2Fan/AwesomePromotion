@@ -173,7 +173,7 @@ func (this *TemplateController) Redirect() {
 				selection.SetAttr("href",urlArr[2])
 			}
 		}
-		selection.SetAttr("target","_blank")
+		//selection.SetAttr("target","_blank")
 	}
 
 	content,_:=htmlDoc.Html()
@@ -342,6 +342,10 @@ func(this *TemplateController) Delete() {
 	if obj.Id==0{
 		this.jsonResult(200,-1,"id不能为空！",nil)
 	}
+	//删除html文件
+	obj.SelectByCol(obj,"id")
+	filePath := "./views/template/"+obj.Url+".html"
+	os.Remove(filePath)
 	if obj.Delete(obj){
 		this.jsonResult(200,1,"删除数据成功！",nil)
 	}else{
@@ -423,7 +427,13 @@ func Reptile(rUrl string) (map[string]interface{}) {
 		htmlDoc.Find("body").AppendHtml("<script src=\"https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js\"></script>")
 		//添加定制js
 		htmlDoc.Find("body").AppendHtml("<script src=\""+lHost+"/static/js/design.js\"></script>")
-		bMap["content"],_ = htmlDoc.Html()//获取文档内容
+
+		content,_ := htmlDoc.Html()//获取文档内容
+		// 去除空格
+		//content = strings.Replace(content, " ", "", -1)
+		// 去除换行符
+		//content = strings.Replace(content, "\\", "", -1)
+		bMap["content"] = content
 
 	})
 	// 对visit的线程数做限制，visit可以同时运行多个
