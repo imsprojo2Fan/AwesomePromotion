@@ -346,6 +346,8 @@ func(this *TemplateController) Delete() {
 	obj.SelectByCol(obj,"id")
 	filePath := "./views/template/"+obj.Url+".html"
 	os.Remove(filePath)
+	//删除keyword-template关联表数据
+	obj.Del4k2t(obj.Id)
 	if obj.Delete(obj){
 		this.jsonResult(200,1,"删除数据成功！",nil)
 	}else{
