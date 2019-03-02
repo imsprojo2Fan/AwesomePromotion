@@ -338,7 +338,6 @@ Data Tables
     $(document).ready(function() {
 
         ads = {{.ads}}
-        console.log(ads);
 
         //调用父页面弹窗通知
         //window.parent.swalInfo('TEST',666,'error')
@@ -378,11 +377,12 @@ Data Tables
             if(val==0){
                 $('#ourlHtml').html('<input type="text" class="form-control" style="ime-mode:disabled" id="oUrl" placeholder="请输入外链链接">');
             }else{
-                $('#ourlHtml').html('<select id="oUrl" class="selectpicker" >\n' +
-                        '                <option selected value="0">暂无可选项</option>\n' +
-                        '             </select>');
+                $('#ourlHtml').html('' +
+                        '<select id="oUrl" class="selectpicker" >\n' +
+                        '   <option selected value="0">暂无可选项</option>\n' +
+                        '</select>');
                 //渲染下拉框
-                if(ads.length!=0){
+                if(ads){
                     $('#oUrl').html('');
                     for(var i=0;i<ads.length;i++){
                         var item = ads[i];

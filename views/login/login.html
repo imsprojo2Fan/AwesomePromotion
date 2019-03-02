@@ -129,16 +129,9 @@
 	<script>
         var isPassKeyLogin = false;
 		$(function () {
-
-		    console.log(location.host);
-
             if(top.location!=self.location){
-                console.log(("exit"));
                 window.parent.location.href = "/login";
-            }else{
-                console.log(("no exit"));
             }
-
 			//获取本地存储信息
 			var account = getCookieValue("account");
 			var password = getCookieValue("password");

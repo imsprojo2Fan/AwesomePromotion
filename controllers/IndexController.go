@@ -7,6 +7,7 @@ import (
 	"AwesomePromotion/models/other"
 	"net/smtp"
 	"strings"
+	"AwesomePromotion/models"
 )
 
 type IndexController struct {
@@ -23,7 +24,9 @@ func (c *IndexController) Index() {
 	token := c.XSRFToken()
 	c.Data["_xsrf"] = token
 	fmt.Println(token)
-
+	//获取最近添加的100条模板数据
+	template := new(models.Template)
+	c.Data["dataList"] = template.SelectLatest()
 	c.TplName = "index.html"
 
 }

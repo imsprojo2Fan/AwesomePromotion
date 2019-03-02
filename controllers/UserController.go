@@ -11,6 +11,7 @@ import (
 	"net/smtp"
 	"strings"
 	"fmt"
+	"github.com/astaxie/beego/orm"
 )
 
 type UserController struct {
@@ -26,18 +27,89 @@ func(this *UserController) ListOne() {
 	this.jsonResult(200,1,"用户信息",user)
 }
 
+func(this *UserController) List()  {
+	sesion,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	uType := sesion.Get("type").(int)
+	//{"recordsFiltered":1,"data":[{"password":"9f593c69b108dedf0f56e4907d46eff1","phone":"13922305912","created":"2018-08-06 10:06:36","nickname":"范tel青年","id":6,"type":3,"updated":"2018-09-26 17:46:15","account":"admin","email":"imsprojo2fan@gmail.com"}],"draw":17,"recordsTotal":1}
+	GlobalDraw++
+	qMap := make(map[string]interface{})
+	var dataList []orm.Params
+	backMap := make(map[string]interface{})
+
+	pageNow,err2 := this.GetInt64("start")
+	pageSize,err := this.GetInt64("length")
+
+	if err!=nil || err2!=nil{
+		pageNow = 1
+		pageSize = 20
+		//this.jsonResult(http.StatusOK,-1, "rows or page should be number", nil)
+	}
+	sortType := this.GetString("order[0][dir]")
+	sortCol := "created"
+	searchKey := this.GetString("search[value]")
+
+	qMap["pageNow"] = pageNow
+	qMap["pageSize"] = pageSize
+	qMap["sortCol"] = sortCol
+	qMap["sortType"] = sortType
+	qMap["searchKey"] = searchKey
+	if uType<3{//账号类型小于3的用户可查看所有信息
+		this.jsonResult(200,-1,"查询成功！","无权限")
+	}
+
+	obj := new(models.User)
+	//获取总记录数
+	records := obj.Count(qMap)
+	backMap["draw"] = GlobalDraw
+	backMap["recordsTotal"] = records
+	backMap["recordsFiltered"] = records
+	dataList = obj.ListByPage(qMap)
+	backMap["data"] = dataList
+	if len(dataList)==0{
+		backMap["data"] = make([]int, 0)
+	}
+
+	this.Data["json"] = backMap
+	this.ServeJSON()
+	this.StopRun()
+	//this.jsonResult(200,0,"查询成功！",backMap)
+}
+
 func(this *UserController) Add()  {
+	key := beego.AppConfig.String("password::key")
+	salt := beego.AppConfig.String("password::salt")
 	user := new(models.User)
+	user.Actived,_ = this.GetInt("actived")
+	user.Account = this.GetString("account")
 	user.Email = this.GetString("email")
+	user.Type,_ = this.GetInt("type")
+	password := this.GetString("password")
+	if user.Account==""||password==""{
+		this.jsonResult(200,-1,"参数错误!",nil)
+	}
+	//密码加密处理
+	result, err := utils.AesEncrypt([]byte(password+salt), []byte(key))
+	if err != nil {
+		panic(err)
+	}
+	user.Password = base64.StdEncoding.EncodeToString(result)
+	user.Remark = this.GetString("remark")
 	user.SelectByCol(user,"account")//查询账号是否已被用
 	if user.Id>0{
-		this.jsonResult(200,-1,"当前账号不可用",nil)
+		this.jsonResult(200,-1,"当前账号不可用!",nil)
 	}
+	if user.Email!=""{
+		user.SelectByCol(user,"email")//查询邮箱是否已被用
+		if user.Id>0{
+			this.jsonResult(200,-1,"邮箱不可用!",nil)
+		}
+	}
+
 	id :=user.ReadOrCreate(*user)//插入用户表记录
 	if id>0{
-		this.jsonResult(200,0,"插入成功",nil)
+		this.jsonResult(200,1,"提交成功",nil)
 	}else{
-		this.jsonResult(200,-1,"插入失败",nil)
+		this.jsonResult(200,-1,"提交失败",nil)
 	}
 }
 
@@ -48,17 +120,7 @@ func(this *UserController) Update() {
 	dbUser := new(models.User)
 	dbUser.Id,_ = this.GetInt64("id")
 	dbUser.Read(dbUser)//查询数据库的用户信息
-	account := this.GetString("account")
-	user.Account = account
-	if dbUser.Account==""{//当账号为空时才查询账号是否已被使用
-		user.SelectByCol(user,"account")//查询账号是否已被用
-		if user.Id>0{
-			this.jsonResult(200,-1,"当前账号不可用",nil)
-		}
-		str = "操作成功,您的密钥登录将会失效"
-	}
-	email := this.GetString("email")
-	user.Email = email
+	user.Email = this.GetString("email")
 	if dbUser.Email==""{
 		user.SelectByCol(user,"email")//查询邮箱是否已被用
 		if user.Id>0{
@@ -78,14 +140,23 @@ func(this *UserController) Update() {
 		user.Password = base64.StdEncoding.EncodeToString(result)
 	}
 	user.Updated = time.Now()
-	cteate_,_ := this.GetInt64("created")
-	tm2 := time.Unix(cteate_/1000,0).Format("2006-01-02 15:04:05")
-	t,_ := time.Parse("2006-01-02 15:04:05",tm2)
-	user.Created = t
 	if user.Update(user){
 		this.jsonResult(200,1,str,nil)
 	}else{
 		this.jsonResult(200,-1,"更新用户信息失败,请稍后再试",nil)
+	}
+}
+
+func(this *UserController) Delete() {
+	obj := new(models.User)
+	obj.Id,_ = this.GetInt64("id")
+	if obj.Id==0{
+		this.jsonResult(200,-1,"id不能为空！",nil)
+	}
+	if obj.Delete(obj){
+		this.jsonResult(200,1,"删除数据成功！",nil)
+	}else{
+		this.jsonResult(200,-1,"删除数据失败,请稍后再试！",nil)
 	}
 }
 

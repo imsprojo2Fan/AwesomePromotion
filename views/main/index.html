@@ -25,6 +25,20 @@
             padding-left: 0px;
             margin-right: 12px;
         }
+        /* blue */
+        .icheckbox_flat-blue,
+        .iradio_flat-blue {
+            display: inline-block;
+            *
+            display: inline;
+            vertical-align: middle;
+            margin-right: 3px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -76,13 +90,14 @@
 				<nav>
 					<ul id="navUl" class="nav">
 						<li id="home" onclick="redirect('home',this)"><i class="fa fa-home" aria-hidden="true"></i> <span>首页</span></li>
-                        <li id="made" onclick="redirect('template',this)"><i class="fa fa-clone" aria-hidden="true"></i> <span>模板页管理</span></li>
-                        <li id="made" onclick="redirect('keyword',this)"><i class="fa fa-key" aria-hidden="true"></i> <span>关键词管理</span></li>
-                        <li id="made" onclick="redirect('ad',this)"><i class="fa fa-newspaper-o" aria-hidden="true"></i> <span>广告页管理</span></li>
-                        <li id="made" onclick="redirect('ad',this)"><i class="fa fa-money" aria-hidden="true"></i> <span>客户管理</span></li>
+                        <li id="template" onclick="redirect('template',this)"><i class="fa fa-clone" aria-hidden="true"></i> <span>模板页管理</span></li>
+                        <li id="keywordNav" onclick="redirect('keyword',this)"><i class="fa fa-key" aria-hidden="true"></i> <span>关键词管理</span></li>
+                        <li id="adNav" onclick="redirect('ad',this)"><i class="fa fa-newspaper-o" aria-hidden="true"></i> <span>广告页管理</span></li>
+                        <li id="customerNav" onclick="redirect('ad',this)"><i class="fa fa-money" aria-hidden="true"></i> <span>客户管理</span></li>
 						<li id="message" onclick="redirect('news',this)"><i class="fa fa-envelope-o" aria-hidden="true"></i> <span>消息提醒</span></li>
-						<li id="profileSetting" onclick="redirect('profile',this)"><i class="fa fa-user-o" aria-hidden="true"></i> <span>个人设置</span></li>
-                        <li id="profileSetting" onclick="redirect('test',this)"><i class="fa fa-random" aria-hidden="true"></i> <span>模板页测试</span></li>
+						<li id="profileSetting" onclick="redirect('profile',this)"><i class="fa fa-user-o" aria-hidden="true"></i> <span>个人信息</span></li>
+                        <li id="user" style="display: none" onclick="redirect('user',this)"><i class="fa fa-users" aria-hidden="true"></i> <span>用户管理</span></li>
+                        <li id="testPage" onclick="redirect('test',this)"><i class="fa fa-random" aria-hidden="true"></i> <span>模板页测试</span></li>
 					</ul>
 				</nav>
 			</div>
@@ -266,9 +281,10 @@
 
 		$(function () {
 			userInfo = {{.userInfo}};
-            keywords = {{.dataList}}
+            keywords = {{.dataList}};
+
             if(userInfo.Type>2){
-                $('#last').show();
+                $('#user').show();
             }
             //$('#account').html(userInfo.Account);
             if(isPhone()){//设置导航栏箭头方向
@@ -340,17 +356,19 @@
             $('#copyBtn').on('click',function () {
                 $('#myModal02').modal('show');
             });
-            if(keywords.length==0){
-                $('#checkWrap').html("暂无关键词可选!请先添加关键词。");
-            }
-            $('#checkWrap').html("");
-            //keywords=keywords.concat(keywords);
-            for(var i=0;i<keywords.length;i++){
-                var item = keywords[i];
-                $('#checkWrap').append('' +
-                        '<label class="checkbox-inline">\n' +
-                        '   <input type="checkbox" name="keyword"  value="'+item.id+'">' +item.keyword+
-                        '</label>');
+            if(!keywords){
+                $('#checkWrap').html("暂无关键词可选!请前往'关键词管理'添加关键词。");
+                $('#checkWrap').css("margin-top","7px");
+            }else{
+                $('#checkWrap').html("");
+                //keywords=keywords.concat(keywords);
+                for(var i=0;i<keywords.length;i++){
+                    var item = keywords[i];
+                    $('#checkWrap').append('' +
+                            '<label class="checkbox-inline">\n' +
+                            '   <input type="checkbox" name="keyword"  value="'+item.id+'">' +item.keyword+
+                            '</label>');
+                }
             }
 
             //渲染关键字

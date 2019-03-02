@@ -57,6 +57,12 @@
             box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28);
             border-color: rgba(223,225,229,0);
         }
+        .item{
+            padding: 5px 0px;
+        }
+        a{
+            font-size: 17px;
+        }
     </style>
 </head>
 
@@ -74,9 +80,16 @@
         <button class="btn" style="margin-right: 3px;">Google搜索</button>
         <button class="btn" style="margin-left: 3px;">手气不错</button>
     </div>
+
+    <div class="container" style="margin-top: 25px;padding-bottom: 12%;">
+    </div>
+
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script>
+        var dataList;
         $(function () {
+            dataList = {{.dataList}};
+            console.log(dataList);
             $('.btn').on("click",function () {
                 sweetAlert(
                         '错误提示',
@@ -84,7 +97,22 @@
                         'error'
                 );
             });
-        })
+            if(dataList){
+                for(var i=0;i<dataList.length;i++){
+                    var item = dataList[i];
+                    var url = "/template?v="+item.url;
+                    var title = item.label.trim();
+                    if(title.length>15){
+                        title = title.substring(0,12)+"...";
+                    }
+                    $('.container').append('' +
+                            '<div class="col-sm-2 item" style="">\n' +
+                            '     <a target="_blank" href="'+url+'">'+title+'</a>\n' +
+                            '</div>');
+                }
+            }
+
+        });
     </script>
 </body>
 </html>
