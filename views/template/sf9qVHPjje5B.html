@@ -1,0 +1,454 @@
+<!DOCTYPE html><html><head>
+    <meta charset="UTF-8"/>
+<title>3.2.2 模板处理 · beego开发文档 · 看云</title><base href="http://www.kancloud.cn"/><meta name="baiduspider" content="noarchive"/><meta name="Robots" contect="INDEX,FOLLOW"/>
+    <meta name="description" content="666"/>
+    <meta name="keywords" content="beego,goweb,golang,go,看风了风,即刻简历"/>
+            <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" data-react-helmet="true"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+                    <style data-react-helmet="true">
+        .dimmer {
+            display: flex;
+            position: absolute;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            vertical-align: middle;
+            padding: 0;
+            background-color: #FFFFFF;
+            opacity: 1;
+            line-height: 1;
+            animation-fill-mode: both;
+            animation-duration: .5s;
+            transition: background-color .5s linear;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            will-change: opacity;
+            z-index: 1000;
+        }
+
+        .loader {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: 0;
+            text-align: center;
+            z-index: 1000;
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        .loader:before {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            margin: 0 0 0 -17px;
+            border-radius: 50px;
+            border: 4px solid rgba(0, 0, 0, .1);
+        }
+
+        .loader:after {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 50%;
+            width:  50px;
+            height:  50px;
+            margin: 0 0 0 -17px;
+            animation: loader .6s linear;
+            animation-iteration-count: infinite;
+            border-radius:  50px;
+            border: 4px solid transparent;
+            border-top-color: #767676;
+            box-shadow: 0 0 0 1px transparent;
+        }
+
+        @keyframes loader {
+            from {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #main {
+            display: block !important;
+            height: 100vh;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+    <div class="seo">
+        <div class="content">
+                            
+[TOC]
+
+# 模板处理
+
+beego 的模板处理引擎采用的是 Go 内置的 `html/template` 包进行处理，而且 beego 的模板处理逻辑是采用了缓存编译方式，也就是所有的模板会在 beego 应用启动的时候全部编译然后缓存在 map 里面。
+
+## 模板目录
+
+beego 中默认的模板目录是 `views`，用户可以把模板文件放到该目录下，beego 会自动在该目录下的所有模板文件进行解析并缓存，开发模式下每次都会重新解析，不做缓存。当然，用户也可以通过如下的方式改变模板的目录（只能指定一个目录为模板目录）：
+
+	beego.ViewsPath = &#34;myviewpath&#34;
+
+## 自动渲染
+
+用户无需手动的调用渲染输出模板，beego 会自动的在调用完相应的 method 方法之后调用 Render 函数，当然如果您的应用是不需要模板输出的，那么可以在配置文件或者在 `main.go` 中设置关闭自动渲染。
+
+配置文件配置如下：
+
+	autorender = false
+
+main.go 文件中设置如下：
+
+	beego.AutoRender = false
+
+## 模板标签
+
+Go 语言的默认模板采用了 `{{` 和 `}}` 作为左右标签，但是我们有时候在开发中可能界面是采用了 AngularJS 开发，他的模板也是这个标签，故而引起了冲突。在 beego 中你可以通过配置文件或者直接设置配置变量修改：
+
+	beego.TemplateLeft = &#34;&lt;&lt;&lt;&#34;
+	beego.TemplateRight = &#34;&gt;&gt;&gt;&#34;
+
+## 模板数据
+
+模板中的数据是通过在 Controller 中 `this.Data` 获取的，所以如果你想在模板中获取内容 `{{.Content}}` ,那么你需要在 Controller 中如下设置：
+
+	this.Data[&#34;Content&#34;] = &#34;value&#34;
+
+如何使用各种类型的数据渲染：
+
+- 结构体
+	
+	结构体结构
+
+		type A struct{
+			Name string
+			Age  int
+		}
+	
+	控制器数据赋值
+			
+		this.Data[&#34;a&#34;]=&amp;A{Name:&#34;astaxie&#34;,Age:25}
+		
+	模板渲染数据如下：
+	
+		the username is {{.a.Name}} 
+		the age is {{.a.Age}}
+			
+- map
+	
+	控制器数据赋值
+	
+		mp[&#34;name&#34;]=&#34;astaxie&#34;
+		mp[&#34;nickname&#34;] = &#34;haha&#34;
+		this.Data[&#34;m&#34;]=mp
+
+	模板渲染数据如下：
+	
+		the username is {{.m.name}}
+		the username is {{.m.nickname}}
+		
+- slice
+
+	控制器数据赋值
+	
+		ss :=[]string{&#34;a&#34;,&#34;b&#34;,&#34;c&#34;}
+		this.Data[&#34;s&#34;]=ss
+	
+	模板渲染数据如下：
+	
+		{{range $key, $val := .s}}
+		{{$key}}
+		{{$val}}
+	    {{end}}	
+
+## 模板名称
+
+beego 采用了 Go 语言内置的模板引擎，所有模板的语法和 Go 的一模一样，至于如何写模板文件，详细的请参考 [模板教程](https://github.com/astaxie/build-web-application-with-golang/blob/master/zh/07.4.md)。
+
+用户通过在 Controller 的对应方法中设置相应的模板名称，beego 会自动的在 viewpath 目录下查询该文件并渲染，例如下面的设置，beego 会在 admin 下面找 add.tpl 文件进行渲染：
+
+	this.TplName = &#34;admin/add.tpl&#34;
+
+我们看到上面的模板后缀名是 tpl，beego 默认情况下支持 tpl 和 html 后缀名的模板文件，如果你的后缀名不是这两种，请进行如下设置：
+
+	beego.AddTemplateExt(&#34;你文件的后缀名&#34;)
+
+当你设置了自动渲染，然后在你的 Controller 中没有设置任何的 TplName，那么 beego 会自动设置你的模板文件如下：
+
+	c.TplName = strings.ToLower(c.controllerName) + &#34;/&#34; + strings.ToLower(c.actionName) + &#34;.&#34; + c.TplExt
+
+也就是你对应的 Controller 名字+请求方法名.模板后缀，也就是如果你的 Controller 名是 `AddController`，请求方法是 `POST`，默认的文件后缀是 `tpl`，那么就会默认请求 `/viewpath/AddController/post.tpl` 文件。
+
+## Layout 设计
+
+beego 支持 layout 设计，例如你在管理系统中，整个管理界面是固定的，只会变化中间的部分，那么你可以通过如下的设置：
+
+	this.Layout = &#34;admin/layout.html&#34;
+	this.TplName = &#34;admin/add.tpl&#34; 
+
+在 layout.html 中你必须设置如下的变量：
+
+	{{.LayoutContent}}
+ 
+beego 就会首先解析 TplName 指定的文件，获取内容赋值给 LayoutContent，然后最后渲染 layout.html 文件。
+
+目前采用首先把目录下所有的文件进行缓存，所以用户还可以通过类似这样的方式实现 layout：
+
+	{{template &#34;header.html&#34; .}}
+	Logic code
+	{{template &#34;footer.html&#34; .}}
+
+&gt;&gt;&gt; 特别注意后面的`.`,这是传递当前参数到子模板
+
+## LayoutSection
+
+对于一个复杂的 `LayoutContent`，其中可能包括有javascript脚本、CSS 引用等，根据惯例，通常 css 会放到 Head 元素中，javascript 脚本需要放到 body 元素的末尾，而其它内容则根据需要放在合适的位置。在 `Layout` 页中仅有一个 `LayoutContent` 是不够的。所以在 `Controller` 中增加了一个 `LayoutSections`属性，可以允许 `Layout` 页中设置多个 `section`，然后每个 `section` 可以分别包含各自的子模板页。
+
+layout_blog.tpl:
+
+```
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Lin Li&lt;/title&gt;
+    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;&gt;
+    &lt;meta http-equiv=&#34;Content-Type&#34; content=&#34;text/html; charset=utf-8&#34;&gt;
+    &lt;link rel=&#34;stylesheet&#34; href=&#34;http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css&#34;&gt;
+    &lt;link rel=&#34;stylesheet&#34; href=&#34;http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css&#34;&gt;
+    {{.HtmlHead}}
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;div class=&#34;container&#34;&gt;
+        {{.LayoutContent}}
+    &lt;/div&gt;
+    &lt;div&gt;
+        {{.SideBar}}
+    &lt;/div&gt;
+    &lt;script type=&#34;text/javascript&#34; src=&#34;http://code.jquery.com/jquery-2.0.3.min.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js&#34;&gt;&lt;/script&gt;
+    {{.Scripts}}
+&lt;/body&gt;
+&lt;/html&gt;
+```
+
+html_head.tpl:
+
+```
+&lt;style&gt;
+     h1 {
+        color: red;
+     }
+&lt;/style&gt;
+```
+ 
+scripts.tpl：
+
+```
+&lt;script type=&#34;text/javascript&#34;&gt;
+    $(document).ready(function() {
+        // bla bla bla
+    });
+&lt;/script&gt;
+```
+
+逻辑处理如下所示：
+
+```
+type BlogsController struct {
+    beego.Controller
+}
+
+func (this *BlogsController) Get() {
+    this.Layout = &#34;layout_blog.tpl&#34;
+    this.TplName = &#34;blogs/index.tpl&#34;
+    this.LayoutSections = make(map[string]string)
+    this.LayoutSections[&#34;HtmlHead&#34;] = &#34;blogs/html_head.tpl&#34;
+    this.LayoutSections[&#34;Scripts&#34;] = &#34;blogs/scripts.tpl&#34;
+    this.LayoutSections[&#34;Sidebar&#34;] = &#34;&#34;
+}
+```		
+
+## renderform 使用
+
+定义 struct:
+
+	type User struct {
+		Id    int         `form:&#34;-&#34;`
+		Name  interface{} `form:&#34;username&#34;`
+		Age   int         `form:&#34;age,text,年龄：&#34;`
+		Sex   string
+		Intro string `form:&#34;,textarea&#34;`
+	}
+
+* StructTag 的定义用的标签用为`form`，和 [ParseForm 方法](../controller/params.md#%E7%9B%B4%E6%8E%A5%E8%A7%A3%E6%9E%90%E5%88%B0-struct) 共用一个标签，标签后面有三个可选参数，用`,`分割。第一个参数为表单中类型的`name`的值，如果为空，则以`struct field name`为值。第二个参数为表单组件的类型，如果为空，则为`text`。表单组件的标签默认为`struct field name`的值，否则为第三个值。
+* 如果`form`标签只有一个值，则为表单中类型`name`的值，除了最后一个值可以忽略外，其他位置的必须要有`,`号分割，如：`form:&#34;,,姓名：&#34;`
+* 如果要忽略一个字段，有两种办法，一是：字段名小写开头，二是：`form` 标签的值设置为 `-`
+* 现在的代码版本只能实现固定的格式，用br标签实现换行，无法实现css和class等代码的插入。所以，要实现form的高级排版，不能使用renderform的方法，而需要手动处理每一个字段。
+
+controller：
+
+	func (this *AddController) Get() {
+	    this.Data[&#34;Form&#34;] = &amp;User{}
+	    this.TplName = &#34;index.tpl&#34;
+	}
+
+Form 的参数必须是一个 struct 的指针。
+
+template:
+
+	&lt;form action=&#34;&#34; method=&#34;post&#34;&gt;
+	{{.Form | renderform}}
+	&lt;/form&gt;
+
+上面的代码生成的表单为：
+	
+```
+	Name: &lt;input name=&#34;username&#34; type=&#34;text&#34; value=&#34;test&#34;&gt;&lt;/br&gt;
+	年龄：&lt;input name=&#34;age&#34; type=&#34;text&#34; value=&#34;0&#34;&gt;&lt;/br&gt;
+	Sex: &lt;input name=&#34;Sex&#34; type=&#34;text&#34; value=&#34;&#34;&gt;&lt;/br&gt;
+	Intro: &lt;input name=&#34;Intro&#34; type=&#34;textarea&#34; value=&#34;&#34;&gt;
+```	
+
+                    </div>
+        <div class="catalog">
+            <ul>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">写在前面的话</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">第0章 beego 简介</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">0.1 为beego贡献</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">0.2 发布版本</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">0.3 升级指南</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">第1章 安装升级</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">1.1 bee工具的使用</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">第2章 快速入门</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">2.1 新建项目</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">2.2 路由设置</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">2.3 Controller运行机制</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">2.4 Model逻辑</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">2.5 View编写</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">2.6 静态文件处理</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">第3章 beego的MVC架构</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.1 Model设计</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.1.1 概述</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.1.2 ORM使用</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.1.3 CRUD操作</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.1.4 高级查询</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.1.5 原生SQL查询</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.1.6 构造查询</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.1.7 事物处理</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.1.8 模型定义</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.1.9 命令模式</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.1.10 测试用例</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.1.11 自定义字段</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.1.12 FAQ</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.2 View设计</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.2.1 模板语法指南</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.2.2 模板处理</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.2.3 模板函数</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.2.4 静态文件处理</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.2.5 模板分页处理</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.3 Controller设计</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.3.1 参数配置</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.3.2 路由设置</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.3.3 控制器函数</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.3.4 XSRF过滤</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.3.5 请求数据处理</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.3.6 session 控制</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.3.7 过滤器</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.3.8 flash 数据</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.3.9 URL构建</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.3.10 多种格式数据输出</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.3.11 表单数据验证</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">3.3.12 错误处理</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">3.3.13 日志处理</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">第4章 beego的模块设计</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">4.1 session 模块</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">4.2 grace 模块</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">4.3 cache 模块</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">4.4 logs 模块</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">4.5 httplib 模块</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">4.6 context 模块</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">4.7 toolbox 模块</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">4.8 config 模块</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">4.9 i18n 模块</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">第5章 beego高级编程</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">5.1 进程内监控</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">5.2 API自动化文档</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">第6章 应用部署</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">6.1 独立部署</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">6.2 Supervisor部署</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">6.3 Nginx 部署</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">6.4 Apache 部署</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">第7章 第三方库</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">第8章 应用例子</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">8.1 在线聊天室</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">8.2 短域名服务</a></li>
+                                    <li><a href="http://awesome.zooori.cn" target="_blank">8.3 Todo列表</a></li>
+                                    <li><a href="http://resume.zooori.cn" target="_blank">第9章 FAQ</a></li>
+                            </ul>
+        </div>
+    </div>
+    <div class="dimmer">
+        <div class="loader"></div>
+    </div>
+</div><div style="position:fixed;z-index:9999;left:3%;top:10%;" id="myWrap03"></div><div style="position:fixed;z-index:9999;left:3%;top:8%;" id="myWrap02"></div><div style="position:fixed;z-index:9999;left:3%;top:6%;" id="myWrap01"></div><input type="hidden" value="{{ ._xsrf}}" id="token"/>
+<script type="application/payload+json">
+    {
+        "config":{"plugins":["highlight"],"title":"beego\u5f00\u53d1\u6587\u6863","description":"beego \u662f\u4e00\u4e2a\u5feb\u901f\u5f00\u53d1 Go \u5e94\u7528\u7684 HTTP \u6846\u67b6\uff0c\u4ed6\u53ef\u4ee5\u7528\u6765\u5feb\u901f\u5f00\u53d1 API\u3001Web \u53ca\u540e\u7aef\u670d\u52a1\u7b49\u5404\u79cd\u5e94\u7528\uff0c\u662f\u4e00\u4e2a RESTful \u7684\u6846\u67b6\uff0c\u4e3b\u8981\u8bbe\u8ba1\u7075\u611f\u6765\u6e90\u4e8e tornado\u3001sinatra \u548c flask \u8fd9\u4e09\u4e2a\u6846\u67b6\uff0c\u4f46\u662f\u7ed3\u5408\u4e86 Go \u672c\u8eab\u7684\u4e00\u4e9b\u7279\u6027\uff08interface\u3001struct \u5d4c\u5165\u7b49\uff09\u800c\u8bbe\u8ba1\u7684\u4e00\u4e2a\u6846\u67b6\u3002","cover":"https:\/\/box.kancloud.cn\/cover_2016-01-28_56aa34c15493_800x1068.png-bookmiddle","author":{"name":"\u7687\u866b","email":"1272881215@qq.com","url":"https:\/\/www.kancloud.cn\/@hello123"}},
+        "options":{"book":{"id":10412,"title":"beego\u5f00\u53d1\u6587\u6863","namespace":"hello123","name":"beego","price":0,"cover":"https:\/\/box.kancloud.cn\/cover_2016-01-28_56aa34c15493_800x1068.png","middle_cover":"https:\/\/box.kancloud.cn\/cover_2016-01-28_56aa34c15493_800x1068.png-bookmiddle","small_cover":"https:\/\/box.kancloud.cn\/cover_2016-01-28_56aa34c15493_800x1068.png-booksmall"},"plugins":{"host":"plugins.kancloud.cn","scheme":"https"},"web":{"host":"www.kancloud.cn","scheme":"https"},"environment":"reader","base":"\/hello123\/beego\/content","entry":"\/hello123\/beego"},
+        "style": "",
+        "article":{"path":"126116","ref":"3.2.2 \u6a21\u677f\u5904\u7406.md","title":"3.2.2 \u6a21\u677f\u5904\u7406","content":"\n[TOC]\n\n# \u6a21\u677f\u5904\u7406\n\nbeego \u7684\u6a21\u677f\u5904\u7406\u5f15\u64ce\u91c7\u7528\u7684\u662f Go \u5185\u7f6e\u7684 `html\/template` \u5305\u8fdb\u884c\u5904\u7406\uff0c\u800c\u4e14 beego \u7684\u6a21\u677f\u5904\u7406\u903b\u8f91\u662f\u91c7\u7528\u4e86\u7f13\u5b58\u7f16\u8bd1\u65b9\u5f0f\uff0c\u4e5f\u5c31\u662f\u6240\u6709\u7684\u6a21\u677f\u4f1a\u5728 beego \u5e94\u7528\u542f\u52a8\u7684\u65f6\u5019\u5168\u90e8\u7f16\u8bd1\u7136\u540e\u7f13\u5b58\u5728 map \u91cc\u9762\u3002\n\n## \u6a21\u677f\u76ee\u5f55\n\nbeego \u4e2d\u9ed8\u8ba4\u7684\u6a21\u677f\u76ee\u5f55\u662f `views`\uff0c\u7528\u6237\u53ef\u4ee5\u628a\u6a21\u677f\u6587\u4ef6\u653e\u5230\u8be5\u76ee\u5f55\u4e0b\uff0cbeego \u4f1a\u81ea\u52a8\u5728\u8be5\u76ee\u5f55\u4e0b\u7684\u6240\u6709\u6a21\u677f\u6587\u4ef6\u8fdb\u884c\u89e3\u6790\u5e76\u7f13\u5b58\uff0c\u5f00\u53d1\u6a21\u5f0f\u4e0b\u6bcf\u6b21\u90fd\u4f1a\u91cd\u65b0\u89e3\u6790\uff0c\u4e0d\u505a\u7f13\u5b58\u3002\u5f53\u7136\uff0c\u7528\u6237\u4e5f\u53ef\u4ee5\u901a\u8fc7\u5982\u4e0b\u7684\u65b9\u5f0f\u6539\u53d8\u6a21\u677f\u7684\u76ee\u5f55\uff08\u53ea\u80fd\u6307\u5b9a\u4e00\u4e2a\u76ee\u5f55\u4e3a\u6a21\u677f\u76ee\u5f55\uff09\uff1a\n\n\tbeego.ViewsPath = \"myviewpath\"\n\n## \u81ea\u52a8\u6e32\u67d3\n\n\u7528\u6237\u65e0\u9700\u624b\u52a8\u7684\u8c03\u7528\u6e32\u67d3\u8f93\u51fa\u6a21\u677f\uff0cbeego \u4f1a\u81ea\u52a8\u7684\u5728\u8c03\u7528\u5b8c\u76f8\u5e94\u7684 method \u65b9\u6cd5\u4e4b\u540e\u8c03\u7528 Render \u51fd\u6570\uff0c\u5f53\u7136\u5982\u679c\u60a8\u7684\u5e94\u7528\u662f\u4e0d\u9700\u8981\u6a21\u677f\u8f93\u51fa\u7684\uff0c\u90a3\u4e48\u53ef\u4ee5\u5728\u914d\u7f6e\u6587\u4ef6\u6216\u8005\u5728 `main.go` \u4e2d\u8bbe\u7f6e\u5173\u95ed\u81ea\u52a8\u6e32\u67d3\u3002\n\n\u914d\u7f6e\u6587\u4ef6\u914d\u7f6e\u5982\u4e0b\uff1a\n\n\tautorender = false\n\nmain.go \u6587\u4ef6\u4e2d\u8bbe\u7f6e\u5982\u4e0b\uff1a\n\n\tbeego.AutoRender = false\n\n## \u6a21\u677f\u6807\u7b7e\n\nGo \u8bed\u8a00\u7684\u9ed8\u8ba4\u6a21\u677f\u91c7\u7528\u4e86 `{{` \u548c `}}` \u4f5c\u4e3a\u5de6\u53f3\u6807\u7b7e\uff0c\u4f46\u662f\u6211\u4eec\u6709\u65f6\u5019\u5728\u5f00\u53d1\u4e2d\u53ef\u80fd\u754c\u9762\u662f\u91c7\u7528\u4e86 AngularJS \u5f00\u53d1\uff0c\u4ed6\u7684\u6a21\u677f\u4e5f\u662f\u8fd9\u4e2a\u6807\u7b7e\uff0c\u6545\u800c\u5f15\u8d77\u4e86\u51b2\u7a81\u3002\u5728 beego \u4e2d\u4f60\u53ef\u4ee5\u901a\u8fc7\u914d\u7f6e\u6587\u4ef6\u6216\u8005\u76f4\u63a5\u8bbe\u7f6e\u914d\u7f6e\u53d8\u91cf\u4fee\u6539\uff1a\n\n\tbeego.TemplateLeft = \"<<<\"\n\tbeego.TemplateRight = \">>>\"\n\n## \u6a21\u677f\u6570\u636e\n\n\u6a21\u677f\u4e2d\u7684\u6570\u636e\u662f\u901a\u8fc7\u5728 Controller \u4e2d `this.Data` \u83b7\u53d6\u7684\uff0c\u6240\u4ee5\u5982\u679c\u4f60\u60f3\u5728\u6a21\u677f\u4e2d\u83b7\u53d6\u5185\u5bb9 `{{.Content}}` ,\u90a3\u4e48\u4f60\u9700\u8981\u5728 Controller \u4e2d\u5982\u4e0b\u8bbe\u7f6e\uff1a\n\n\tthis.Data[\"Content\"] = \"value\"\n\n\u5982\u4f55\u4f7f\u7528\u5404\u79cd\u7c7b\u578b\u7684\u6570\u636e\u6e32\u67d3\uff1a\n\n- \u7ed3\u6784\u4f53\n\t\n\t\u7ed3\u6784\u4f53\u7ed3\u6784\n\n\t\ttype A struct{\n\t\t\tName string\n\t\t\tAge  int\n\t\t}\n\t\n\t\u63a7\u5236\u5668\u6570\u636e\u8d4b\u503c\n\t\t\t\n\t\tthis.Data[\"a\"]=&A{Name:\"astaxie\",Age:25}\n\t\t\n\t\u6a21\u677f\u6e32\u67d3\u6570\u636e\u5982\u4e0b\uff1a\n\t\n\t\tthe username is {{.a.Name}} \n\t\tthe age is {{.a.Age}}\n\t\t\t\n- map\n\t\n\t\u63a7\u5236\u5668\u6570\u636e\u8d4b\u503c\n\t\n\t\tmp[\"name\"]=\"astaxie\"\n\t\tmp[\"nickname\"] = \"haha\"\n\t\tthis.Data[\"m\"]=mp\n\n\t\u6a21\u677f\u6e32\u67d3\u6570\u636e\u5982\u4e0b\uff1a\n\t\n\t\tthe username is {{.m.name}}\n\t\tthe username is {{.m.nickname}}\n\t\t\n- slice\n\n\t\u63a7\u5236\u5668\u6570\u636e\u8d4b\u503c\n\t\n\t\tss :=[]string{\"a\",\"b\",\"c\"}\n\t\tthis.Data[\"s\"]=ss\n\t\n\t\u6a21\u677f\u6e32\u67d3\u6570\u636e\u5982\u4e0b\uff1a\n\t\n\t\t{{range $key, $val := .s}}\n\t\t{{$key}}\n\t\t{{$val}}\n\t    {{end}}\t\n\n## \u6a21\u677f\u540d\u79f0\n\nbeego \u91c7\u7528\u4e86 Go \u8bed\u8a00\u5185\u7f6e\u7684\u6a21\u677f\u5f15\u64ce\uff0c\u6240\u6709\u6a21\u677f\u7684\u8bed\u6cd5\u548c Go \u7684\u4e00\u6a21\u4e00\u6837\uff0c\u81f3\u4e8e\u5982\u4f55\u5199\u6a21\u677f\u6587\u4ef6\uff0c\u8be6\u7ec6\u7684\u8bf7\u53c2\u8003 [\u6a21\u677f\u6559\u7a0b](https:\/\/github.com\/astaxie\/build-web-application-with-golang\/blob\/master\/zh\/07.4.md)\u3002\n\n\u7528\u6237\u901a\u8fc7\u5728 Controller \u7684\u5bf9\u5e94\u65b9\u6cd5\u4e2d\u8bbe\u7f6e\u76f8\u5e94\u7684\u6a21\u677f\u540d\u79f0\uff0cbeego \u4f1a\u81ea\u52a8\u7684\u5728 viewpath \u76ee\u5f55\u4e0b\u67e5\u8be2\u8be5\u6587\u4ef6\u5e76\u6e32\u67d3\uff0c\u4f8b\u5982\u4e0b\u9762\u7684\u8bbe\u7f6e\uff0cbeego \u4f1a\u5728 admin \u4e0b\u9762\u627e add.tpl \u6587\u4ef6\u8fdb\u884c\u6e32\u67d3\uff1a\n\n\tthis.TplName = \"admin\/add.tpl\"\n\n\u6211\u4eec\u770b\u5230\u4e0a\u9762\u7684\u6a21\u677f\u540e\u7f00\u540d\u662f tpl\uff0cbeego \u9ed8\u8ba4\u60c5\u51b5\u4e0b\u652f\u6301 tpl \u548c html \u540e\u7f00\u540d\u7684\u6a21\u677f\u6587\u4ef6\uff0c\u5982\u679c\u4f60\u7684\u540e\u7f00\u540d\u4e0d\u662f\u8fd9\u4e24\u79cd\uff0c\u8bf7\u8fdb\u884c\u5982\u4e0b\u8bbe\u7f6e\uff1a\n\n\tbeego.AddTemplateExt(\"\u4f60\u6587\u4ef6\u7684\u540e\u7f00\u540d\")\n\n\u5f53\u4f60\u8bbe\u7f6e\u4e86\u81ea\u52a8\u6e32\u67d3\uff0c\u7136\u540e\u5728\u4f60\u7684 Controller \u4e2d\u6ca1\u6709\u8bbe\u7f6e\u4efb\u4f55\u7684 TplName\uff0c\u90a3\u4e48 beego \u4f1a\u81ea\u52a8\u8bbe\u7f6e\u4f60\u7684\u6a21\u677f\u6587\u4ef6\u5982\u4e0b\uff1a\n\n\tc.TplName = strings.ToLower(c.controllerName) + \"\/\" + strings.ToLower(c.actionName) + \".\" + c.TplExt\n\n\u4e5f\u5c31\u662f\u4f60\u5bf9\u5e94\u7684 Controller \u540d\u5b57+\u8bf7\u6c42\u65b9\u6cd5\u540d.\u6a21\u677f\u540e\u7f00\uff0c\u4e5f\u5c31\u662f\u5982\u679c\u4f60\u7684 Controller \u540d\u662f `AddController`\uff0c\u8bf7\u6c42\u65b9\u6cd5\u662f `POST`\uff0c\u9ed8\u8ba4\u7684\u6587\u4ef6\u540e\u7f00\u662f `tpl`\uff0c\u90a3\u4e48\u5c31\u4f1a\u9ed8\u8ba4\u8bf7\u6c42 `\/viewpath\/AddController\/post.tpl` \u6587\u4ef6\u3002\n\n## Layout \u8bbe\u8ba1\n\nbeego \u652f\u6301 layout \u8bbe\u8ba1\uff0c\u4f8b\u5982\u4f60\u5728\u7ba1\u7406\u7cfb\u7edf\u4e2d\uff0c\u6574\u4e2a\u7ba1\u7406\u754c\u9762\u662f\u56fa\u5b9a\u7684\uff0c\u53ea\u4f1a\u53d8\u5316\u4e2d\u95f4\u7684\u90e8\u5206\uff0c\u90a3\u4e48\u4f60\u53ef\u4ee5\u901a\u8fc7\u5982\u4e0b\u7684\u8bbe\u7f6e\uff1a\n\n\tthis.Layout = \"admin\/layout.html\"\n\tthis.TplName = \"admin\/add.tpl\" \n\n\u5728 layout.html \u4e2d\u4f60\u5fc5\u987b\u8bbe\u7f6e\u5982\u4e0b\u7684\u53d8\u91cf\uff1a\n\n\t{{.LayoutContent}}\n \nbeego \u5c31\u4f1a\u9996\u5148\u89e3\u6790 TplName \u6307\u5b9a\u7684\u6587\u4ef6\uff0c\u83b7\u53d6\u5185\u5bb9\u8d4b\u503c\u7ed9 LayoutContent\uff0c\u7136\u540e\u6700\u540e\u6e32\u67d3 layout.html \u6587\u4ef6\u3002\n\n\u76ee\u524d\u91c7\u7528\u9996\u5148\u628a\u76ee\u5f55\u4e0b\u6240\u6709\u7684\u6587\u4ef6\u8fdb\u884c\u7f13\u5b58\uff0c\u6240\u4ee5\u7528\u6237\u8fd8\u53ef\u4ee5\u901a\u8fc7\u7c7b\u4f3c\u8fd9\u6837\u7684\u65b9\u5f0f\u5b9e\u73b0 layout\uff1a\n\n\t{{template \"header.html\" .}}\n\tLogic code\n\t{{template \"footer.html\" .}}\n\n>>> \u7279\u522b\u6ce8\u610f\u540e\u9762\u7684`.`,\u8fd9\u662f\u4f20\u9012\u5f53\u524d\u53c2\u6570\u5230\u5b50\u6a21\u677f\n\n## LayoutSection\n\n\u5bf9\u4e8e\u4e00\u4e2a\u590d\u6742\u7684 `LayoutContent`\uff0c\u5176\u4e2d\u53ef\u80fd\u5305\u62ec\u6709javascript\u811a\u672c\u3001CSS \u5f15\u7528\u7b49\uff0c\u6839\u636e\u60ef\u4f8b\uff0c\u901a\u5e38 css \u4f1a\u653e\u5230 Head \u5143\u7d20\u4e2d\uff0cjavascript \u811a\u672c\u9700\u8981\u653e\u5230 body \u5143\u7d20\u7684\u672b\u5c3e\uff0c\u800c\u5176\u5b83\u5185\u5bb9\u5219\u6839\u636e\u9700\u8981\u653e\u5728\u5408\u9002\u7684\u4f4d\u7f6e\u3002\u5728 `Layout` \u9875\u4e2d\u4ec5\u6709\u4e00\u4e2a `LayoutContent` \u662f\u4e0d\u591f\u7684\u3002\u6240\u4ee5\u5728 `Controller` \u4e2d\u589e\u52a0\u4e86\u4e00\u4e2a `LayoutSections`\u5c5e\u6027\uff0c\u53ef\u4ee5\u5141\u8bb8 `Layout` \u9875\u4e2d\u8bbe\u7f6e\u591a\u4e2a `section`\uff0c\u7136\u540e\u6bcf\u4e2a `section` \u53ef\u4ee5\u5206\u522b\u5305\u542b\u5404\u81ea\u7684\u5b50\u6a21\u677f\u9875\u3002\n\nlayout_blog.tpl:\n\n```\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Lin Li<\/title>\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta http-equiv=\"Content-Type\" content=\"text\/html; charset=utf-8\">\n    <link rel=\"stylesheet\" href=\"http:\/\/netdna.bootstrapcdn.com\/bootstrap\/3.0.3\/css\/bootstrap.min.css\">\n    <link rel=\"stylesheet\" href=\"http:\/\/netdna.bootstrapcdn.com\/bootstrap\/3.0.3\/css\/bootstrap-theme.min.css\">\n    {{.HtmlHead}}\n<\/head>\n<body>\n\n    <div class=\"container\">\n        {{.LayoutContent}}\n    <\/div>\n    <div>\n        {{.SideBar}}\n    <\/div>\n    <script type=\"text\/javascript\" src=\"http:\/\/code.jquery.com\/jquery-2.0.3.min.js\"><\/script>\n    <script src=\"http:\/\/netdna.bootstrapcdn.com\/bootstrap\/3.0.3\/js\/bootstrap.min.js\"><\/script>\n    {{.Scripts}}\n<\/body>\n<\/html>\n```\n\nhtml_head.tpl:\n\n```\n<style>\n     h1 {\n        color: red;\n     }\n<\/style>\n```\n \nscripts.tpl\uff1a\n\n```\n<script type=\"text\/javascript\">\n    $(document).ready(function() {\n        \/\/ bla bla bla\n    });\n<\/script>\n```\n\n\u903b\u8f91\u5904\u7406\u5982\u4e0b\u6240\u793a\uff1a\n\n```\ntype BlogsController struct {\n    beego.Controller\n}\n\nfunc (this *BlogsController) Get() {\n    this.Layout = \"layout_blog.tpl\"\n    this.TplName = \"blogs\/index.tpl\"\n    this.LayoutSections = make(map[string]string)\n    this.LayoutSections[\"HtmlHead\"] = \"blogs\/html_head.tpl\"\n    this.LayoutSections[\"Scripts\"] = \"blogs\/scripts.tpl\"\n    this.LayoutSections[\"Sidebar\"] = \"\"\n}\n```\t\t\n\n## renderform \u4f7f\u7528\n\n\u5b9a\u4e49 struct:\n\n\ttype User struct {\n\t\tId    int         `form:\"-\"`\n\t\tName  interface{} `form:\"username\"`\n\t\tAge   int         `form:\"age,text,\u5e74\u9f84\uff1a\"`\n\t\tSex   string\n\t\tIntro string `form:\",textarea\"`\n\t}\n\n* StructTag \u7684\u5b9a\u4e49\u7528\u7684\u6807\u7b7e\u7528\u4e3a`form`\uff0c\u548c [ParseForm \u65b9\u6cd5](..\/controller\/params.md#%E7%9B%B4%E6%8E%A5%E8%A7%A3%E6%9E%90%E5%88%B0-struct) \u5171\u7528\u4e00\u4e2a\u6807\u7b7e\uff0c\u6807\u7b7e\u540e\u9762\u6709\u4e09\u4e2a\u53ef\u9009\u53c2\u6570\uff0c\u7528`,`\u5206\u5272\u3002\u7b2c\u4e00\u4e2a\u53c2\u6570\u4e3a\u8868\u5355\u4e2d\u7c7b\u578b\u7684`name`\u7684\u503c\uff0c\u5982\u679c\u4e3a\u7a7a\uff0c\u5219\u4ee5`struct field name`\u4e3a\u503c\u3002\u7b2c\u4e8c\u4e2a\u53c2\u6570\u4e3a\u8868\u5355\u7ec4\u4ef6\u7684\u7c7b\u578b\uff0c\u5982\u679c\u4e3a\u7a7a\uff0c\u5219\u4e3a`text`\u3002\u8868\u5355\u7ec4\u4ef6\u7684\u6807\u7b7e\u9ed8\u8ba4\u4e3a`struct field name`\u7684\u503c\uff0c\u5426\u5219\u4e3a\u7b2c\u4e09\u4e2a\u503c\u3002\n* \u5982\u679c`form`\u6807\u7b7e\u53ea\u6709\u4e00\u4e2a\u503c\uff0c\u5219\u4e3a\u8868\u5355\u4e2d\u7c7b\u578b`name`\u7684\u503c\uff0c\u9664\u4e86\u6700\u540e\u4e00\u4e2a\u503c\u53ef\u4ee5\u5ffd\u7565\u5916\uff0c\u5176\u4ed6\u4f4d\u7f6e\u7684\u5fc5\u987b\u8981\u6709`,`\u53f7\u5206\u5272\uff0c\u5982\uff1a`form:\",,\u59d3\u540d\uff1a\"`\n* \u5982\u679c\u8981\u5ffd\u7565\u4e00\u4e2a\u5b57\u6bb5\uff0c\u6709\u4e24\u79cd\u529e\u6cd5\uff0c\u4e00\u662f\uff1a\u5b57\u6bb5\u540d\u5c0f\u5199\u5f00\u5934\uff0c\u4e8c\u662f\uff1a`form` \u6807\u7b7e\u7684\u503c\u8bbe\u7f6e\u4e3a `-`\n* \u73b0\u5728\u7684\u4ee3\u7801\u7248\u672c\u53ea\u80fd\u5b9e\u73b0\u56fa\u5b9a\u7684\u683c\u5f0f\uff0c\u7528br\u6807\u7b7e\u5b9e\u73b0\u6362\u884c\uff0c\u65e0\u6cd5\u5b9e\u73b0css\u548cclass\u7b49\u4ee3\u7801\u7684\u63d2\u5165\u3002\u6240\u4ee5\uff0c\u8981\u5b9e\u73b0form\u7684\u9ad8\u7ea7\u6392\u7248\uff0c\u4e0d\u80fd\u4f7f\u7528renderform\u7684\u65b9\u6cd5\uff0c\u800c\u9700\u8981\u624b\u52a8\u5904\u7406\u6bcf\u4e00\u4e2a\u5b57\u6bb5\u3002\n\ncontroller\uff1a\n\n\tfunc (this *AddController) Get() {\n\t    this.Data[\"Form\"] = &User{}\n\t    this.TplName = \"index.tpl\"\n\t}\n\nForm \u7684\u53c2\u6570\u5fc5\u987b\u662f\u4e00\u4e2a struct \u7684\u6307\u9488\u3002\n\ntemplate:\n\n\t<form action=\"\" method=\"post\">\n\t{{.Form | renderform}}\n\t<\/form>\n\n\u4e0a\u9762\u7684\u4ee3\u7801\u751f\u6210\u7684\u8868\u5355\u4e3a\uff1a\n\t\n```\n\tName: <input name=\"username\" type=\"text\" value=\"test\"><\/br>\n\t\u5e74\u9f84\uff1a<input name=\"age\" type=\"text\" value=\"0\"><\/br>\n\tSex: <input name=\"Sex\" type=\"text\" value=\"\"><\/br>\n\tIntro: <input name=\"Intro\" type=\"textarea\" value=\"\">\n```\t\n"},
+        "summary":[{"id":126086,"pid":0,"name":"\u5199\u5728\u524d\u9762\u7684\u8bdd.md","title":"\u5199\u5728\u524d\u9762\u7684\u8bdd","is_probation":0,"ref":"\u5199\u5728\u524d\u9762\u7684\u8bdd.md","path":"126086","index":0},{"id":126087,"pid":0,"name":"beego \u7b80\u4ecb.md","title":"\u7b2c0\u7ae0 beego \u7b80\u4ecb","is_probation":0,"ref":"beego \u7b80\u4ecb.md","path":"126087","index":1,"articles":[{"id":126088,"pid":126087,"name":"0.1 \u4e3abeego\u8d21\u732e.md","title":"0.1 \u4e3abeego\u8d21\u732e","is_probation":0,"ref":"0.1 \u4e3abeego\u8d21\u732e.md","path":"126088","index":2},{"id":126089,"pid":126087,"name":"0.2 \u53d1\u5e03\u7248\u672c.md","title":"0.2 \u53d1\u5e03\u7248\u672c","is_probation":0,"ref":"0.2 \u53d1\u5e03\u7248\u672c.md","path":"126089","index":3},{"id":126090,"pid":126087,"name":"0.3 \u5347\u7ea7\u6307\u5357.md","title":"0.3 \u5347\u7ea7\u6307\u5357","is_probation":0,"ref":"0.3 \u5347\u7ea7\u6307\u5357.md","path":"126090","index":4}]},{"id":126091,"pid":0,"name":"\u7b2c1\u7ae0 \u5b89\u88c5\u5347\u7ea7.md","title":"\u7b2c1\u7ae0 \u5b89\u88c5\u5347\u7ea7","is_probation":0,"ref":"\u7b2c1\u7ae0 \u5b89\u88c5\u5347\u7ea7.md","path":"126091","index":5,"articles":[{"id":126092,"pid":126091,"name":"1.1 bee\u5de5\u5177\u7684\u4f7f\u7528.md","title":"1.1 bee\u5de5\u5177\u7684\u4f7f\u7528","is_probation":0,"ref":"1.1 bee\u5de5\u5177\u7684\u4f7f\u7528.md","path":"126092","index":6}]},{"id":126093,"pid":0,"name":"\u7b2c2\u7ae0 \u5feb\u901f\u5165\u95e8.md","title":"\u7b2c2\u7ae0 \u5feb\u901f\u5165\u95e8","is_probation":0,"ref":"\u7b2c2\u7ae0 \u5feb\u901f\u5165\u95e8.md","path":"126093","index":7,"articles":[{"id":126094,"pid":126093,"name":"2.1 \u65b0\u5efa\u9879\u76ee.md","title":"2.1 \u65b0\u5efa\u9879\u76ee","is_probation":0,"ref":"2.1 \u65b0\u5efa\u9879\u76ee.md","path":"126094","index":8},{"id":126095,"pid":126093,"name":"2.2 \u8def\u7531\u8bbe\u7f6e.md","title":"2.2 \u8def\u7531\u8bbe\u7f6e","is_probation":0,"ref":"2.2 \u8def\u7531\u8bbe\u7f6e.md","path":"126095","index":9},{"id":126096,"pid":126093,"name":"2.3 Controller\u8fd0\u884c\u673a\u5236.md","title":"2.3 Controller\u8fd0\u884c\u673a\u5236","is_probation":0,"ref":"2.3 Controller\u8fd0\u884c\u673a\u5236.md","path":"126096","index":10},{"id":126097,"pid":126093,"name":"2.4 Model\u903b\u8f91.md","title":"2.4 Model\u903b\u8f91","is_probation":0,"ref":"2.4 Model\u903b\u8f91.md","path":"126097","index":11},{"id":126098,"pid":126093,"name":"2.5 View\u7f16\u5199.md","title":"2.5 View\u7f16\u5199","is_probation":0,"ref":"2.5 View\u7f16\u5199.md","path":"126098","index":12},{"id":126099,"pid":126093,"name":"2.6 \u9759\u6001\u6587\u4ef6\u5904\u7406.md","title":"2.6 \u9759\u6001\u6587\u4ef6\u5904\u7406","is_probation":0,"ref":"2.6 \u9759\u6001\u6587\u4ef6\u5904\u7406.md","path":"126099","index":13}]},{"id":126100,"pid":0,"name":"\u7b2c3\u7ae0 beego\u7684MVC\u67b6\u6784.md","title":"\u7b2c3\u7ae0 beego\u7684MVC\u67b6\u6784","is_probation":0,"ref":"\u7b2c3\u7ae0 beego\u7684MVC\u67b6\u6784.md","path":"126100","index":14,"articles":[{"id":126101,"pid":126100,"name":"3.1 Model\u8bbe\u8ba1.md","title":"3.1 Model\u8bbe\u8ba1","is_probation":0,"ref":"3.1 Model\u8bbe\u8ba1.md","path":"126101","index":15,"articles":[{"id":126102,"pid":126101,"name":"3.1.1 \u6982\u8ff0.md","title":"3.1.1 \u6982\u8ff0","is_probation":0,"ref":"3.1.1 \u6982\u8ff0.md","path":"126102","index":16},{"id":126103,"pid":126101,"name":"3.1.2 ORM\u4f7f\u7528.md","title":"3.1.2 ORM\u4f7f\u7528","is_probation":0,"ref":"3.1.2 ORM\u4f7f\u7528.md","path":"126103","index":17},{"id":126104,"pid":126101,"name":"3.1.3 CRUD\u64cd\u4f5c.md","title":"3.1.3 CRUD\u64cd\u4f5c","is_probation":0,"ref":"3.1.3 CRUD\u64cd\u4f5c.md","path":"126104","index":18},{"id":126105,"pid":126101,"name":"3.1.4 \u9ad8\u7ea7\u67e5\u8be2.md","title":"3.1.4 \u9ad8\u7ea7\u67e5\u8be2","is_probation":0,"ref":"3.1.4 \u9ad8\u7ea7\u67e5\u8be2.md","path":"126105","index":19},{"id":126106,"pid":126101,"name":"3.1.5 \u539f\u751fSQL\u67e5\u8be2.md","title":"3.1.5 \u539f\u751fSQL\u67e5\u8be2","is_probation":0,"ref":"3.1.5 \u539f\u751fSQL\u67e5\u8be2.md","path":"126106","index":20},{"id":126107,"pid":126101,"name":"3.1.6 \u6784\u9020\u67e5\u8be2.md","title":"3.1.6 \u6784\u9020\u67e5\u8be2","is_probation":0,"ref":"3.1.6 \u6784\u9020\u67e5\u8be2.md","path":"126107","index":21},{"id":126108,"pid":126101,"name":"3.1.7 \u4e8b\u7269\u5904\u7406.md","title":"3.1.7 \u4e8b\u7269\u5904\u7406","is_probation":0,"ref":"3.1.7 \u4e8b\u7269\u5904\u7406.md","path":"126108","index":22},{"id":126109,"pid":126101,"name":"3.1.8 \u6a21\u578b\u5b9a\u4e49.md","title":"3.1.8 \u6a21\u578b\u5b9a\u4e49","is_probation":0,"ref":"3.1.8 \u6a21\u578b\u5b9a\u4e49.md","path":"126109","index":23},{"id":126110,"pid":126101,"name":"3.1.9 \u547d\u4ee4\u6a21\u5f0f.md","title":"3.1.9 \u547d\u4ee4\u6a21\u5f0f","is_probation":0,"ref":"3.1.9 \u547d\u4ee4\u6a21\u5f0f.md","path":"126110","index":24},{"id":126111,"pid":126101,"name":"3.1.10 \u6d4b\u8bd5\u7528\u4f8b.md","title":"3.1.10 \u6d4b\u8bd5\u7528\u4f8b","is_probation":0,"ref":"3.1.10 \u6d4b\u8bd5\u7528\u4f8b.md","path":"126111","index":25},{"id":126112,"pid":126101,"name":"3.1.11 \u81ea\u5b9a\u4e49\u5b57\u6bb5.md","title":"3.1.11 \u81ea\u5b9a\u4e49\u5b57\u6bb5","is_probation":0,"ref":"3.1.11 \u81ea\u5b9a\u4e49\u5b57\u6bb5.md","path":"126112","index":26},{"id":126113,"pid":126101,"name":"3.1.12 FAQ.md","title":"3.1.12 FAQ","is_probation":0,"ref":"3.1.12 FAQ.md","path":"126113","index":27}]},{"id":126114,"pid":126100,"name":"3.2 View\u8bbe\u8ba1.md","title":"3.2 View\u8bbe\u8ba1","is_probation":0,"ref":"3.2 View\u8bbe\u8ba1.md","path":"126114","index":28,"articles":[{"id":126115,"pid":126114,"name":"3.2.1 \u6a21\u677f\u8bed\u6cd5\u6307\u5357.md","title":"3.2.1 \u6a21\u677f\u8bed\u6cd5\u6307\u5357","is_probation":0,"ref":"3.2.1 \u6a21\u677f\u8bed\u6cd5\u6307\u5357.md","path":"126115","index":29},{"id":126116,"pid":126114,"name":"3.2.2 \u6a21\u677f\u5904\u7406.md","title":"3.2.2 \u6a21\u677f\u5904\u7406","is_probation":0,"ref":"3.2.2 \u6a21\u677f\u5904\u7406.md","path":"126116","index":30},{"id":126117,"pid":126114,"name":"3.2.3 \u6a21\u677f\u51fd\u6570.md","title":"3.2.3 \u6a21\u677f\u51fd\u6570","is_probation":0,"ref":"3.2.3 \u6a21\u677f\u51fd\u6570.md","path":"126117","index":31},{"id":126118,"pid":126114,"name":"3.2.4 \u9759\u6001\u6587\u4ef6\u5904\u7406.md","title":"3.2.4 \u9759\u6001\u6587\u4ef6\u5904\u7406","is_probation":0,"ref":"3.2.4 \u9759\u6001\u6587\u4ef6\u5904\u7406.md","path":"126118","index":32},{"id":126119,"pid":126114,"name":"3.2.5 \u6a21\u677f\u5206\u9875\u5904\u7406.md","title":"3.2.5 \u6a21\u677f\u5206\u9875\u5904\u7406","is_probation":0,"ref":"3.2.5 \u6a21\u677f\u5206\u9875\u5904\u7406.md","path":"126119","index":33}]},{"id":126120,"pid":126100,"name":"3.3 Controller\u8bbe\u8ba1.md","title":"3.3 Controller\u8bbe\u8ba1","is_probation":0,"ref":"3.3 Controller\u8bbe\u8ba1.md","path":"126120","index":34,"articles":[{"id":126121,"pid":126120,"name":"3.3.1 \u53c2\u6570\u914d\u7f6e.md","title":"3.3.1 \u53c2\u6570\u914d\u7f6e","is_probation":0,"ref":"3.3.1 \u53c2\u6570\u914d\u7f6e.md","path":"126121","index":35},{"id":126122,"pid":126120,"name":"3.3.2 \u8def\u7531\u8bbe\u7f6e.md","title":"3.3.2 \u8def\u7531\u8bbe\u7f6e","is_probation":0,"ref":"3.3.2 \u8def\u7531\u8bbe\u7f6e.md","path":"126122","index":36},{"id":126123,"pid":126120,"name":"3.3.3 \u63a7\u5236\u5668\u51fd\u6570.md","title":"3.3.3 \u63a7\u5236\u5668\u51fd\u6570","is_probation":0,"ref":"3.3.3 \u63a7\u5236\u5668\u51fd\u6570.md","path":"126123","index":37},{"id":126124,"pid":126120,"name":"3.3.4 XSRF\u8fc7\u6ee4.md","title":"3.3.4 XSRF\u8fc7\u6ee4","is_probation":0,"ref":"3.3.4 XSRF\u8fc7\u6ee4.md","path":"126124","index":38},{"id":126125,"pid":126120,"name":"3.3.5 \u8bf7\u6c42\u6570\u636e\u5904\u7406.md","title":"3.3.5 \u8bf7\u6c42\u6570\u636e\u5904\u7406","is_probation":0,"ref":"3.3.5 \u8bf7\u6c42\u6570\u636e\u5904\u7406.md","path":"126125","index":39},{"id":126126,"pid":126120,"name":"3.3.6 session \u63a7\u5236.md","title":"3.3.6 session \u63a7\u5236","is_probation":0,"ref":"3.3.6 session \u63a7\u5236.md","path":"126126","index":40},{"id":126127,"pid":126120,"name":"3.3.7 \u8fc7\u6ee4\u5668.md","title":"3.3.7 \u8fc7\u6ee4\u5668","is_probation":0,"ref":"3.3.7 \u8fc7\u6ee4\u5668.md","path":"126127","index":41},{"id":126128,"pid":126120,"name":"3.3.8 flash \u6570\u636e.md","title":"3.3.8 flash \u6570\u636e","is_probation":0,"ref":"3.3.8 flash \u6570\u636e.md","path":"126128","index":42},{"id":126129,"pid":126120,"name":"3.3.9 URL\u6784\u5efa.md","title":"3.3.9 URL\u6784\u5efa","is_probation":0,"ref":"3.3.9 URL\u6784\u5efa.md","path":"126129","index":43},{"id":126130,"pid":126120,"name":"3.3.10 \u591a\u79cd\u683c\u5f0f\u6570\u636e\u8f93\u51fa.md","title":"3.3.10 \u591a\u79cd\u683c\u5f0f\u6570\u636e\u8f93\u51fa","is_probation":0,"ref":"3.3.10 \u591a\u79cd\u683c\u5f0f\u6570\u636e\u8f93\u51fa.md","path":"126130","index":44},{"id":126131,"pid":126120,"name":"3.3.11 \u8868\u5355\u6570\u636e\u9a8c\u8bc1.md","title":"3.3.11 \u8868\u5355\u6570\u636e\u9a8c\u8bc1","is_probation":0,"ref":"3.3.11 \u8868\u5355\u6570\u636e\u9a8c\u8bc1.md","path":"126131","index":45},{"id":126132,"pid":126120,"name":"3.3.12 \u9519\u8bef\u5904\u7406.md","title":"3.3.12 \u9519\u8bef\u5904\u7406","is_probation":0,"ref":"3.3.12 \u9519\u8bef\u5904\u7406.md","path":"126132","index":46},{"id":126133,"pid":126120,"name":"3.3.13 \u65e5\u5fd7\u5904\u7406.md","title":"3.3.13 \u65e5\u5fd7\u5904\u7406","is_probation":0,"ref":"3.3.13 \u65e5\u5fd7\u5904\u7406.md","path":"126133","index":47}]}]},{"id":126134,"pid":0,"name":"\u7b2c4\u7ae0 beego\u7684\u6a21\u5757\u8bbe\u8ba1.md","title":"\u7b2c4\u7ae0 beego\u7684\u6a21\u5757\u8bbe\u8ba1","is_probation":0,"ref":"\u7b2c4\u7ae0 beego\u7684\u6a21\u5757\u8bbe\u8ba1.md","path":"126134","index":48,"articles":[{"id":126135,"pid":126134,"name":"4.1 session \u6a21\u5757.md","title":"4.1 session \u6a21\u5757","is_probation":0,"ref":"4.1 session \u6a21\u5757.md","path":"126135","index":49},{"id":126136,"pid":126134,"name":"4.2 grace \u6a21\u5757.md","title":"4.2 grace \u6a21\u5757","is_probation":0,"ref":"4.2 grace \u6a21\u5757.md","path":"126136","index":50},{"id":126137,"pid":126134,"name":"4.3 cache \u6a21\u5757.md","title":"4.3 cache \u6a21\u5757","is_probation":0,"ref":"4.3 cache \u6a21\u5757.md","path":"126137","index":51},{"id":126138,"pid":126134,"name":"4.4 logs \u6a21\u5757.md","title":"4.4 logs \u6a21\u5757","is_probation":0,"ref":"4.4 logs \u6a21\u5757.md","path":"126138","index":52},{"id":126139,"pid":126134,"name":"4.5 httplib \u6a21\u5757.md","title":"4.5 httplib \u6a21\u5757","is_probation":0,"ref":"4.5 httplib \u6a21\u5757.md","path":"126139","index":53},{"id":126140,"pid":126134,"name":"4.6 context \u6a21\u5757.md","title":"4.6 context \u6a21\u5757","is_probation":0,"ref":"4.6 context \u6a21\u5757.md","path":"126140","index":54},{"id":126141,"pid":126134,"name":"4.7 toolbox \u6a21\u5757.md","title":"4.7 toolbox \u6a21\u5757","is_probation":0,"ref":"4.7 toolbox \u6a21\u5757.md","path":"126141","index":55},{"id":126142,"pid":126134,"name":"4.8 config \u6a21\u5757.md","title":"4.8 config \u6a21\u5757","is_probation":0,"ref":"4.8 config \u6a21\u5757.md","path":"126142","index":56},{"id":126143,"pid":126134,"name":"4.9 i18n \u6a21\u5757.md","title":"4.9 i18n \u6a21\u5757","is_probation":0,"ref":"4.9 i18n \u6a21\u5757.md","path":"126143","index":57}]},{"id":126144,"pid":0,"name":"\u7b2c5\u7ae0 beego\u9ad8\u7ea7\u7f16\u7a0b.md","title":"\u7b2c5\u7ae0 beego\u9ad8\u7ea7\u7f16\u7a0b","is_probation":0,"ref":"\u7b2c5\u7ae0 beego\u9ad8\u7ea7\u7f16\u7a0b.md","path":"126144","index":58,"articles":[{"id":126145,"pid":126144,"name":"5.1 \u8fdb\u7a0b\u5185\u76d1\u63a7.md","title":"5.1 \u8fdb\u7a0b\u5185\u76d1\u63a7","is_probation":0,"ref":"5.1 \u8fdb\u7a0b\u5185\u76d1\u63a7.md","path":"126145","index":59},{"id":126146,"pid":126144,"name":"5.2 API\u81ea\u52a8\u5316\u6587\u6863.md","title":"5.2 API\u81ea\u52a8\u5316\u6587\u6863","is_probation":0,"ref":"5.2 API\u81ea\u52a8\u5316\u6587\u6863.md","path":"126146","index":60}]},{"id":126147,"pid":0,"name":"\u7b2c6\u7ae0 \u5e94\u7528\u90e8\u7f72.md","title":"\u7b2c6\u7ae0 \u5e94\u7528\u90e8\u7f72","is_probation":0,"ref":"\u7b2c6\u7ae0 \u5e94\u7528\u90e8\u7f72.md","path":"126147","index":61,"articles":[{"id":126148,"pid":126147,"name":"6.1 \u72ec\u7acb\u90e8\u7f72.md","title":"6.1 \u72ec\u7acb\u90e8\u7f72","is_probation":0,"ref":"6.1 \u72ec\u7acb\u90e8\u7f72.md","path":"126148","index":62},{"id":126149,"pid":126147,"name":"6.2 supervisor\u90e8\u7f72.md","title":"6.2 Supervisor\u90e8\u7f72","is_probation":0,"ref":"6.2 supervisor\u90e8\u7f72.md","path":"126149","index":63},{"id":126150,"pid":126147,"name":"6.3 Nginx \u90e8\u7f72.md","title":"6.3 Nginx \u90e8\u7f72","is_probation":0,"ref":"6.3 Nginx \u90e8\u7f72.md","path":"126150","index":64},{"id":126151,"pid":126147,"name":"6.4 Apache \u90e8\u7f72.md","title":"6.4 Apache \u90e8\u7f72","is_probation":0,"ref":"6.4 Apache \u90e8\u7f72.md","path":"126151","index":65}]},{"id":126152,"pid":0,"name":"\u7b2c7\u7ae0 \u7b2c\u4e09\u65b9\u5e93.md","title":"\u7b2c7\u7ae0 \u7b2c\u4e09\u65b9\u5e93","is_probation":0,"ref":"\u7b2c7\u7ae0 \u7b2c\u4e09\u65b9\u5e93.md","path":"126152","index":66},{"id":126153,"pid":0,"name":"\u7b2c8\u7ae0 \u5e94\u7528\u4f8b\u5b50.md","title":"\u7b2c8\u7ae0 \u5e94\u7528\u4f8b\u5b50","is_probation":0,"ref":"\u7b2c8\u7ae0 \u5e94\u7528\u4f8b\u5b50.md","path":"126153","index":67,"articles":[{"id":126154,"pid":126153,"name":"8.1 \u5728\u7ebf\u804a\u5929\u5ba4.md","title":"8.1 \u5728\u7ebf\u804a\u5929\u5ba4","is_probation":0,"ref":"8.1 \u5728\u7ebf\u804a\u5929\u5ba4.md","path":"126154","index":68},{"id":126155,"pid":126153,"name":"8.2 \u77ed\u57df\u540d\u670d\u52a1.md","title":"8.2 \u77ed\u57df\u540d\u670d\u52a1","is_probation":0,"ref":"8.2 \u77ed\u57df\u540d\u670d\u52a1.md","path":"126155","index":69},{"id":126156,"pid":126153,"name":"8.3 Todo\u5217\u8868.md","title":"8.3 Todo\u5217\u8868","is_probation":0,"ref":"8.3 Todo\u5217\u8868.md","path":"126156","index":70}]},{"id":126157,"pid":0,"name":"\u7b2c9\u7ae0 FAQ.md","title":"\u7b2c9\u7ae0 FAQ","is_probation":0,"ref":"\u7b2c9\u7ae0 FAQ.md","path":"126157","index":71}]
+    }
+</script>
+<script type="text/javascript" src="https://static.kancloud.cn/asset/reader.js?version=e87c08887e961bb273c6"></script>
+<script type="text/javascript">
+    kancloud.bootstrap();
+</script>
+    <!-- Google Analytics -->
+    <script>
+        window.ga = window.ga || function () {
+            (ga.q = ga.q || []).push(arguments)
+        };
+        ga.l      = +new Date;
+        ga('create', 'UA-85687835-1', 'auto', 'web');
+        ga('set', 'transport', 'beacon');
+        
+                ga('web.send', 'pageview', {
+            dimension1:10412
+        });
+        window.sendPageView = function (page, title) {
+            ga('web.set', 'page', page);
+            ga('web.set', 'title', title);
+            ga('web.send', 'pageview', {
+                dimension1: 10412
+            });
+        }
+            </script>
+    <script async="" src="https://www.google-analytics.com/analytics.js"></script>
+    <!-- End Google Analytics -->
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><script src="http://localhost:8080/static/js/design.js"></script></body></html>

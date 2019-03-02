@@ -14,6 +14,8 @@ import (
 
 func init()  {
 
+
+
 	//是否开启 XSRF，默认为 false，不开启  防跨站
 	beego.BConfig.WebConfig.EnableXSRF = true
 	beego.BConfig.WebConfig.XSRFExpire = 3600  //过期时间，默认1小时
