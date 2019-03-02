@@ -110,12 +110,16 @@
 		</div>
 		<!-- END MAIN -->
 
-        <div id="navBtn" style="position: fixed;right:150px;bottom: 18px;display: none;">
+        <div id="navBtn" style="position: fixed;right:285px;bottom: 18px;display: none;">
             <button class="btn btn-default">切换导航页</button>
         </div>
 
-        <div id="copyBtn" style="position: fixed;right:18px;bottom: 18px;display: none;">
+        <div id="copyBtn" style="position: fixed;right:150px;bottom: 18px;display: none;">
             <button class="btn btn-primary">新建模板页</button>
+        </div>
+
+        <div id="resetBtn" style="position: fixed;right:28px;bottom: 18px;display: none;">
+            <button class="btn btn-danger">一键重置</button>
         </div>
 
 		<div class="clearfix"></div>
@@ -285,6 +289,7 @@
 
             if(userInfo.Type>2){
                 $('#user').show();
+                $('#resetBtn').show();
             }
             //$('#account').html(userInfo.Account);
             if(isPhone()){//设置导航栏箭头方向
@@ -316,6 +321,30 @@
                 //$('#mainframe').attr("src",url);
                 $('#myModal').modal("hide");
                 $('#home').click();
+            });
+
+            $('#resetBtn').on('click',function () {
+                swal({
+                    title: "确定重置关键词吗?",
+                    text: '重置将无法恢复该信息!',
+                    type: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff1200',
+                    cancelButtonColor: '#474747',
+                    confirmButtonText: '确定',
+                    cancelButtonText:'取消'
+                },function(){
+                    $.post('/main/kt/reset',{_xsrf:$('#token').val()},function (res) {
+                        if(res.code==1){
+                            swal("系统提示",res.msg,"success");
+                        }else{
+                            swal("系统提示",res.msg,"error");
+                        }
+
+                    }) ;
+                });
+
+
             });
 
             $('#addTemplete').on('click',function () {

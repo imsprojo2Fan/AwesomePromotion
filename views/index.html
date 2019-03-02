@@ -102,12 +102,13 @@
                     var item = dataList[i];
                     var url = "/template?v="+item.url;
                     var title = item.label.trim();
+                    var temp = title;
                     if(title.length>15){
-                        title = title.substring(0,12)+"...";
+                        title = title.substring(0,9)+"...";
                     }
                     $('.container').append('' +
                             '<div class="col-sm-2 item" style="">\n' +
-                            '     <a target="_blank" href="'+url+'">'+title+'</a>\n' +
+                            '     <a title="'+temp+'" target="_blank" href="'+url+'">'+title+'</a>\n' +
                             '</div>');
                 }
             }

@@ -128,6 +128,14 @@ func(this *Template) Insert4k2t(qMap map[string]interface{}) int64 {
 	return count
 }
 
+func(this *Template) Reset4k2t() int64 {
+
+	o := orm.NewOrm()
+	res,_:=o.Raw("update keyword2template set kid=6").Exec()
+	count,_ := res.RowsAffected()
+	return count
+}
+
 func(this *Template) Del4k2t(tid int64) int64 {
 
 	o := orm.NewOrm()

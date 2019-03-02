@@ -353,6 +353,20 @@ func(this *TemplateController) Delete() {
 	}
 }
 
+func(this *TemplateController) Reset() {
+	obj := new(models.Template)
+	sesion,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	uType := sesion.Get("type").(int)
+	if uType<=2{
+		this.jsonResult(200,-1,"当前操作无权限！",nil)
+	}
+	if obj.Reset4k2t()>0{
+		this.jsonResult(200,1,"关键词重置成功！",nil)
+	}else{
+		this.jsonResult(200,-1,"关键词重置失败,请稍后再试！",nil)
+	}
+}
+
 func (c *TemplateController) jsonResult(status enums.JsonResultCode,code int, msg string, data interface{}) {
 	r := &other.JsonResult{status, code, msg,data}
 	c.Data["json"] = r

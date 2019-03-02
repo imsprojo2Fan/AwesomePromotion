@@ -8,9 +8,28 @@
     <link href="../../static/css/root.css" rel="stylesheet">
     <link href="../../static/css/design.css" rel="stylesheet">
     <style>
-        .checkbox-inline+.checkbox-inline, .radio-inline+.radio-inline{
-            margin-left:0px;
-            margin-right: 5px;
+
+        .checkbox-inline+.checkbox-inline, .radio-inline+.radio-inline {
+            margin-top: 0;
+            margin-left: 0px;
+        }
+        .checkbox-inline, .radio-inline{
+            padding-left: 0px;
+            margin-right: 12px;
+        }
+        /* blue */
+        .icheckbox_flat-blue,
+        .iradio_flat-blue {
+            display: inline-block;
+            *
+            display: inline;
+            vertical-align: middle;
+            margin-right: 3px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            border: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -32,7 +51,7 @@
         <h2 class="title">模板页管理</h2>
         <ol class="breadcrumb">
             <li><span id="tabHref01" href="javascript:void(0)">数据列表</span></li>
-            <%/*<li><span id="tabHref02" class="active" href="javascript:void(0)">新增数据</span></li>*/%>
+            <li><span id="tabHref02" class="active" href="javascript:void(0)">新增数据</span></li>
         </ol>
     </div>
 
@@ -115,6 +134,60 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default"
                             data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- 新建模板页-模态框（Modal） -->
+    <div class="modal fade" id="myModal02" style="overflow-y: auto;z-index: 9999" tabindex="-1" role="dialog" aria-labelledby="myModal02Label" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" id="modalClose" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h3 style="font-weight: 700" class="modal-title" id="editModalLabel">
+                        新建模板页<span id="tip" style="font-size: 13px;font-weight: normal;"><span style="color: red">*</span>为必填</span>
+                    </h3>
+
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" autocomplete="off">
+
+                        <div >
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label form-label">链接地址<span style="color: red">*</span></label>
+                                <div class="col-sm-8">
+                                    <input id="urlInput" type="text" class="form-control" placeholder="请输入要拷贝的网页地址">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label form-label">关键词<span style="color: red">*</span></label>
+                                <div id="checkWrap" class="col-sm-8">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" id="inlineCheckbox1" value="option1"> 选项 1
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label form-label">备注信息</label>
+                                <div class="col-sm-8">
+                                    <textarea id="remark" class="form-control" placeholder=""></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="addTemplete" class="btn btn-default" >
+                        提交
                     </button>
                 </div>
             </div><!-- /.modal-content -->
@@ -212,11 +285,48 @@ Data Tables
             }else{
                 $('#tabHref02').addClass("active");
                 $(this).removeClass("active");
-                $('#tab2').fadeOut(100);
+                $('#myModal02').modal('hide');
                 $("#tab1").fadeIn(100);
                 refresh();
             }
         });
+
+        $('#addTemplete').on('click',function () {
+            var url = $('#urlInput').val().trim();
+            var keyArr = "";
+            $('input[name="keyword"]:checked').each(function() {
+                keyArr = keyArr+","+$(this).val();
+            });
+            keyArr = keyArr.substring(1,keyArr.length);
+
+            if(!url||!IsURL(url)){
+                tipTip("tip","错误提示:请输入正确的网页地址!");
+                return
+            }
+            if(!keyArr){
+                tipTip("tip","错误提示:请选择关键词!");
+                return
+            }
+            var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(url)[0];
+            $('#loading').show();
+            $.post("/main/template/add",{_xsrf:$('#token').val(),inputUrl:url,keywords:keyArr,domain:origin,remark:$('#remark').val().trim()},function (res) {
+                $('#loading').hide();
+                if(res.code===1){
+                    $('#myModal02').modal("hide");
+                    $('#urlInput').val("");
+                    $('#keyword').val("");
+                    $('#remark').val("");
+                    $('#tabHref01').click();
+                    swal("系统提示",res.msg,"success");
+                    window.open("/template?v="+res.data,"_blank");
+                }else{
+                    tipTip("tip",res.msg);
+                }
+
+            });
+
+        });
+
         $('#tabHref02').on("click",function () {
             var isActive = $(this).attr("class");
             if(!isActive){
@@ -225,7 +335,7 @@ Data Tables
                 $('#tabHref01').addClass("active");
                 $(this).removeClass("active");
                 $('#tab1').fadeOut(100);
-                $("#tab2").fadeIn(100);
+                $('#myModal02').modal('show');
             }
         });
 
@@ -287,10 +397,11 @@ Data Tables
             },
             columns: [
                 { data: 'label',"render":function (data) {
+                    var temp = data;
                         if(data.length>10){
-                            data = data.substring(0,8)+"...";
+                            data = data.substring(0,6)+"...";
                         }
-                        return data;
+                        return "<span title='"+temp+"'>"+data+"</span>" ;
                     }},
                 { data: 'keyword',"render":function (data) {
                         var str = "";
@@ -516,6 +627,19 @@ Data Tables
     //选中数量
     function selectedCount(name) {
         return $("input[name='" + name + "']:checked").length;
+    }
+
+    function tipTip(id,msg) {
+        $('#'+id).show();
+        $('#'+id).html(msg);
+        $('#'+id).css({
+            "color":"#ff0002b5",
+            "font-size":"13px",
+            "margin-left":"12px"
+        });
+        setTimeout(function () {
+            $('#'+id).hide();
+        },2000);
     }
 
 </script>

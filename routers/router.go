@@ -22,6 +22,7 @@ func init() {
 	beego.Router("/main/template/delete",&controllers.TemplateController{},"POST:Delete")
 	beego.Router("/main/template/list",&controllers.TemplateController{},"POST:List")
 	beego.Router("/main/template/update",&controllers.TemplateController{},"POST:Update")
+	beego.Router("/main/kt/reset",&controllers.TemplateController{},"POST:Reset")
 
 	//关键字相关
 	beego.Router("/main/keyword/add",&controllers.KeywordController{},"POST:Add")

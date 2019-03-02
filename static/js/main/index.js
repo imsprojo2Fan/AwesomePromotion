@@ -32,9 +32,11 @@ function redirect(htmlName,obj){
         }
         $('#copyBtn').show(200);
         $('#navBtn').show(200);
+        $('#resetBtn').show(200);
     }else{
         $('#copyBtn').hide(200);
         $('#navBtn').hide(200);
+        $('#resetBtn').hide(200);
     }
     $('#mainframe').attr("src",url);
 }
