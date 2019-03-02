@@ -2,8 +2,6 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"encoding/base64"
-	"time"
 	"AwesomePromotion/utils"
 	"AwesomePromotion/models"
 	"AwesomePromotion/enums"
@@ -19,6 +17,8 @@ import (
 	"github.com/astaxie/beego/orm"
 	"io/ioutil"
 	"strings"
+	"strconv"
+	"time"
 )
 
 type TemplateController struct {
@@ -186,6 +186,73 @@ func (this *TemplateController) Redirect() {
 
 }
 
+func(this *TemplateController) List()  {
+	sesion,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
+	uid := sesion.Get("id").(int64)
+	uids := strconv.FormatInt(uid, 10)
+	uType := sesion.Get("type").(int)
+	//{"recordsFiltered":1,"data":[{"password":"9f593c69b108dedf0f56e4907d46eff1","phone":"13922305912","created":"2018-08-06 10:06:36","nickname":"范tel青年","id":6,"type":3,"updated":"2018-09-26 17:46:15","account":"admin","email":"imsprojo2fan@gmail.com"}],"draw":17,"recordsTotal":1}
+	GlobalDraw++
+	qMap := make(map[string]interface{})
+	var dataList []orm.Params
+	var dataList02 []orm.Params
+	backMap := make(map[string]interface{})
+
+	pageNow,err2 := this.GetInt64("start")
+	pageSize,err := this.GetInt64("length")
+
+	if err!=nil || err2!=nil{
+		pageNow = 1
+		pageSize = 20
+		//this.jsonResult(http.StatusOK,-1, "rows or page should be number", nil)
+	}
+	sortType := this.GetString("order[0][dir]")
+	sortCol := "created"
+	searchKey := this.GetString("search[value]")
+
+	qMap["pageNow"] = pageNow
+	qMap["pageSize"] = pageSize
+	qMap["sortCol"] = sortCol
+	qMap["sortType"] = sortType
+	qMap["searchKey"] = searchKey
+	if uType<=2{//账号类型小于3的用户可查看所有信息
+		qMap["uid"] = uids
+	}else{
+		qMap["uid"] = ""
+	}
+
+	obj := new(models.Template)
+
+	//获取总记录数
+	records := obj.Count(qMap)
+	backMap["draw"] = GlobalDraw
+	backMap["recordsTotal"] = records
+	backMap["recordsFiltered"] = records
+	dataList = obj.ListByPage(qMap)
+	if len(dataList)==0{
+		backMap["data"] = make([]int, 0)
+	}else{
+		//获取模板-关键字关联信息
+		dataList02 = obj.List4k2t()
+		for _,item01:=range dataList{
+			item01["keyword"] = make([]interface{},0)
+			for _,item02 := range dataList02{
+				if item02["tid"] == item01["id"]{
+					var arr = item01["keyword"].([]interface{})
+					arr = append(arr,item02)
+					item01["keyword"] = arr
+				}
+			}
+		}
+		backMap["data"] = dataList
+	}
+
+	this.Data["json"] = backMap
+	this.ServeJSON()
+	this.StopRun()
+	//this.jsonResult(200,0,"查询成功！",backMap)
+}
+
 var lHost string
 func(this *TemplateController) Add()  {
 	lHost = "http://"+this.Ctx.Request.Host
@@ -238,52 +305,49 @@ func(this *TemplateController) Add()  {
 
 func(this *TemplateController) Update() {
 
-	str:= "更新用户信息成功"
-	user := new(models.User)
-	dbUser := new(models.User)
-	dbUser.Id,_ = this.GetInt64("id")
-	dbUser.Read(dbUser)//查询数据库的用户信息
-	account := this.GetString("account")
-	user.Account = account
-	if dbUser.Account==""{//当账号为空时才查询账号是否已被使用
-		user.SelectByCol(user,"account")//查询账号是否已被用
-		if user.Id>0{
-			this.jsonResult(200,-1,"当前账号不可用",nil)
-		}
-		str = "操作成功,您的密钥登录将会失效"
+	obj := new(models.Template)
+	obj.Id,_ = this.GetInt64("id")
+	if obj.Id==0{
+		this.jsonResult(200,-1,"id不能为空！",nil)
 	}
-	email := this.GetString("email")
-	user.Email = email
-	if dbUser.Email==""{
-		user.SelectByCol(user,"email")//查询邮箱是否已被用
-		if user.Id>0{
-			this.jsonResult(200,-1,"当前邮箱不可用",nil)
+
+	keyword := this.GetString("keyArr")
+	if keyword==""{
+		this.jsonResult(200,-1,"请输入关键字！",nil)
+	}
+	keyArr := strings.Split(keyword, ",")
+	//删除所有当前tid的数据
+	if obj.Del4k2t(obj.Id)>0{
+		for _,item:=range keyArr{//插入关键词及模板页关联表
+			qMap := make(map[string]interface{})
+			qMap["kid"] = item
+			qMap["tid"] = obj.Id
+			obj.Insert4k2t(qMap)
 		}
 	}
-	user.Id,_ = this.GetInt64("id")
-	user.Password = this.GetString("password")
-	if user.Password!=dbUser.Password{
-		key := beego.AppConfig.String("password::key")
-		salt := beego.AppConfig.String("password::salt")
-		//密码加密
-		result, err := utils.AesEncrypt([]byte(user.Password+salt), []byte(key))
-		if err != nil {
-			panic(err)
-		}
-		user.Password = base64.StdEncoding.EncodeToString(result)
-	}
-	user.Updated = time.Now()
-	cteate_,_ := this.GetInt64("created")
-	tm2 := time.Unix(cteate_/1000,0).Format("2006-01-02 15:04:05")
-	t,_ := time.Parse("2006-01-02 15:04:05",tm2)
-	user.Created = t
-	if user.Update(user){
-		this.jsonResult(200,1,str,nil)
+	//更新template信息
+	obj.Updated = time.Now()
+	if obj.Update(obj){
+		this.jsonResult(200,1,"更新数据成功！",nil)
 	}else{
-		this.jsonResult(200,-1,"更新用户信息失败,请稍后再试",nil)
+		this.jsonResult(200,-1,"更新数据失败！请稍后再试",nil)
 	}
+
+
 }
 
+func(this *TemplateController) Delete() {
+	obj := new(models.Template)
+	obj.Id,_ = this.GetInt64("id")
+	if obj.Id==0{
+		this.jsonResult(200,-1,"id不能为空！",nil)
+	}
+	if obj.Delete(obj){
+		this.jsonResult(200,1,"删除数据成功！",nil)
+	}else{
+		this.jsonResult(200,-1,"删除数据失败,请稍后再试！",nil)
+	}
+}
 
 func (c *TemplateController) jsonResult(status enums.JsonResultCode,code int, msg string, data interface{}) {
 	r := &other.JsonResult{status, code, msg,data}

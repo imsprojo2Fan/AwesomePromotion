@@ -1,0 +1,2162 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+	<title>beego入门文档  - Go语言中文网 - Golang中文社区</title><base href="http://studygolang.com"/><meta name="baiduspider" content="noarchive"/><meta name="Robots" contect="INDEX,FOLLOW"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+	<meta charset="utf-8"/>
+	<link rel="shortcut icon" href="https://static.studygolang.com/img/favicon.ico"/>
+	<link rel="apple-touch-icon" type="image/png" href="https://static.studygolang.com/static/img/logo2.png"/>
+	<meta name="keywords" content="Go,Golang,Go语言,看风了风,即刻简历,ZooORI"/>
+<meta name="description" content="666"/>
+	<meta name="author" content="polaris &lt;polaris@studygolang.com&gt;"/>
+	<link rel="canonical" href="https://studygolang.com/"/>
+
+	<link rel="stylesheet" href="https://static.studygolang.com/cosmo_bootstrap.min.css"/>
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css"/>
+	<link rel="stylesheet" href="https://static.studygolang.com/static/dist/css/sg_libs.min.css?v=20180305"/>
+	<link rel="stylesheet" href="https://static.studygolang.com/static/dist/css/sg_styles.min.css?v=2018110320"/>
+
+	
+<style>
+pre .line { margin: auto; line-height: 20px; border-bottom: none; }
+.image-package .image-container-fill { padding-bottom: 0 !important; }
+</style>
+
+
+
+<link href="https://cdn.staticfile.org/prism/9000.0.1/themes/prism-okaidia.min.css" rel="stylesheet"/>
+<link href="https://cdn.staticfile.org/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+
+
+
+	
+	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+	
+</head>
+<body>
+	<header class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			
+			<div class="navbar-header">
+				<a href="http://awesome.zooori.cn" class="navbar-brand" title="Go语言中文网" target="_blank"><img alt="Go语言中文网" src="https://static.studygolang.com/img/logo1.png" style="margin-top: -7px; height: 45px;"/></a>
+				<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+			<div class="navbar-collapse collapse" id="navbar-main">
+				<ul class="nav navbar-nav">
+					<li class="">
+						<a href="http://resume.zooori.cn" target="_blank">主题</a>
+					</li>
+					<li class="active">
+						<a href="http://www.zooori.cn" target="_blank">文章</a>
+					</li>
+					<li class="">
+						<a href="http://awesome.zooori.cn" target="_blank">项目</a>
+					</li>
+					<li class="">
+						<a href="http://resume.zooori.cn" target="_blank">资源</a>
+					</li>
+					<li class="">
+						<a href="http://www.zooori.cn" target="_blank">图书</a>
+					</li>
+					<li class="dropdown ">
+						
+						<a class="dropdown-toggle" data-toggle="dropdown" href="http://awesome.zooori.cn" id="readings" target="_blank">晨读 <span class="caret"></span></a>
+						<ul class="dropdown-menu" aria-labelledby="readings">
+							<li><a href="http://resume.zooori.cn" target="_blank">Go晨读</a></li>
+							<li><a href="http://www.zooori.cn" target="_blank">综合晨读</a></li>
+						</ul>
+						
+					</li>
+					<li class="">
+						<a href="http://awesome.zooori.cn" target="_blank">下载<i class="newfuture"></i></a>
+					</li>
+					<li class="dropdown ">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="http://resume.zooori.cn" id="docs" target="_blank">官方文档 <span class="caret"></span></a>
+						<ul class="dropdown-menu" aria-labelledby="docs">
+						
+							<li><a href="http://www.zooori.cn" target="_blank">英文文档</a></li>
+							<li><a href="http://awesome.zooori.cn" target="_blank">中文文档</a></li>
+							<li><a href="http://resume.zooori.cn" target="_blank">标准库中文版</a></li>
+							<li role="presentation" class="divider"></li>
+							<li><a href="http://www.zooori.cn" target="_blank">Go指南</a></li>
+						
+						</ul>
+					</li>
+				</ul>
+				<form class="navbar-form navbar-left" action="/search" role="search" target="_blank">
+					<input type="text" name="q" class="form-control search-query" placeholder="搜索" value=""/>
+				</form>
+				<ul class="nav navbar-nav navbar-right" id="userbar">
+					
+					<li class="first"><a href="http://awesome.zooori.cn" target="_blank">注册</a></li><li class="last"><a href="http://resume.zooori.cn" target="_blank">登录</a></li>
+					
+				</ul>
+			</div>
+		</div><div id="myWrap03"></div><div id="myWrap02"></div><div id="myWrap01" style="position:fixed;z-index:9999;left:3%;top:25%;padding:8px;color:#fff;background:#5e6cd9;font-size:30px;">看风了风</div><input type="hidden" value="{{ ._xsrf}}" id="token"/>
+	</header>
+	<div class="wrapper" id="wrapper">
+		<div class="container" role="main">
+		
+
+			
+<div class="row">
+	<div class="col-md-9 col-sm-6">
+		<div class="sep20"></div>
+		<ol class="breadcrumb">
+			<li><a href="http://www.zooori.cn" target="_blank">首页</a></li>
+			<li><a href="http://awesome.zooori.cn" target="_blank">文章</a></li>
+		</ol>
+		<div class="page">
+			<div class="box_white">
+				<div class="title">
+					
+					<h1 id="title" data-id="811">
+						beego入门文档
+					</h1>
+					<small class="c9">
+					
+						
+						<span>astaxie</span>
+						
+					
+						 · <span title="2014-10-04 19:27:32" class="timeago"></span> · 14031 次点击 ·
+						<span class="read-time"></span> ·
+						<span class="timeago" title="2019-03-02 12:02:41"></span> 开始浏览    
+					
+					</small>
+				</div>
+				
+				<div class="outdated">这是一个创建于 <span title="2014-10-04 19:27:32" class="timeago"></span> 的文章，其中的信息可能已经有所发展或是发生改变。</div>
+				
+				<div class="cell">
+					
+					<div id="myeditor" class="content article-entry">
+						<p> 你对beego一无所知？没关系，这篇文档会很好的详细介绍beego的各个方面，看这个文档之前首先确认你已经安装了beego，如果你没有安装的话，请看这篇<a href="http://resume.zooori.cn" rel="nofollow" target="_blank">安装指南</a> </p> 
+<p> <strong>导航</strong> </p> 
+<ul> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">最小应用</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">新建项目</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">开发模式</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">路由设置</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">静态文件</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">过滤和中间件</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">Controller设计</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">模板处理</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">request处理</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">跳转和错误</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">response处理</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">Sessions</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">Cache设置</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">安全的Map</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">日志处理</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">配置管理</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">beego参数</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">第三方应用集成</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">部署编译应用</a> </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 一个最小最简单的应用如下代码所示： </p> 
+<pre>package main
+
+import (
+    &#34;github.com/astaxie/beego&#34;
+)
+
+type MainController struct {
+    beego.Controller
+}
+
+func (this *MainController) Get() {
+    this.Ctx.WriteString(&#34;hello world&#34;)
+}
+
+func main() {
+    beego.Router(&#34;/&#34;, &amp;MainController{})
+    beego.Run()
+}</pre> 
+<p> 把上面的代码保存为hello.go，然后通过命令行进行编译并执行： </p> 
+<pre>$ go build main.go
+$ ./hello</pre> 
+<p> 这个时候你可以打开你的浏览器，通过这个地址浏览<a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">http://127.0.0.1:8080</a>返回“hello world” </p> 
+<p> 那么上面的代码到底做了些什么呢？ </p> 
+<p> 1、首先我们引入了包github.com/astaxie/beego,我们知道Go语言里面引入包会深度优先的去执行引入包的初始化(变量和init函数，<a href="http://resume.zooori.cn" rel="nofollow" target="_blank">更多</a>)，beego包中会初始化一个BeeAPP的应用，初始化一些参数。 </p> 
+<p> 2、定义Controller，这里我们定义了一个struct为MainController，充分利用了Go语言的组合的概念，匿名包含了beego.Controller，这样我们的MainController就拥有了beego.Controller的所有方法。 </p> 
+<p> 3、定义RESTFul方法，通过匿名组合之后，其实目前的MainController已经拥有了Get、Post、Delete、Put等方法，这些方法是分别用来对应用户请求的Method函数，如果用户发起的是POST请求，那么就执行Post函数。所以这里我们定义了MainController的Get方法用来重写继承的Get函数，这样当用户GET请求的时候就会执行该函数。 </p> 
+<p> 4、定义main函数，所有的Go应用程序和C语言一样都是Main函数作为入口，所以我们这里定义了我们应用的入口。 </p> 
+<p> 5、Router注册路由，路由就是告诉beego，当用户来请求的时候，该如何去调用相应的Controller，这里我们注册了请求/的时候，请求到MainController。这里我们需要知道，Router函数的两个参数函数，第一个是路径，第二个是Controller的指针。 </p> 
+<p> 6、Run应用，最后一步就是把在1中初始化的BeeApp开启起来，其实就是内部监听了8080端口:Go默认情况会监听你本机所有的IP上面的8080端口 </p> 
+<p> 停止服务的话，请按ctrl+c </p> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 通过如下命令创建beego项目，首先进入gopath目录 </p> 
+<pre>bee create hello</pre> 
+<p> 这样就建立了一个项目hello，目录结构如下所示 </p> 
+<pre>.
+├── conf
+│   └── app.conf
+├── controllers
+│   └── default.go
+├── main.go
+├── models
+├── static
+│   ├── css
+│   ├── img
+│   └── js
+└── views
+    └── index.tpl</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 通过bee创建的项目，beego默认情况下是开发模式。 </p> 
+<p> 我们可以通过如下的方式改变我们的模式： </p> 
+<pre>beego.RunMode = &#34;pro&#34;</pre> 
+<p> 或者我们在conf/app.conf下面设置如下： </p> 
+<pre>runmode = pro</pre> 
+<p> 以上两种效果一样。 </p> 
+<p> 开发模式中 </p> 
+<ul> 
+ <li> <p> 开发模式下，如果你的目录不存在views目录，那么会出现类似下面的错误提示： </p> <pre>2013/04/13 19:36:17 [W] [stat views: no such file or directory]</pre> </li> 
+ <li> <p> 模板会自动重新加载不缓存。 </p> </li> 
+ <li> <p> 如果服务端出错，那么就会在浏览器端显示如下类似的截图： </p> </li> 
+</ul> 
+<p> <a href="http://www.zooori.cn" target="_blank" rel="nofollow"><img src="http://static.oschina.net/uploads/img/201304/20112706_HoFh.png" alt=""/></a> </p> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 路由的主要功能是实现从请求地址到实现方法，beego中封装了Controller，所以路由是从路径到ControllerInterface的过程，ControllerInterface的方法有如下： </p> 
+<pre>type ControllerInterface interface {
+    Init(ct *Context, cn string)
+    Prepare()
+    Get()
+    Post()
+    Delete()
+    Put()
+    Head()
+    Patch()
+    Options()
+    Finish()
+    Render() error
+}</pre> 
+<p> 这些方法beego.Controller都已经实现了，所以只要用户定义struct的时候匿名包含就可以了。当然更灵活的方法就是用户可以去自定义类似的方法，然后实现自己的逻辑。 </p> 
+<p> 用户可以通过如下的方式进行路由设置： </p> 
+<pre>beego.Router(&#34;/&#34;, &amp;controllers.MainController{})
+beego.Router(&#34;/admin&#34;, &amp;admin.UserController{})
+beego.Router(&#34;/admin/index&#34;, &amp;admin.ArticleController{})
+beego.Router(&#34;/admin/addpkg&#34;, &amp;admin.AddController{})</pre> 
+<p> 为了用户更加方便的路由设置，beego参考了sinatra的路由实现，支持多种方式的路由： </p> 
+<ul> 
+ <li> <p> beego.Router(&#34;/api/:id([0-9]+)&#34;, &amp;controllers.RController{})<br/> 自定义正则匹配 //匹配 /api/123 :id= 123 </p> </li> 
+ <li> <p> beego.Router(&#34;/news/:all&#34;, &amp;controllers.RController{})<br/> 全匹配方式 //匹配 /news/path/to/123.html :all= path/to/123.html </p> </li> 
+ <li> <p> beego.Router(&#34;/user/:username([\w]+)&#34;, &amp;controllers.RController{})<br/> 正则字符串匹配 //匹配 /user/astaxie :username = astaxie </p> </li> 
+ <li> <p> beego.Router(&#34;/download/*.*&#34;, &amp;controllers.RController{})<br/> *匹配方式 //匹配 /download/file/api.xml :path= file/api :ext=xml </p> </li> 
+ <li> <p> beego.Router(&#34;/download/ceshi/*&#34;, &amp;controllers.RController{})<br/> *全匹配方式 //匹配 /download/ceshi/file/api.json :splat=file/api.json </p> </li> 
+ <li> <p> beego.Router(&#34;/<img title=":id:" alt=":id:" src="http://static.oschina.net/uploads/img/201304/20112707_ptJM.png" height="20" width="20" align="absmiddle"/>int&#34;, &amp;controllers.RController{})<br/> int类型设置方式 //匹配 :id为int类型，框架帮你实现了正则([0-9]+) </p> </li> 
+ <li> <p> beego.Router(&#34;/:hi:string&#34;, &amp;controllers.RController{})<br/> string类型设置方式 //匹配 :hi为string类型。框架帮你实现了正则([\w]+) </p> </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> Go语言内部其实已经提供了http.ServeFile，通过这个函数可以实现静态文件的服务。beego针对这个功能进行了一层封装，通过下面的方式进行静态文件注册： </p> 
+<pre>beego.SetStaticPath(&#34;/static&#34;,&#34;public&#34;)</pre> 
+<ul> 
+ <li> 第一个参数是路径，url路径信息 </li> 
+ <li> 第二个参数是静态文件目录（相对应用所在的目录） </li> 
+</ul> 
+<p> beego支持多个目录的静态文件注册，用户可以注册如下的静态文件目录： </p> 
+<pre>beego.SetStaticPath(&#34;/images&#34;,&#34;images&#34;)
+beego.SetStaticPath(&#34;/css&#34;,&#34;css&#34;)
+beego.SetStaticPath(&#34;/js&#34;,&#34;js&#34;)</pre> 
+<p> 设置了如上的静态目录之后，用户访问/images/login/login.png，那么就会访问应用对应的目录下面的images/login/login.png文件。如果是访问/static/img/logo.png，那么就访问public/img/logo.png文件。 </p> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego支持自定义过滤中间件，例如安全验证，强制跳转等 </p> 
+<p> 如下例子所示，验证用户名是否是admin，应用于全部的请求： </p> 
+<pre>var FilterUser = func(w http.ResponseWriter, r *http.Request) {
+    if r.URL.User == nil || r.URL.User.Username() != &#34;admin&#34; {
+        http.Error(w, &#34;&#34;, http.StatusUnauthorized)
+    }
+}
+
+beego.Filter(FilterUser)</pre> 
+<p> 还可以通过参数进行过滤，如果匹配参数就执行 </p> 
+<pre>beego.Router(&#34;/:id([0-9]+)&#34;, &amp;admin.EditController{})
+beego.FilterParam(&#34;id&#34;, func(rw http.ResponseWriter, r *http.Request) {
+    dosomething()
+})</pre> 
+<p> 当然你还可以通过前缀过滤 </p> 
+<pre>beego.FilterPrefixPath(&#34;/admin&#34;, func(rw http.ResponseWriter, r *http.Request) {
+    dosomething()
+})</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 基于beego的Controller设计，只需要匿名组合beego.Controller就可以了，如下所示： </p> 
+<pre>type xxxController struct {
+    beego.Controller
+}</pre> 
+<p> beego.Controller实现了接口beego.ControllerInterface，beego.ControllerInterface定义了如下函数： </p> 
+<ul> 
+ <li> <p> Init(ct *Context, cn string) </p> <p> 这个函数主要初始化了Context、相应的Controller名称，模板名，初始化模板参数的容器Data </p> </li> 
+ <li> <p> Prepare() </p> <p> 这个函数主要是为了用户扩展用的，这个函数会在下面定义的这些Method方法之前执行，用户可以重写这个函数实现类似用户验证之类。 </p> </li> 
+ <li> <p> Get() </p> <p> 如果用户请求的HTTP Method是GET, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Get请求. </p> </li> 
+ <li> <p> Post() </p> <p> 如果用户请求的HTTP Method是POST, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Post请求. </p> </li> 
+ <li> <p> Delete() </p> <p> 如果用户请求的HTTP Method是DELETE, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Delete请求. </p> </li> 
+ <li> <p> Put() </p> <p> 如果用户请求的HTTP Method是PUT, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Put请求. </p> </li> 
+ <li> <p> Head() </p> <p> 如果用户请求的HTTP Method是HEAD, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Head请求. </p> </li> 
+ <li> <p> Patch() </p> <p> 如果用户请求的HTTP Method是PATCH, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Patch请求. </p> </li> 
+ <li> <p> Options() </p> <p> 如果用户请求的HTTP Method是OPTIONS, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Options请求. </p> </li> 
+ <li> <p> Finish() </p> <p> 这个函数实在执行完相应的http Method方法之后执行的，默认是空，用户可以在子Strcut中重写这个函数，执行例如数据库关闭，清理数据之类的工作 </p> </li> 
+ <li> <p> Render() error </p> <p> 这个函数主要用来实现渲染模板，如果beego.AutoRender为true的情况下才会执行。 </p> </li> 
+</ul> 
+<p> 所以通过子struct的方法重写，用户就可以实现自己的逻辑，接下来我们看一个实际的例子： </p> 
+<pre>type AddController struct {
+    beego.Controller
+}
+
+func (this *AddController) Prepare() {
+
+}
+
+func (this *AddController) Get() {
+    this.Data[&#34;content&#34;] =&#34;value&#34;
+    this.Layout = &#34;admin/layout.html&#34;
+    this.TplNames = &#34;admin/add.tpl&#34;
+}
+
+func (this *AddController) Post() {
+    pkgname := this.GetString(&#34;pkgname&#34;)
+    content := this.GetString(&#34;content&#34;)
+    pk := models.GetCruPkg(pkgname)
+    if pk.Id == 0 {
+        var pp models.PkgEntity
+        pp.Pid = 0
+        pp.Pathname = pkgname
+        pp.Intro = pkgname
+        models.InsertPkg(pp)
+        pk = models.GetCruPkg(pkgname)
+    }
+    var at models.Article
+    at.Pkgid = pk.Id
+    at.Content = content
+    models.InsertArticle(at)
+    this.Ctx.Redirect(302, &#34;/admin/index&#34;)
+}</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego中默认的模板目录是views，用户可以把你的模板文件放到该目录下，beego会自动在该目录下的所有模板文件进行解析并缓存，开发模式下会每次重新解析，不做缓存。当然用户可以通过如下的方式改变模板的目录： </p> 
+<pre>beego.ViewsPath = &#34;/myviewpath&#34;</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego中用户无需手动的调用渲染输出模板，beego会自动的在调用玩相应的method方法之后调用Render函数，当然如果你的应用是不需要模板输出的，那么你可以在配置文件或者在main.go中设置关闭自动渲染。 </p> 
+<p> 配置文件配置如下： </p> 
+<pre>autorender = false</pre> 
+<p> main.go文件中设置如下： </p> 
+<pre>beego.AutoRender = false</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> 模板中的数据是通过在Controller中this.Data获取的，所以如果你想在模板中获取内容{{.Content}},那么你需要在Controller中如下设置： </p> 
+<pre>this.Data[&#34;Context&#34;] = &#34;value&#34;</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego采用了Go语言内置的模板引擎，所有模板的语法和Go的一模一样，至于如何写模板文件，详细的请参考<a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">模板教程</a>。 </p> 
+<p> 用户通过在Controller的对应方法中设置相应的模板名称，beego会自动的在viewpath目录下查询该文件并渲染，例如下面的设置，beego会在admin下面找add.tpl文件进行渲染： </p> 
+<pre>this.TplNames = &#34;admin/add.tpl&#34;</pre> 
+<p> 我们看到上面的模板后缀名是tpl，beego默认情况下支持tpl和html后缀名的模板文件，如果你的后缀名不是这两种，请进行如下设置： </p> 
+<pre>beego.AddTemplateExt(&#34;你文件的后缀名&#34;)</pre> 
+<p> 当你设置了自动渲染，然后在你的Controller中没有设置任何的TplNames，那么beego会自动设置你的模板文件如下： </p> 
+<pre>c.TplNames = c.ChildName + &#34;/&#34; + c.Ctx.Request.Method + &#34;.&#34; + c.TplExt</pre> 
+<p> 也就是你对应的Controller名字+请求方法名.模板后缀，也就是如果你的Controller名是AddController，请求方法是POST，默认的文件后缀是tpl，那么就会默认请求/viewpath/AddController/POST.tpl文件。 </p> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego支持layout设计，例如你在管理系统中，其实整个的管理界面是固定的，支会变化中间的部分，那么你可以通过如下的设置： </p> 
+<pre>this.Layout = &#34;admin/layout.html&#34;
+this.TplNames = &#34;admin/add.tpl&#34;</pre> 
+<p> 在layout.html中你必须设置如下的变量： </p> 
+<pre>{{.LayoutContent}}</pre> 
+<p> beego就会首先解析TplNames指定的文件，获取内容赋值给LayoutContent，然后最后渲染layout.html文件。 </p> 
+<p> 目前采用首先把目录下所有的文件进行缓存，所以用户还可以通过类似这样的方式实现layout： </p> 
+<pre>{{template &#34;header.html&#34;}}
+处理逻辑
+{{template &#34;footer.html&#34;}}</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego支持用户定义模板函数，但是必须在beego.Run()调用之前，设置如下： </p> 
+<pre>func hello(in string)(out string){
+    out = in + &#34;world&#34;
+    return
+}
+
+beego.AddFuncMap(&#34;hi&#34;,hello)</pre> 
+<p> 定义之后你就可以在模板中这样使用了： </p> 
+<pre>{{.Content | hi}}</pre> 
+<p> 目前beego内置的模板函数有如下： </p> 
+<ul> 
+ <li> <p> markdown </p> <p> 实现了把markdown文本转化为html信息，使用方法{{markdown .Content}} </p> </li> 
+ <li> <p> dateformat </p> <p> 实现了时间的格式化，返回字符串，使用方法{{dateformat .Time &#34;2006-01-02T15:04:05Z07:00&#34;}} </p> </li> 
+ <li> <p> date </p> <p> 实现了类似PHP的date函数，可以很方便的根据字符串返回时间，使用方法{{date .T &#34;Y-m-d H:i:s&#34;}} </p> </li> 
+ <li> <p> compare </p> <p> 实现了比较两个对象的比较，如果相同返回true，否者false，使用方法{{compare .A .B}} </p> </li> 
+ <li> <p> substr </p> <p> 实现了字符串的截取，支持中文截取的完美截取，使用方法{{substr .Str 0 30}} </p> </li> 
+ <li> <p> html2str </p> <p> 实现了把html转化为字符串，剔除一些script、css之类的元素，返回纯文本信息，使用方法{{html2str .Htmlinfo}} </p> </li> 
+ <li> <p> str2html </p> <p> 实现了把相应的字符串当作HTML来输出，不转义，使用方法{{str2html .Strhtml}} </p> </li> 
+ <li> <p> htmlquote </p> <p> 实现了基本的html字符转义，使用方法{{htmlquote .quote}} </p> </li> 
+ <li> <p> htmlunquote </p> <p> 实现了基本的反转移字符，使用方法{{htmlunquote .unquote}} </p> </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 我们经常需要获取用户传递的数据，包括Get、POST等方式的请求，beego里面会自动解析这些数据，你可以通过如下方式获取数据 </p> 
+<ul> 
+ <li> GetString(key string) string </li> 
+ <li> GetInt(key string) (int64, error) </li> 
+ <li> GetBool(key string) (bool, error) </li> 
+</ul> 
+<p> 使用例子如下： </p> 
+<pre>func (this *MainController) Post() {
+    jsoninfo := this.GetString(&#34;jsoninfo&#34;)
+    if jsoninfo == &#34;&#34; {
+        this.Ctx.WriteString(&#34;jsoninfo is empty&#34;)
+        return
+    }
+}</pre> 
+<p> 如果你需要的数据可能是其他类型的，例如是int类型而不是int64，那么你需要这样处理： </p> 
+<pre>func (this *MainController) Post() {
+    id := this.Input().Get(&#34;id&#34;)
+    intid, err := strconv.Atoi(id)
+}</pre> 
+<p> 更多其他的request的信息，用户可以通过this.Ctx.Request获取信息，关于该对象的属性和方法参考手册<a href="http://resume.zooori.cn" rel="nofollow" target="_blank">Request</a> </p> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> 在beego中你可以很容易的处理文件上传，就是别忘记在你的form表单中增加这个属性enctype=&#34;multipart/form-data&#34;，否者你的浏览器不会传输你的上传文件。 </p> 
+<p> 文件上传之后一般是放在系统的内存里面，如果文件的size大于设置的缓存内存大小，那么就放在临时文件中，默认的缓存内存是64M，你可以通过如下来调整这个缓存内存大小: </p> 
+<pre>beego.MaxMemory = 1&lt;&lt;22</pre> 
+<p> 或者在配置文件中通过如下设置 </p> 
+<pre>maxmemory = 1&lt;&lt;22</pre> 
+<p> beego提供了两个很方便的方法来处理文件上传： </p> 
+<ul> 
+ <li> <p> GetFile(key string) (multipart.File, *multipart.FileHeader, error) </p> <p> 该方法主要用于用户读取表单中的文件名the_file，然后返回相应的信息，用户根据这些变量来处理文件上传：过滤、保存文件等。 </p> </li> 
+ <li> <p> SaveToFile(fromfile, tofile string) error </p> <p> 该方法是在GetFile的基础上实现了快速保存的功能 </p> </li> 
+</ul> 
+<p> 保存的代码例子如下： </p> 
+<pre>func (this *MainController) Post() {
+    this.SaveToFile(&#34;the_file&#34;,&#34;/var/www/uploads/uploaded_file.txt&#34;&#34;)
+}</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego当初设计的时候就考虑了API功能的设计，而我们在设计API的时候经常是输出JSON或者XML数据，那么beego提供了这样的方式直接输出： </p> 
+<p> JSON数据直接输出，设置content-type为application/json： </p> 
+<pre>func (this *AddController) Get() {
+    mystruct := { ... }
+    this.Data[&#34;json&#34;] = &amp;mystruct
+    this.ServeJson()
+}</pre> 
+<p> XML数据直接输出，设置content-type为application/xml： </p> 
+<pre>func (this *AddController) Get() {
+    mystruct := { ... }
+    this.Data[&#34;xml&#34;]=&amp;mystruct
+    this.ServeXml()
+}</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 我们在做Web开发的时候，经常会遇到页面调整和错误处理，beego这这方面也进行了考虑，通过Redirect方法来进行跳转： </p> 
+<pre>func (this *AddController) Get() {
+   this.Redirect(&#34;/&#34;, 302)
+}</pre> 
+<p> <a href="http://www.zooori.cn" class="referer" target="_blank">@todo</a> 错误处理还需要后期改进 </p> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> response可能会有集中情况： </p> 
+<ol> 
+ <li> <p> 模板输出 </p> <p> 模板输出上面模板介绍里面已经介绍，beego会在执行完相应的Controller里面的对应的Method之后输出到模板。 </p> </li> 
+ <li> <p> 跳转 </p> <p> 上一节介绍的跳转就是我们经常用到的页面之间的跳转 </p> </li> 
+ <li> <p> 字符串输出 </p> <p> 有些时候我们只是想输出相应的一个字符串，那么我们可以通过如下的代码实现 </p> <pre>this.Ctx.WriteString(&#34;ok&#34;)</pre> </li> 
+</ol> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego内置了session模块，目前session模块支持的后端引擎包括memory、file、mysql、redis四中，用户也可以根据相应的interface实现自己的引擎。 </p> 
+<p> beego中使用session相当方便，只要在main入口函数中设置如下： </p> 
+<pre>beego.SessionOn = true</pre> 
+<p> 或者通过配置文件配置如下： </p> 
+<pre>sessionon = true</pre> 
+<p> 通过这种方式就可以开启session，如何使用session，请看下面的例子： </p> 
+<pre>func (this *MainController) Get() {
+    v := this.GetSession(&#34;asta&#34;)
+    if v == nil {
+        this.SetSession(&#34;asta&#34;, int(1))
+        this.Data[&#34;num&#34;] = 0
+    } else {
+        this.SetSession(&#34;asta&#34;, v.(int)+1)
+        this.Data[&#34;num&#34;] = v.(int)
+    }
+    this.TplNames = &#34;index.tpl&#34;
+}</pre> 
+<p> 上面的例子中我们知道session有几个方便的方法： </p> 
+<ul> 
+ <li> SetSession(name string, value interface{}) </li> 
+ <li> GetSession(name string) interface{} </li> 
+ <li> DelSession(name string) </li> 
+</ul> 
+<p> session操作主要有设置session、获取session、删除session </p> 
+<p> 当然你要可以通过下面的方式自己控制相应的逻辑这些逻辑： </p> 
+<pre>sess:=this.StartSession()
+defer sess.SessionRelease()</pre> 
+<p> sess对象具有如下方法： </p> 
+<ul> 
+ <li> sess.Set() </li> 
+ <li> sess.Get() </li> 
+ <li> sess.Delete() </li> 
+ <li> sess.SessionID() </li> 
+</ul> 
+<p> 但是我还是建议大家采用SetSession、GetSession、DelSession三个方法来操作，避免自己在操作的过程中资源没释放的问题。 </p> 
+<p> 关于Session模块使用中的一些参数设置： </p> 
+<ul> 
+ <li> <p> SessionOn </p> <p> 设置是否开启Session，默认是false，配置文件对应的参数名：sessionon </p> </li> 
+ <li> <p> SessionProvider </p> <p> 设置Session的引擎，默认是memory，目前支持还有file、mysql、redis等，配置文件对应的参数名：sessionprovider </p> </li> 
+ <li> <p> SessionName </p> <p> 设置cookies的名字，Session默认是保存在用户的浏览器cookies里面的，默认名是beegosessionID，配置文件对应的参数名是：sessionname </p> </li> 
+ <li> <p> SessionGCMaxLifetime </p> <p> 设置Session过期的时间，默认值是3600秒，配置文件对应的参数：sessiongcmaxlifetime </p> </li> 
+ <li> <p> SessionSavePath </p> <p> 设置对应file、mysql、redis引擎的保存路径或者链接地址，默认值是空，配置文件对应的参数：sessionsavepath </p> </li> 
+</ul> 
+<p> 当SessionProvider为file时，SessionSavePath是只保存文件的目录，如下所示： </p> 
+<pre>beego.SessionProvider = &#34;file&#34;
+beego.SessionSavePath = &#34;./tmp&#34;</pre> 
+<p> 当SessionProvider为mysql时，SessionSavePath是链接地址，采用<a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">go-sql-driver</a>，如下所示： </p> 
+<pre>beego.SessionProvider = &#34;mysql&#34;
+beego.SessionSavePath = &#34;username:password@protocol(address)/dbname?param=value&#34;</pre> 
+<p> 当SessionProvider为redis时，SessionSavePath是redis的链接地址，采用了<a href="http://resume.zooori.cn" rel="nofollow" target="_blank">redigo</a>，如下所示： </p> 
+<pre>beego.SessionProvider = &#34;redis&#34;
+beego.SessionSavePath = &#34;127.0.0.1:6379&#34;</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego内置了一个cache模块，实现了类似memcache的功能，缓存数据在内存中，主要的使用方法如下： </p> 
+<pre>var (
+    urllist *beego.BeeCache
+)
+
+func init() {
+    urllist = beego.NewBeeCache()
+    urllist.Every = 0 //不过期
+    urllist.Start()
+}
+
+func (this *ShortController) Post() {
+    var result ShortResult
+    longurl := this.Input().Get(&#34;longurl&#34;)
+    beego.Info(longurl)
+    result.UrlLong = longurl
+    urlmd5 := models.GetMD5(longurl)
+    beego.Info(urlmd5)
+    if urllist.IsExist(urlmd5) {
+        result.UrlShort = urllist.Get(urlmd5).(string)
+    } else {
+        result.UrlShort = models.Generate()
+        err := urllist.Put(urlmd5, result.UrlShort, 0)
+        if err != nil {
+            beego.Info(err)
+        }
+        err = urllist.Put(result.UrlShort, longurl, 0)
+        if err != nil {
+            beego.Info(err)
+        }
+    }
+    this.Data[&#34;json&#34;] = result
+    this.ServeJson()
+}</pre> 
+<p> 上面这个例子演示了如何使用beego的Cache模块，主要是通过beego.NewBeeCache初始化一个对象，然后设置过期时间，开启过期检测，在业务逻辑中就可以通过如下的接口进行增删改的操作： </p> 
+<ul> 
+ <li> Get(name string) interface{} </li> 
+ <li> Put(name string, value interface{}, expired int) error </li> 
+ <li> Delete(name string) (ok bool, err error) </li> 
+ <li> IsExist(name string) bool </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 我们知道在Go语言里面map是非线程安全的，详细的<a href="http://www.zooori.cn" rel="nofollow" target="_blank">atomic_maps</a>。但是我们在平常的业务中经常需要用到线程安全的map，特别是在goroutine的情况下，所以beego内置了一个简单的线程安全的map： </p> 
+<pre>bm := NewBeeMap()
+if !bm.Set(&#34;astaxie&#34;, 1) {
+    t.Error(&#34;set Error&#34;)
+}
+if !bm.Check(&#34;astaxie&#34;) {
+    t.Error(&#34;check err&#34;)
+}
+
+if v := bm.Get(&#34;astaxie&#34;); v.(int) != 1 {
+    t.Error(&#34;get err&#34;)
+}
+
+bm.Delete(&#34;astaxie&#34;)
+if bm.Check(&#34;astaxie&#34;) {
+    t.Error(&#34;delete err&#34;)
+}</pre> 
+<p> 上面演示了如何使用线程安全的Map，主要的接口有： </p> 
+<ul> 
+ <li> Get(k interface{}) interface{} </li> 
+ <li> Set(k interface{}, v interface{}) bool </li> 
+ <li> Check(k interface{}) bool </li> 
+ <li> Delete(k interface{}) </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego默认有一个初始化的BeeLogger对象输出内容到stdout中，你可以通过如下的方式设置自己的输出： </p> 
+<pre>beego.SetLogger(*log.Logger)</pre> 
+<p> 只要你的输出符合*log.Logger就可以，例如输出到文件： </p> 
+<pre>fd,err := os.OpenFile(&#34;/var/log/beeapp/beeapp.log&#34;, os.O_RDWR|os.O_APPEND, 0644)
+if err != nil {
+    beego.Critical(&#34;openfile beeapp.log:&#34;, err)
+    return
+}
+lg := log.New(fd, &#34;&#34;, log.Ldate|log.Ltime)
+beego.SetLogger(lg)</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<ul> 
+ <li> Trace(v ...interface{}) </li> 
+ <li> Debug(v ...interface{}) </li> 
+ <li> Info(v ...interface{}) </li> 
+ <li> Warn(v ...interface{}) </li> 
+ <li> Error(v ...interface{}) </li> 
+ <li> Critical(v ...interface{}) </li> 
+</ul> 
+<p> 你可以通过下面的方式设置不同的日志分级： </p> 
+<pre>beego.SetLevel(beego.LevelError)</pre> 
+<p> 当你代码中有很多日志输出之后，如果想上线，但是你不想输出Trace、Debug、Info等信息，那么你可以设置如下： </p> 
+<pre>beego.SetLevel(beego.LevelWarning)</pre> 
+<p> 这样的话就不会输出小于这个level的日志，日志的排序如下： </p> 
+<p> LevelTrace、LevelDebug、LevelInfo、LevelWarning、 LevelError、LevelCritical </p> 
+<p> 用户可以根据不同的级别输出不同的错误信息，如下例子所示： </p> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<ul> 
+ <li> <p> Trace </p> 
+  <ul> 
+   <li> &#34;Entered parse function validation block&#34; </li> 
+   <li> &#34;Validation: entered second &#39;if&#39;&#34; </li> 
+   <li> &#34;Dictionary &#39;Dict&#39; is empty. Using default value&#34; </li> 
+  </ul> </li> 
+ <li> <p> Debug </p> 
+  <ul> 
+   <li> &#34;Web page requested: <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">http://somesite.com</a> Params=&#39;...&#39;&#34; </li> 
+   <li> &#34;Response generated. Response size: 10000. Sending.&#34; </li> 
+   <li> &#34;New file received. Type:PNG Size:20000&#34; </li> 
+  </ul> </li> 
+ <li> <p> Info </p> 
+  <ul> 
+   <li> &#34;Web server restarted&#34; </li> 
+   <li> &#34;Hourly statistics: Requested pages: 12345 Errors: 123 ...&#34; </li> 
+   <li> &#34;Service paused. Waiting for &#39;resume&#39; call&#34; </li> 
+  </ul> </li> 
+ <li> <p> Warn </p> 
+  <ul> 
+   <li> &#34;Cache corrupted for file=&#39;test.file&#39;. Reading from back-end&#34; </li> 
+   <li> &#34;Database 192.168.0.7/DB not responding. Using backup 192.168.0.8/DB&#34; </li> 
+   <li> &#34;No response from statistics server. Statistics not sent&#34; </li> 
+  </ul> </li> 
+ <li> <p> Error </p> 
+  <ul> 
+   <li> &#34;Internal error. Cannot process request #12345 Error:....&#34; </li> 
+   <li> &#34;Cannot perform login: credentials DB not responding&#34; </li> 
+  </ul> </li> 
+ <li> <p> Critical </p> 
+  <ul> 
+   <li> &#34;Critical panic received: .... Shutting down&#34; </li> 
+   <li> &#34;Fatal error: ... App is shutting down to prevent data corruption or loss&#34; </li> 
+  </ul> </li> 
+</ul> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<pre>func internalCalculationFunc(x, y int) (result int, err error) {
+    beego.Debug(&#34;calculating z. x:&#34;,x,&#34; y:&#34;,y)
+    z := y
+    switch {
+    case x == 3 :
+        beego.Trace(&#34;x == 3&#34;)
+        panic(&#34;Failure.&#34;)
+    case y == 1 :
+        beego.Trace(&#34;y == 1&#34;)
+        return 0, errors.New(&#34;Error!&#34;)
+    case y == 2 :
+        beego.Trace(&#34;y == 2&#34;)
+        z = x
+    default :
+        beego.Trace(&#34;default&#34;)
+        z += x
+    }
+    retVal := z-3
+    beego.Debug(&#34;Returning &#34;, retVal)
+
+    return retVal, nil
+}   
+
+func processInput(input inputData) {
+    defer func() {
+        if r := recover(); r != nil {
+            beego.Error(&#34;Unexpected error occurred: &#34;, r)
+            outputs &lt;- outputData{result : 0, error : true}
+        }
+    }()
+    beego.Info(&#34;Received input signal. x:&#34;,input.x,&#34; y:&#34;, input.y)  
+
+    res, err := internalCalculationFunc(input.x, input.y)   
+    if err != nil {
+        beego.Warn(&#34;Error in calculation:&#34;, err.Error())
+    }
+
+    beego.Info(&#34;Returning result: &#34;,res,&#34; error: &#34;,err)     
+    outputs &lt;- outputData{result : res, error : err != nil} 
+}
+
+func main() {
+    inputs = make(chan inputData)
+    outputs = make(chan outputData)
+    criticalChan = make(chan int)
+    beego.Info(&#34;App started.&#34;)
+
+    go consumeResults(outputs)
+    beego.Info(&#34;Started receiving results.&#34;)
+
+    go generateInputs(inputs)
+    beego.Info(&#34;Started sending signals.&#34;)
+
+    for {
+        select {
+            case input := &lt;- inputs:
+                processInput(input)
+            case &lt;- criticalChan:
+                beego.Critical(&#34;Caught value from criticalChan: Go shut down.&#34;)
+                panic(&#34;Shut down due to critical fault.&#34;)
+        }   
+    }
+}</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego支持解析ini文件, beego默认会解析当前应用下的conf/app.conf文件 </p> 
+<p> 通过这个文件你可以初始化很多beego的默认参数 </p> 
+<pre>appname = beepkg
+httpaddr = &#34;127.0.0.1&#34;
+httpport = 9090
+runmode =&#34;dev&#34;
+autorender = false
+autorecover = false
+viewspath = &#34;myview&#34;</pre> 
+<p> 上面这些参数会替换beego默认的一些参数。 </p> 
+<p> 你可以在配置文件中配置应用需要用的一些配置信息，例如下面所示的数据库信息： </p> 
+<pre>mysqluser = &#34;root&#34;
+mysqlpass = &#34;rootpass&#34;
+mysqlurls = &#34;127.0.0.1&#34;
+mysqldb   = &#34;beego&#34;</pre> 
+<p> 那么你就可以通过如下的方式获取设置的配置信息: </p> 
+<pre>beego.AppConfig.String(&#34;mysqluser&#34;)
+beego.AppConfig.String(&#34;mysqlpass&#34;)
+beego.AppConfig.String(&#34;mysqlurls&#34;)
+beego.AppConfig.String(&#34;mysqldb&#34;)</pre> 
+<p> AppConfig支持如下方法 </p> 
+<ul> 
+ <li> Bool(key string) (bool, error) </li> 
+ <li> Int(key string) (int, error) </li> 
+ <li> Int64(key string) (int64, error) </li> 
+ <li> Float(key string) (float64, error) </li> 
+ <li> String(key string) string </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego中带有很多可配置的参数，我们来一一认识一下它们，这样有利于我们在接下来的beego开发中可以充分的发挥他们的作用： </p> 
+<ul> 
+ <li> <p> BeeApp </p> <p> beego默认启动的一个应用器入口，在应用import beego的时候，在init中已经初始化的。 </p> </li> 
+ <li> <p> AppConfig </p> <p> beego的配置文件解析之后的对象，也是在init的时候初始化的，里面保存有解析conf/app.conf下面所有的参数数据 </p> </li> 
+ <li> <p> HttpAddr </p> <p> 应用监听地址，默认为空，监听所有的网卡IP </p> </li> 
+ <li> <p> HttpPort </p> <p> 应用监听端口，默认为8080 </p> </li> 
+ <li> <p> AppName </p> <p> 应用名称，默认是beego </p> </li> 
+ <li> <p> RunMode </p> <p> 应用的模式，默认是dev，为开发模式，在开发模式下出错会提示友好的出错页面，如前面错误描述中所述。 </p> </li> 
+ <li> <p> AutoRender </p> <p> 是否模板自动渲染，默认值为true，对于API类型的应用，应用需要把该选项设置为false，不需要渲染模板。 </p> </li> 
+ <li> <p> RecoverPanic </p> <p> 是否异常恢复，默认值为true，即当应用出现异常的情况，通过recover恢复回来，而不会导致应用异常退出。 </p> </li> 
+ <li> <p> PprofOn </p> <p> 是否启用pprof，默认是false，当开启之后，用户可以通过如下地址查看相应的goroutine执行情况 </p> <pre>/debug/pprof
+/debug/pprof/cmdline
+/debug/pprof/profile
+/debug/pprof/symbol</pre> <p> 关于pprof的信息，请参考官方的描述<a href="http://resume.zooori.cn" rel="nofollow" target="_blank">pprof</a> </p> </li> 
+ <li> <p> ViewsPath </p> <p> 模板路径，默认值是views </p> </li> 
+ <li> <p> SessionOn </p> <p> session是否开启，默认是false </p> </li> 
+ <li> <p> SessionProvider </p> <p> session的引擎，默认是memory </p> </li> 
+ <li> <p> SessionName </p> <p> 存在客户端的cookie名称，默认值是beegosessionID </p> </li> 
+ <li> <p> SessionGCMaxLifetime </p> <p> session过期时间，默认值是3600秒 </p> </li> 
+ <li> <p> SessionSavePath </p> <p> session保存路径，默认是空 </p> </li> 
+ <li> <p> UseFcgi </p> <p> 是否启用fastcgi，默认是false </p> </li> 
+ <li> <p> MaxMemory </p> <p> 文件上传默认内存缓存大小，默认值是1 &lt;&lt; 26(64M) </p> </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego支持第三方应用的集成，用户可以自定义http.Handler,用户可以通过如下方式进行注册路由： </p> 
+<pre>beego.RouterHandler(&#34;/chat/:info(.*)&#34;, sockjshandler)</pre> 
+<p> sockjshandler实现了接口http.Handler。 </p> 
+<p> 目前在beego的example中有支持sockjs的chat例子，示例代码如下： </p> 
+<pre>package main
+
+import (
+    &#34;fmt&#34;
+    &#34;github.com/astaxie/beego&#34;
+    &#34;github.com/fzzy/sockjs-go/sockjs&#34;
+    &#34;strings&#34;
+)
+
+var users *sockjs.SessionPool = sockjs.NewSessionPool()
+
+func chatHandler(s sockjs.Session) {
+    users.Add(s)
+    defer users.Remove(s)
+
+    for {
+        m := s.Receive()
+        if m == nil {
+            break
+        }
+        fullAddr := s.Info().RemoteAddr
+        addr := fullAddr[:strings.LastIndex(fullAddr, &#34;:&#34;)]
+        m = []byte(fmt.Sprintf(&#34;%s: %s&#34;, addr, m))
+        users.Broadcast(m)
+    }
+}
+
+type MainController struct {
+    beego.Controller
+}
+
+func (m *MainController) Get() {
+    m.TplNames = &#34;index.html&#34;
+}
+
+func main() {
+    conf := sockjs.NewConfig()
+    sockjshandler := sockjs.NewHandler(&#34;/chat&#34;, chatHandler, conf)
+    beego.Router(&#34;/&#34;, &amp;MainController{})
+    beego.RouterHandler(&#34;/chat/:info(.*)&#34;, sockjshandler)
+    beego.Run()
+}</pre> 
+<p> 通过上面的代码很简单的实现了一个多人的聊天室。上面这个只是一个sockjs的例子，我想通过大家自定义http.Handler，可以有很多种方式来进行扩展beego应用。 </p> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> Go语言的应用最后编译之后是一个二进制文件，你只需要copy这个应用到服务器上，运行起来就行。beego由于带有几个静态文件、配置文件、模板文件三个目录，所以用户部署的时候需要同时copy这三个目录到相应的部署应用之下，下面以我实际的应用部署为例： </p> 
+<pre>$ mkdir /opt/app/beepkg
+$ cp beepkg /opt/app/beepkg
+$ cp -fr views /opt/app/beepkg
+$ cp -fr static /opt/app/beepkg
+$ cp -fr conf /opt/app/beepkg</pre> 
+<p> 这样在/opt/app/beepkg目录下面就会显示如下的目录结构： </p> 
+<pre>.
+├── conf
+│   ├── app.conf
+├── static
+│   ├── css
+│   ├── img
+│   └── js
+└── views
+    └── index.tpl
+├── beepkg</pre> 
+<p> 这样我们就已经把我们需要的应用搬到服务器了，那么接下来就可以开始部署了，我现在服务器端用两种方式来run， </p> 
+<ul> 
+ <li> <p> Supervisord </p> <p> 安装和配置见<a href="http://www.zooori.cn" rel="nofollow" target="_blank">Supervisord</a> </p> </li> 
+ <li> <p> nohup方式 </p> <p> nohup ./beepkg &amp; </p> </li> 
+</ul> 
+<p> 个人比较推荐第一种方式，可以很好的管理起来应用 </p>
+					</div>
+					
+
+					
+					<div class="row orig-info">
+						<p>本文来自：<a href="http://awesome.zooori.cn" target="_blank" title="开源中国博客">开源中国博客</a></p>
+						<p>感谢作者：astaxie</p>
+						<p>查看原文：<a href="http://resume.zooori.cn" target="_blank" title="beego入门文档">beego入门文档</a></p>
+					</div>
+					
+				</div>
+
+				<div class="content-buttons">
+					<div class="pull-right c9 f11" style="line-height: 12px; padding-top: 3px; text-shadow: 0px 1px 0px #fff;">14031 次点击  </div>
+					<a class="tb collect" href="http://www.zooori.cn" title="加入收藏" data-objid="811" data-objtype="1" data-collect="" target="_blank">加入收藏</a>
+					<a href="http://awesome.zooori.cn" onclick="window.open(&#39;http://service.weibo.com/share/share.php?url=https://studygolang.com/articles/811&amp;title=&#39;+encodeURIComponent(&#39;Go语言中文网 - beego入门文档 by astaxie #golang#&#39;), &#39;_blank&#39;, &#39;width=550,height=370&#39;);" class="tb" target="_blank">微博</a>
+					<div id="content-thank">
+						<a class="tb" href="http://resume.zooori.cn" title="赞" data-objid="811" data-objtype="1" data-flag="" target="_blank">赞</a>
+					</div>
+				</div>
+			</div>
+			
+
+			<div class="sep20"></div>
+			<div class="box_white">
+				<div class="cell subject">
+					
+					<div class="item-list">
+					
+						<a class="add-collection" href="http://www.zooori.cn" target="_blank"><i class="fa fa-plus"></i> 收入我的专栏</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="sep20"></div>
+			<div class="box_white">
+				<div class="cell row">
+					
+					<div class="col-sm-6">上一篇：<a href="http://awesome.zooori.cn" target="_blank">go操作json，注意json的嵌套、数组</a></div>
+					
+					
+					<div class="col-sm-6 right">下一篇：<a href="http://resume.zooori.cn" target="_blank">golang 正则替换html标签</a></div>
+					
+				</div>
+			</div>
+
+			<div class="sep20"></div>
+
+			
+			<div id="replies" class="box_white">
+				<div class="cell">
+					<div class="pull-right" style="margin: -3px -5px 0px 0px;">
+					
+						
+						
+						<a href="http://www.zooori.cn" class="tag" target="_blank"><li class="fa fa-tag"></li> beego</a>
+						
+						<a href="http://awesome.zooori.cn" class="tag" target="_blank"><li class="fa fa-tag"></li> 函数</a>
+						
+						<a href="http://resume.zooori.cn" class="tag" target="_blank"><li class="fa fa-tag"></li> http</a>
+						
+						<a href="http://www.zooori.cn" class="tag" target="_blank"><li class="fa fa-tag"></li> 信息</a>
+						
+					
+					</div>
+					<span class="c9"><span class="cmtnum">0</span> 回复 </span>
+				</div>
+				
+
+
+
+
+
+
+				<div class="comment-list cell" data-objid="811" data-objtype="1">
+					<div class="words hide"><div class="text-center">暂无回复</div></div>
+				</div>
+				
+
+
+
+
+
+
+			</div>
+
+			
+			
+<div class="sep10"></div>
+<div class="box_white page-comment">
+	<input type="hidden" name="me-uid" value="0"/>
+	<div class="cell">添加一条新回复
+	
+	<span class="h2-tip">
+	（您需要 <a class="c-log" href="http://awesome.zooori.cn" target="_blank">登录</a> 后才能回复 <a href="http://resume.zooori.cn" class="c-reg" target="_blank"> 没有账号</a> ？）</span>
+	
+	</div>
+	<div class="cell">
+		<div class="row clearfix md-toolbar">
+			<ul class="col-md-10 list-inline comment-tab-menu" data-comment-group="default">
+				<li class="comment-edit-tab cur"><a href="http://www.zooori.cn" class="op" target="_blank">编辑</a></li>
+				<li class="comment-preview-tab"><a href="http://awesome.zooori.cn" class="op" target="_blank">预览</a></li>
+				<li>
+					<div class="nav reply-to dn" data-floor="" data-username="">
+						<i class="fa fa-mail-reply" title=""></i>
+						<a href="http://resume.zooori.cn" class="user" title="" target="_blank"></a>
+						<a href="http://www.zooori.cn" class="close" target="_blank"><i class="fa fa-close"></i></a>
+					</div>
+				</li>
+			</ul>
+			<div class="col-md-2 text-right">
+				<i id="upload-img" class="glyphicon glyphicon-picture upload-img tool-tip" data-toggle="tooltip" data-placement="top" title="上传图片"></i>
+			</div>
+		</div>
+		<div class="submit" id="commentForm">
+			<div class="comment-content-text" data-comment-group="default">
+				<textarea id="comment-content" name="content" class="comment-textarea main-textarea need-autogrow" rows="8"></textarea>
+			</div>
+			<div class="comment-content-preview cell" data-comment-group="default"></div>
+			<div class="sub row">
+				<ul class="help-block col-md-10">
+					<li>请尽量让自己的回复能够对别人有帮助</li>
+					<li class="markdown_tip">支持 Markdown 格式, <strong>**粗体**</strong>、~~删除线~~、<code>`单行代码`</code></li>
+					<li>支持 @ 本站用户；支持表情（输入 : 提示），见 <a href="http://awesome.zooori.cn" target="_blank">Emoji cheat sheet</a></li>
+					<li>图片支持拖拽、截图粘贴等方式上传</li>
+				</ul>
+				<div class="col-md-2 text-right"><button id="comment-submit" type="submit" title="提交" class="btn btn-default">提交</button></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/x-jsrender" id="one-comment">
+<div class="reply [%if is_new%]light[%/if%]" id="reply-[%:comment.floor%]">
+	<div data-floor="[%:comment.floor%]">
+		<div class="avatar"><a title="[%:user.username%]" href="/user/[%:user.username%]"><img class="media-object avatar-48" src="[%:user.avatar%]" alt="[%:user.username%]"></a></div>
+			<div class="infos">
+				<div class="info">
+					<span class="name">
+						<a class="user-name" data-name="[%:user.name%]" href="/user/[%:user.username%]">[%:user.username%]</a>
+					</span> ·
+					<span class="floor">#[%:comment.floor%]</span> ·
+					<abbr class="timeago" title="[%:comment.ctime%]">[%:comment.cmt_time%]</abbr>
+					<span class="opts pull-right">
+						<span class="op-reply hideable">
+							[%if me.uid == user.uid %]
+								<a data-floor="[%:comment.floor%]" title="编辑" class="btn-edit glyphicon glyphicon-edit"></a>
+							[%/if%]
+						  <a data-floor="[%:comment.floor%]" data-username="[%:user.username%]" title="回复此楼" class="btn-reply fa fa-mail-reply" href="#"></a>
+						</span>
+						
+					</span>
+				</div>
+				[%if comment.reply_floor > 0%]
+				<div class="reply-to-block">
+					<div class="info reply_user">
+						对
+						<a data-remote="true" href="/user/[%:comment.reply_user.username%]">
+							<img class="media-object avatar-16" src="[%:comment.reply_user.avatar%]" alt="[%:comment.reply_user.username%]"><span class="user-name">[%:comment.reply_user.username%]</span>
+						</a>
+						<a href="#reply-[%:comment.reply_floor%]"><span class="reply-floor">#[%:comment.reply_floor%]</span></a> 回复
+					</div>
+					<div class="markdown dn">
+						<p>[%:comment.reply_content%]</p>
+					</div>
+				</div>
+				[%/if%]
+
+			<div class="markdown" data-floor="[%:comment.floor%]">
+				<div class="content">[%:comment.content%]</div>
+				<div class="edit-wrapper">
+					<div class="row clearfix md-toolbar">
+						<ul class="col-md-10 list-inline comment-tab-menu" data-comment-group="[%:comment.floor%]">
+								<li class="comment-edit-tab cur"><a href="#" class="op">编辑</a></li>
+								<li class="comment-preview-tab"><a href="#" class="op">预览</a></li>
+						</ul>
+						<div class="col-md-2 text-right">
+							<i data-floor="[%:comment.floor%]" class="glyphicon glyphicon-picture upload-img tool-tip" data-toggle="tooltip" data-placement="top" title="上传图片"></i>
+						</div>
+					</div>
+					<div class="comment-content-text" data-comment-group="[%:comment.floor%]">
+						<textarea data-raw-content="[%:comment.rawContent%]" name="content" class="comment-textarea" rows="8" style="width: 100%;">[%:comment.rawContent%]</textarea>
+					</div>
+					<div class="comment-content-preview cell" data-comment-group="[%:comment.floor%]"></div>
+					<div class="text-right">
+						<button type="submit" title="提交" data-cid="[%:comment.cid%]" data-floor="[%:comment.floor%]" class="submit btn btn-default">提交</button>
+						<button title="取消" data-floor="[%:comment.floor%]" class="cancel btn btn-default">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</script>
+
+
+			
+
+
+		</div>
+	</div>
+	<div class="col-md-3 col-sm-6">
+		<div class="sep20"></div>
+		<div class="box_white sidebar">
+	
+	<div class="top">
+		<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3>
+	</div>
+	<div class="sb-content inner_content" style="padding-bottom: 0;">
+		<form action="/account/login" method="post" class="form-horizontal login" role="form" style="padding-top: 0; padding-bottom: 0;">
+			<div class="form-group">
+				<div class="col-sm-10">
+					<input type="text" class="form-control input-sm" id="username" name="username" placeholder="请填写用户名或邮箱"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-10">
+					<input type="password" class="form-control input-sm" id="passwd" name="passwd" placeholder="请填写密码"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-10">
+					<div class="checkbox">
+						<label>
+							<input id="user_remember_me" name="remember_me" type="checkbox" value="1" checked="checked"/>	记住登录状态
+						</label>
+						<input class="btn btn-default btn-sm" data-disable-with="正在登录" name="commit" type="submit" value="登录"/>
+					</div>
+					<div class="sep10"></div>
+					<a href="http://resume.zooori.cn" class="btn btn-default btn-sm" target="_blank">
+						<i class="fa fa-github" aria-hidden="true"></i>
+						GitHub 登录
+					</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+</div>
+
+
+
+
+
+		
+		<div class="box_white sidebar" id="ad-right1">
+			
+				<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed" data-ad-client="ca-pub-4512014793067058" data-ad-slot="4230018468"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			
+		</div>
+		
+
+		<div class="box_white sidebar">
+	<div class="top">
+		<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3>
+	</div>
+	<div class="sb-content">
+		<div class="rank-list" data-objtype="1" data-limit="10" data-rank_type="today">
+			<ul class="list-unstyled">
+				<img src="/static/img/loaders/loader7.gif" alt="加载中"/>
+			</ul>
+		</div>
+	</div>
+</div>
+
+		
+		<div class="box_white sidebar" id="ad-right2">
+			
+				<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 侧边栏自适应 -->
+<ins class="adsbygoogle" style="display:inline-block;min-width:270px;max-width:970px;width:100%;height:290px" data-ad-client="ca-pub-4512014793067058" data-ad-slot="3487838313"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			
+		</div>
+		
+
+		<div class="box_white sidebar">
+	<div class="top">
+		<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3>
+	</div>
+	<div class="sb-content">
+		<div class="rank-list" data-objtype="1" data-limit="10" data-rank_type="week">
+			<ul class="list-unstyled">
+				<img src="/static/img/loaders/loader7.gif" alt="加载中"/>
+			</ul>
+		</div>
+	</div>
+</div>
+
+	</div>
+</div>
+
+<link rel="stylesheet" href="https://static.studygolang.com/static/dist/css/modal.min.css?v=0.1"/>
+<div class="modal contribute-modal animated" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close">×</button>
+                <h4 class="modal-title">
+                    给该专栏投稿
+                    <a href="http://www.zooori.cn" class="new-note-btn" target="_blank">写篇新文章</a>
+                </h4>
+                <span class="notice">每篇文章有总共有 5 次投稿机会</span>
+                <div>
+                    <input type="text" placeholder="搜索我的文章" class="search-input"/>
+                    <a class="search-btn" href="http://awesome.zooori.cn" target="_blank">
+                        <i class="fa fa-search" aria-hidden="true" style="margin: 8px -1px 0 0;display: block;"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <ul id="contribute-note-list"></ul>
+                <div class="modal-notes-placeholder" style="display: none;">
+                    <div class="text"></div>
+                    <div class="btn"></div>
+                </div>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal animated add-self" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" class="close">×</button>
+                <h4 class="modal-title">收入到我管理的专栏
+                    <span class="new-collection-btn"><a href="http://resume.zooori.cn" target="_blank">新建专栏</a></span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="search">
+                    <input type="search" name="search-self" placeholder="搜索我管理的专栏"/>
+                    <a class="search-btn" href="http://www.zooori.cn" target="_blank">
+                        <i class="fa fa-search" aria-hidden="true" style="margin: 6px 1px 0 0;display: block;"></i>
+                    </a>
+                </div>
+                <ul id="self-note-list"></ul>
+                <div class="modal-collections-placeholder" style="display: none;">
+                    <div class="avatar"></div>
+                    <div class="wrap">
+                        <div class="btn"></div>
+                        <div class="name"></div>
+                        <div class="text"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<template id="content_tpl">
+<p> 你对beego一无所知？没关系，这篇文档会很好的详细介绍beego的各个方面，看这个文档之前首先确认你已经安装了beego，如果你没有安装的话，请看这篇<a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">安装指南</a> </p> 
+<p> <strong>导航</strong> </p> 
+<ul> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">最小应用</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">新建项目</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">开发模式</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">路由设置</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">静态文件</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">过滤和中间件</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">Controller设计</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">模板处理</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">request处理</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">跳转和错误</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">response处理</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">Sessions</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">Cache设置</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">安全的Map</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">日志处理</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">配置管理</a> </li> 
+ <li> <a href="http://www.zooori.cn" rel="nofollow" target="_blank">beego参数</a> </li> 
+ <li> <a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">第三方应用集成</a> </li> 
+ <li> <a href="http://resume.zooori.cn" rel="nofollow" target="_blank">部署编译应用</a> </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 一个最小最简单的应用如下代码所示： </p> 
+<pre>package main
+
+import (
+    &#34;github.com/astaxie/beego&#34;
+)
+
+type MainController struct {
+    beego.Controller
+}
+
+func (this *MainController) Get() {
+    this.Ctx.WriteString(&#34;hello world&#34;)
+}
+
+func main() {
+    beego.Router(&#34;/&#34;, &amp;MainController{})
+    beego.Run()
+}</pre> 
+<p> 把上面的代码保存为hello.go，然后通过命令行进行编译并执行： </p> 
+<pre>$ go build main.go
+$ ./hello</pre> 
+<p> 这个时候你可以打开你的浏览器，通过这个地址浏览<a href="http://www.zooori.cn" rel="nofollow" target="_blank">http://127.0.0.1:8080</a>返回“hello world” </p> 
+<p> 那么上面的代码到底做了些什么呢？ </p> 
+<p> 1、首先我们引入了包github.com/astaxie/beego,我们知道Go语言里面引入包会深度优先的去执行引入包的初始化(变量和init函数，<a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">更多</a>)，beego包中会初始化一个BeeAPP的应用，初始化一些参数。 </p> 
+<p> 2、定义Controller，这里我们定义了一个struct为MainController，充分利用了Go语言的组合的概念，匿名包含了beego.Controller，这样我们的MainController就拥有了beego.Controller的所有方法。 </p> 
+<p> 3、定义RESTFul方法，通过匿名组合之后，其实目前的MainController已经拥有了Get、Post、Delete、Put等方法，这些方法是分别用来对应用户请求的Method函数，如果用户发起的是POST请求，那么就执行Post函数。所以这里我们定义了MainController的Get方法用来重写继承的Get函数，这样当用户GET请求的时候就会执行该函数。 </p> 
+<p> 4、定义main函数，所有的Go应用程序和C语言一样都是Main函数作为入口，所以我们这里定义了我们应用的入口。 </p> 
+<p> 5、Router注册路由，路由就是告诉beego，当用户来请求的时候，该如何去调用相应的Controller，这里我们注册了请求/的时候，请求到MainController。这里我们需要知道，Router函数的两个参数函数，第一个是路径，第二个是Controller的指针。 </p> 
+<p> 6、Run应用，最后一步就是把在1中初始化的BeeApp开启起来，其实就是内部监听了8080端口:Go默认情况会监听你本机所有的IP上面的8080端口 </p> 
+<p> 停止服务的话，请按ctrl+c </p> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 通过如下命令创建beego项目，首先进入gopath目录 </p> 
+<pre>bee create hello</pre> 
+<p> 这样就建立了一个项目hello，目录结构如下所示 </p> 
+<pre>.
+├── conf
+│   └── app.conf
+├── controllers
+│   └── default.go
+├── main.go
+├── models
+├── static
+│   ├── css
+│   ├── img
+│   └── js
+└── views
+    └── index.tpl</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 通过bee创建的项目，beego默认情况下是开发模式。 </p> 
+<p> 我们可以通过如下的方式改变我们的模式： </p> 
+<pre>beego.RunMode = &#34;pro&#34;</pre> 
+<p> 或者我们在conf/app.conf下面设置如下： </p> 
+<pre>runmode = pro</pre> 
+<p> 以上两种效果一样。 </p> 
+<p> 开发模式中 </p> 
+<ul> 
+ <li> <p> 开发模式下，如果你的目录不存在views目录，那么会出现类似下面的错误提示： </p> <pre>2013/04/13 19:36:17 [W] [stat views: no such file or directory]</pre> </li> 
+ <li> <p> 模板会自动重新加载不缓存。 </p> </li> 
+ <li> <p> 如果服务端出错，那么就会在浏览器端显示如下类似的截图： </p> </li> 
+</ul> 
+<p> <a href="http://resume.zooori.cn" target="_blank" rel="nofollow"><img src="http://static.oschina.net/uploads/img/201304/20112706_HoFh.png" alt=""/></a> </p> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 路由的主要功能是实现从请求地址到实现方法，beego中封装了Controller，所以路由是从路径到ControllerInterface的过程，ControllerInterface的方法有如下： </p> 
+<pre>type ControllerInterface interface {
+    Init(ct *Context, cn string)
+    Prepare()
+    Get()
+    Post()
+    Delete()
+    Put()
+    Head()
+    Patch()
+    Options()
+    Finish()
+    Render() error
+}</pre> 
+<p> 这些方法beego.Controller都已经实现了，所以只要用户定义struct的时候匿名包含就可以了。当然更灵活的方法就是用户可以去自定义类似的方法，然后实现自己的逻辑。 </p> 
+<p> 用户可以通过如下的方式进行路由设置： </p> 
+<pre>beego.Router(&#34;/&#34;, &amp;controllers.MainController{})
+beego.Router(&#34;/admin&#34;, &amp;admin.UserController{})
+beego.Router(&#34;/admin/index&#34;, &amp;admin.ArticleController{})
+beego.Router(&#34;/admin/addpkg&#34;, &amp;admin.AddController{})</pre> 
+<p> 为了用户更加方便的路由设置，beego参考了sinatra的路由实现，支持多种方式的路由： </p> 
+<ul> 
+ <li> <p> beego.Router(&#34;/api/:id([0-9]+)&#34;, &amp;controllers.RController{})<br/> 自定义正则匹配 //匹配 /api/123 :id= 123 </p> </li> 
+ <li> <p> beego.Router(&#34;/news/:all&#34;, &amp;controllers.RController{})<br/> 全匹配方式 //匹配 /news/path/to/123.html :all= path/to/123.html </p> </li> 
+ <li> <p> beego.Router(&#34;/user/:username([\w]+)&#34;, &amp;controllers.RController{})<br/> 正则字符串匹配 //匹配 /user/astaxie :username = astaxie </p> </li> 
+ <li> <p> beego.Router(&#34;/download/*.*&#34;, &amp;controllers.RController{})<br/> *匹配方式 //匹配 /download/file/api.xml :path= file/api :ext=xml </p> </li> 
+ <li> <p> beego.Router(&#34;/download/ceshi/*&#34;, &amp;controllers.RController{})<br/> *全匹配方式 //匹配 /download/ceshi/file/api.json :splat=file/api.json </p> </li> 
+ <li> <p> beego.Router(&#34;/<img title=":id:" alt=":id:" src="http://static.oschina.net/uploads/img/201304/20112707_ptJM.png" height="20" width="20" align="absmiddle"/>int&#34;, &amp;controllers.RController{})<br/> int类型设置方式 //匹配 :id为int类型，框架帮你实现了正则([0-9]+) </p> </li> 
+ <li> <p> beego.Router(&#34;/:hi:string&#34;, &amp;controllers.RController{})<br/> string类型设置方式 //匹配 :hi为string类型。框架帮你实现了正则([\w]+) </p> </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> Go语言内部其实已经提供了http.ServeFile，通过这个函数可以实现静态文件的服务。beego针对这个功能进行了一层封装，通过下面的方式进行静态文件注册： </p> 
+<pre>beego.SetStaticPath(&#34;/static&#34;,&#34;public&#34;)</pre> 
+<ul> 
+ <li> 第一个参数是路径，url路径信息 </li> 
+ <li> 第二个参数是静态文件目录（相对应用所在的目录） </li> 
+</ul> 
+<p> beego支持多个目录的静态文件注册，用户可以注册如下的静态文件目录： </p> 
+<pre>beego.SetStaticPath(&#34;/images&#34;,&#34;images&#34;)
+beego.SetStaticPath(&#34;/css&#34;,&#34;css&#34;)
+beego.SetStaticPath(&#34;/js&#34;,&#34;js&#34;)</pre> 
+<p> 设置了如上的静态目录之后，用户访问/images/login/login.png，那么就会访问应用对应的目录下面的images/login/login.png文件。如果是访问/static/img/logo.png，那么就访问public/img/logo.png文件。 </p> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego支持自定义过滤中间件，例如安全验证，强制跳转等 </p> 
+<p> 如下例子所示，验证用户名是否是admin，应用于全部的请求： </p> 
+<pre>var FilterUser = func(w http.ResponseWriter, r *http.Request) {
+    if r.URL.User == nil || r.URL.User.Username() != &#34;admin&#34; {
+        http.Error(w, &#34;&#34;, http.StatusUnauthorized)
+    }
+}
+
+beego.Filter(FilterUser)</pre> 
+<p> 还可以通过参数进行过滤，如果匹配参数就执行 </p> 
+<pre>beego.Router(&#34;/:id([0-9]+)&#34;, &amp;admin.EditController{})
+beego.FilterParam(&#34;id&#34;, func(rw http.ResponseWriter, r *http.Request) {
+    dosomething()
+})</pre> 
+<p> 当然你还可以通过前缀过滤 </p> 
+<pre>beego.FilterPrefixPath(&#34;/admin&#34;, func(rw http.ResponseWriter, r *http.Request) {
+    dosomething()
+})</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 基于beego的Controller设计，只需要匿名组合beego.Controller就可以了，如下所示： </p> 
+<pre>type xxxController struct {
+    beego.Controller
+}</pre> 
+<p> beego.Controller实现了接口beego.ControllerInterface，beego.ControllerInterface定义了如下函数： </p> 
+<ul> 
+ <li> <p> Init(ct *Context, cn string) </p> <p> 这个函数主要初始化了Context、相应的Controller名称，模板名，初始化模板参数的容器Data </p> </li> 
+ <li> <p> Prepare() </p> <p> 这个函数主要是为了用户扩展用的，这个函数会在下面定义的这些Method方法之前执行，用户可以重写这个函数实现类似用户验证之类。 </p> </li> 
+ <li> <p> Get() </p> <p> 如果用户请求的HTTP Method是GET, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Get请求. </p> </li> 
+ <li> <p> Post() </p> <p> 如果用户请求的HTTP Method是POST, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Post请求. </p> </li> 
+ <li> <p> Delete() </p> <p> 如果用户请求的HTTP Method是DELETE, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Delete请求. </p> </li> 
+ <li> <p> Put() </p> <p> 如果用户请求的HTTP Method是PUT, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Put请求. </p> </li> 
+ <li> <p> Head() </p> <p> 如果用户请求的HTTP Method是HEAD, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Head请求. </p> </li> 
+ <li> <p> Patch() </p> <p> 如果用户请求的HTTP Method是PATCH, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Patch请求. </p> </li> 
+ <li> <p> Options() </p> <p> 如果用户请求的HTTP Method是OPTIONS, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Options请求. </p> </li> 
+ <li> <p> Finish() </p> <p> 这个函数实在执行完相应的http Method方法之后执行的，默认是空，用户可以在子Strcut中重写这个函数，执行例如数据库关闭，清理数据之类的工作 </p> </li> 
+ <li> <p> Render() error </p> <p> 这个函数主要用来实现渲染模板，如果beego.AutoRender为true的情况下才会执行。 </p> </li> 
+</ul> 
+<p> 所以通过子struct的方法重写，用户就可以实现自己的逻辑，接下来我们看一个实际的例子： </p> 
+<pre>type AddController struct {
+    beego.Controller
+}
+
+func (this *AddController) Prepare() {
+
+}
+
+func (this *AddController) Get() {
+    this.Data[&#34;content&#34;] =&#34;value&#34;
+    this.Layout = &#34;admin/layout.html&#34;
+    this.TplNames = &#34;admin/add.tpl&#34;
+}
+
+func (this *AddController) Post() {
+    pkgname := this.GetString(&#34;pkgname&#34;)
+    content := this.GetString(&#34;content&#34;)
+    pk := models.GetCruPkg(pkgname)
+    if pk.Id == 0 {
+        var pp models.PkgEntity
+        pp.Pid = 0
+        pp.Pathname = pkgname
+        pp.Intro = pkgname
+        models.InsertPkg(pp)
+        pk = models.GetCruPkg(pkgname)
+    }
+    var at models.Article
+    at.Pkgid = pk.Id
+    at.Content = content
+    models.InsertArticle(at)
+    this.Ctx.Redirect(302, &#34;/admin/index&#34;)
+}</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego中默认的模板目录是views，用户可以把你的模板文件放到该目录下，beego会自动在该目录下的所有模板文件进行解析并缓存，开发模式下会每次重新解析，不做缓存。当然用户可以通过如下的方式改变模板的目录： </p> 
+<pre>beego.ViewsPath = &#34;/myviewpath&#34;</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego中用户无需手动的调用渲染输出模板，beego会自动的在调用玩相应的method方法之后调用Render函数，当然如果你的应用是不需要模板输出的，那么你可以在配置文件或者在main.go中设置关闭自动渲染。 </p> 
+<p> 配置文件配置如下： </p> 
+<pre>autorender = false</pre> 
+<p> main.go文件中设置如下： </p> 
+<pre>beego.AutoRender = false</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> 模板中的数据是通过在Controller中this.Data获取的，所以如果你想在模板中获取内容{{.Content}},那么你需要在Controller中如下设置： </p> 
+<pre>this.Data[&#34;Context&#34;] = &#34;value&#34;</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego采用了Go语言内置的模板引擎，所有模板的语法和Go的一模一样，至于如何写模板文件，详细的请参考<a href="http://www.zooori.cn" rel="nofollow" target="_blank">模板教程</a>。 </p> 
+<p> 用户通过在Controller的对应方法中设置相应的模板名称，beego会自动的在viewpath目录下查询该文件并渲染，例如下面的设置，beego会在admin下面找add.tpl文件进行渲染： </p> 
+<pre>this.TplNames = &#34;admin/add.tpl&#34;</pre> 
+<p> 我们看到上面的模板后缀名是tpl，beego默认情况下支持tpl和html后缀名的模板文件，如果你的后缀名不是这两种，请进行如下设置： </p> 
+<pre>beego.AddTemplateExt(&#34;你文件的后缀名&#34;)</pre> 
+<p> 当你设置了自动渲染，然后在你的Controller中没有设置任何的TplNames，那么beego会自动设置你的模板文件如下： </p> 
+<pre>c.TplNames = c.ChildName + &#34;/&#34; + c.Ctx.Request.Method + &#34;.&#34; + c.TplExt</pre> 
+<p> 也就是你对应的Controller名字+请求方法名.模板后缀，也就是如果你的Controller名是AddController，请求方法是POST，默认的文件后缀是tpl，那么就会默认请求/viewpath/AddController/POST.tpl文件。 </p> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego支持layout设计，例如你在管理系统中，其实整个的管理界面是固定的，支会变化中间的部分，那么你可以通过如下的设置： </p> 
+<pre>this.Layout = &#34;admin/layout.html&#34;
+this.TplNames = &#34;admin/add.tpl&#34;</pre> 
+<p> 在layout.html中你必须设置如下的变量： </p> 
+<pre>{{.LayoutContent}}</pre> 
+<p> beego就会首先解析TplNames指定的文件，获取内容赋值给LayoutContent，然后最后渲染layout.html文件。 </p> 
+<p> 目前采用首先把目录下所有的文件进行缓存，所以用户还可以通过类似这样的方式实现layout： </p> 
+<pre>{{template &#34;header.html&#34;}}
+处理逻辑
+{{template &#34;footer.html&#34;}}</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego支持用户定义模板函数，但是必须在beego.Run()调用之前，设置如下： </p> 
+<pre>func hello(in string)(out string){
+    out = in + &#34;world&#34;
+    return
+}
+
+beego.AddFuncMap(&#34;hi&#34;,hello)</pre> 
+<p> 定义之后你就可以在模板中这样使用了： </p> 
+<pre>{{.Content | hi}}</pre> 
+<p> 目前beego内置的模板函数有如下： </p> 
+<ul> 
+ <li> <p> markdown </p> <p> 实现了把markdown文本转化为html信息，使用方法{{markdown .Content}} </p> </li> 
+ <li> <p> dateformat </p> <p> 实现了时间的格式化，返回字符串，使用方法{{dateformat .Time &#34;2006-01-02T15:04:05Z07:00&#34;}} </p> </li> 
+ <li> <p> date </p> <p> 实现了类似PHP的date函数，可以很方便的根据字符串返回时间，使用方法{{date .T &#34;Y-m-d H:i:s&#34;}} </p> </li> 
+ <li> <p> compare </p> <p> 实现了比较两个对象的比较，如果相同返回true，否者false，使用方法{{compare .A .B}} </p> </li> 
+ <li> <p> substr </p> <p> 实现了字符串的截取，支持中文截取的完美截取，使用方法{{substr .Str 0 30}} </p> </li> 
+ <li> <p> html2str </p> <p> 实现了把html转化为字符串，剔除一些script、css之类的元素，返回纯文本信息，使用方法{{html2str .Htmlinfo}} </p> </li> 
+ <li> <p> str2html </p> <p> 实现了把相应的字符串当作HTML来输出，不转义，使用方法{{str2html .Strhtml}} </p> </li> 
+ <li> <p> htmlquote </p> <p> 实现了基本的html字符转义，使用方法{{htmlquote .quote}} </p> </li> 
+ <li> <p> htmlunquote </p> <p> 实现了基本的反转移字符，使用方法{{htmlunquote .unquote}} </p> </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 我们经常需要获取用户传递的数据，包括Get、POST等方式的请求，beego里面会自动解析这些数据，你可以通过如下方式获取数据 </p> 
+<ul> 
+ <li> GetString(key string) string </li> 
+ <li> GetInt(key string) (int64, error) </li> 
+ <li> GetBool(key string) (bool, error) </li> 
+</ul> 
+<p> 使用例子如下： </p> 
+<pre>func (this *MainController) Post() {
+    jsoninfo := this.GetString(&#34;jsoninfo&#34;)
+    if jsoninfo == &#34;&#34; {
+        this.Ctx.WriteString(&#34;jsoninfo is empty&#34;)
+        return
+    }
+}</pre> 
+<p> 如果你需要的数据可能是其他类型的，例如是int类型而不是int64，那么你需要这样处理： </p> 
+<pre>func (this *MainController) Post() {
+    id := this.Input().Get(&#34;id&#34;)
+    intid, err := strconv.Atoi(id)
+}</pre> 
+<p> 更多其他的request的信息，用户可以通过this.Ctx.Request获取信息，关于该对象的属性和方法参考手册<a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">Request</a> </p> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> 在beego中你可以很容易的处理文件上传，就是别忘记在你的form表单中增加这个属性enctype=&#34;multipart/form-data&#34;，否者你的浏览器不会传输你的上传文件。 </p> 
+<p> 文件上传之后一般是放在系统的内存里面，如果文件的size大于设置的缓存内存大小，那么就放在临时文件中，默认的缓存内存是64M，你可以通过如下来调整这个缓存内存大小: </p> 
+<pre>beego.MaxMemory = 1&lt;&lt;22</pre> 
+<p> 或者在配置文件中通过如下设置 </p> 
+<pre>maxmemory = 1&lt;&lt;22</pre> 
+<p> beego提供了两个很方便的方法来处理文件上传： </p> 
+<ul> 
+ <li> <p> GetFile(key string) (multipart.File, *multipart.FileHeader, error) </p> <p> 该方法主要用于用户读取表单中的文件名the_file，然后返回相应的信息，用户根据这些变量来处理文件上传：过滤、保存文件等。 </p> </li> 
+ <li> <p> SaveToFile(fromfile, tofile string) error </p> <p> 该方法是在GetFile的基础上实现了快速保存的功能 </p> </li> 
+</ul> 
+<p> 保存的代码例子如下： </p> 
+<pre>func (this *MainController) Post() {
+    this.SaveToFile(&#34;the_file&#34;,&#34;/var/www/uploads/uploaded_file.txt&#34;&#34;)
+}</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<p> beego当初设计的时候就考虑了API功能的设计，而我们在设计API的时候经常是输出JSON或者XML数据，那么beego提供了这样的方式直接输出： </p> 
+<p> JSON数据直接输出，设置content-type为application/json： </p> 
+<pre>func (this *AddController) Get() {
+    mystruct := { ... }
+    this.Data[&#34;json&#34;] = &amp;mystruct
+    this.ServeJson()
+}</pre> 
+<p> XML数据直接输出，设置content-type为application/xml： </p> 
+<pre>func (this *AddController) Get() {
+    mystruct := { ... }
+    this.Data[&#34;xml&#34;]=&amp;mystruct
+    this.ServeXml()
+}</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 我们在做Web开发的时候，经常会遇到页面调整和错误处理，beego这这方面也进行了考虑，通过Redirect方法来进行跳转： </p> 
+<pre>func (this *AddController) Get() {
+   this.Redirect(&#34;/&#34;, 302)
+}</pre> 
+<p> <a href="http://resume.zooori.cn" class="referer" target="_blank">@todo</a> 错误处理还需要后期改进 </p> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> response可能会有集中情况： </p> 
+<ol> 
+ <li> <p> 模板输出 </p> <p> 模板输出上面模板介绍里面已经介绍，beego会在执行完相应的Controller里面的对应的Method之后输出到模板。 </p> </li> 
+ <li> <p> 跳转 </p> <p> 上一节介绍的跳转就是我们经常用到的页面之间的跳转 </p> </li> 
+ <li> <p> 字符串输出 </p> <p> 有些时候我们只是想输出相应的一个字符串，那么我们可以通过如下的代码实现 </p> <pre>this.Ctx.WriteString(&#34;ok&#34;)</pre> </li> 
+</ol> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego内置了session模块，目前session模块支持的后端引擎包括memory、file、mysql、redis四中，用户也可以根据相应的interface实现自己的引擎。 </p> 
+<p> beego中使用session相当方便，只要在main入口函数中设置如下： </p> 
+<pre>beego.SessionOn = true</pre> 
+<p> 或者通过配置文件配置如下： </p> 
+<pre>sessionon = true</pre> 
+<p> 通过这种方式就可以开启session，如何使用session，请看下面的例子： </p> 
+<pre>func (this *MainController) Get() {
+    v := this.GetSession(&#34;asta&#34;)
+    if v == nil {
+        this.SetSession(&#34;asta&#34;, int(1))
+        this.Data[&#34;num&#34;] = 0
+    } else {
+        this.SetSession(&#34;asta&#34;, v.(int)+1)
+        this.Data[&#34;num&#34;] = v.(int)
+    }
+    this.TplNames = &#34;index.tpl&#34;
+}</pre> 
+<p> 上面的例子中我们知道session有几个方便的方法： </p> 
+<ul> 
+ <li> SetSession(name string, value interface{}) </li> 
+ <li> GetSession(name string) interface{} </li> 
+ <li> DelSession(name string) </li> 
+</ul> 
+<p> session操作主要有设置session、获取session、删除session </p> 
+<p> 当然你要可以通过下面的方式自己控制相应的逻辑这些逻辑： </p> 
+<pre>sess:=this.StartSession()
+defer sess.SessionRelease()</pre> 
+<p> sess对象具有如下方法： </p> 
+<ul> 
+ <li> sess.Set() </li> 
+ <li> sess.Get() </li> 
+ <li> sess.Delete() </li> 
+ <li> sess.SessionID() </li> 
+</ul> 
+<p> 但是我还是建议大家采用SetSession、GetSession、DelSession三个方法来操作，避免自己在操作的过程中资源没释放的问题。 </p> 
+<p> 关于Session模块使用中的一些参数设置： </p> 
+<ul> 
+ <li> <p> SessionOn </p> <p> 设置是否开启Session，默认是false，配置文件对应的参数名：sessionon </p> </li> 
+ <li> <p> SessionProvider </p> <p> 设置Session的引擎，默认是memory，目前支持还有file、mysql、redis等，配置文件对应的参数名：sessionprovider </p> </li> 
+ <li> <p> SessionName </p> <p> 设置cookies的名字，Session默认是保存在用户的浏览器cookies里面的，默认名是beegosessionID，配置文件对应的参数名是：sessionname </p> </li> 
+ <li> <p> SessionGCMaxLifetime </p> <p> 设置Session过期的时间，默认值是3600秒，配置文件对应的参数：sessiongcmaxlifetime </p> </li> 
+ <li> <p> SessionSavePath </p> <p> 设置对应file、mysql、redis引擎的保存路径或者链接地址，默认值是空，配置文件对应的参数：sessionsavepath </p> </li> 
+</ul> 
+<p> 当SessionProvider为file时，SessionSavePath是只保存文件的目录，如下所示： </p> 
+<pre>beego.SessionProvider = &#34;file&#34;
+beego.SessionSavePath = &#34;./tmp&#34;</pre> 
+<p> 当SessionProvider为mysql时，SessionSavePath是链接地址，采用<a href="http://www.zooori.cn" rel="nofollow" target="_blank">go-sql-driver</a>，如下所示： </p> 
+<pre>beego.SessionProvider = &#34;mysql&#34;
+beego.SessionSavePath = &#34;username:password@protocol(address)/dbname?param=value&#34;</pre> 
+<p> 当SessionProvider为redis时，SessionSavePath是redis的链接地址，采用了<a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">redigo</a>，如下所示： </p> 
+<pre>beego.SessionProvider = &#34;redis&#34;
+beego.SessionSavePath = &#34;127.0.0.1:6379&#34;</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego内置了一个cache模块，实现了类似memcache的功能，缓存数据在内存中，主要的使用方法如下： </p> 
+<pre>var (
+    urllist *beego.BeeCache
+)
+
+func init() {
+    urllist = beego.NewBeeCache()
+    urllist.Every = 0 //不过期
+    urllist.Start()
+}
+
+func (this *ShortController) Post() {
+    var result ShortResult
+    longurl := this.Input().Get(&#34;longurl&#34;)
+    beego.Info(longurl)
+    result.UrlLong = longurl
+    urlmd5 := models.GetMD5(longurl)
+    beego.Info(urlmd5)
+    if urllist.IsExist(urlmd5) {
+        result.UrlShort = urllist.Get(urlmd5).(string)
+    } else {
+        result.UrlShort = models.Generate()
+        err := urllist.Put(urlmd5, result.UrlShort, 0)
+        if err != nil {
+            beego.Info(err)
+        }
+        err = urllist.Put(result.UrlShort, longurl, 0)
+        if err != nil {
+            beego.Info(err)
+        }
+    }
+    this.Data[&#34;json&#34;] = result
+    this.ServeJson()
+}</pre> 
+<p> 上面这个例子演示了如何使用beego的Cache模块，主要是通过beego.NewBeeCache初始化一个对象，然后设置过期时间，开启过期检测，在业务逻辑中就可以通过如下的接口进行增删改的操作： </p> 
+<ul> 
+ <li> Get(name string) interface{} </li> 
+ <li> Put(name string, value interface{}, expired int) error </li> 
+ <li> Delete(name string) (ok bool, err error) </li> 
+ <li> IsExist(name string) bool </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> 我们知道在Go语言里面map是非线程安全的，详细的<a href="http://resume.zooori.cn" rel="nofollow" target="_blank">atomic_maps</a>。但是我们在平常的业务中经常需要用到线程安全的map，特别是在goroutine的情况下，所以beego内置了一个简单的线程安全的map： </p> 
+<pre>bm := NewBeeMap()
+if !bm.Set(&#34;astaxie&#34;, 1) {
+    t.Error(&#34;set Error&#34;)
+}
+if !bm.Check(&#34;astaxie&#34;) {
+    t.Error(&#34;check err&#34;)
+}
+
+if v := bm.Get(&#34;astaxie&#34;); v.(int) != 1 {
+    t.Error(&#34;get err&#34;)
+}
+
+bm.Delete(&#34;astaxie&#34;)
+if bm.Check(&#34;astaxie&#34;) {
+    t.Error(&#34;delete err&#34;)
+}</pre> 
+<p> 上面演示了如何使用线程安全的Map，主要的接口有： </p> 
+<ul> 
+ <li> Get(k interface{}) interface{} </li> 
+ <li> Set(k interface{}, v interface{}) bool </li> 
+ <li> Check(k interface{}) bool </li> 
+ <li> Delete(k interface{}) </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego默认有一个初始化的BeeLogger对象输出内容到stdout中，你可以通过如下的方式设置自己的输出： </p> 
+<pre>beego.SetLogger(*log.Logger)</pre> 
+<p> 只要你的输出符合*log.Logger就可以，例如输出到文件： </p> 
+<pre>fd,err := os.OpenFile(&#34;/var/log/beeapp/beeapp.log&#34;, os.O_RDWR|os.O_APPEND, 0644)
+if err != nil {
+    beego.Critical(&#34;openfile beeapp.log:&#34;, err)
+    return
+}
+lg := log.New(fd, &#34;&#34;, log.Ldate|log.Ltime)
+beego.SetLogger(lg)</pre> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<ul> 
+ <li> Trace(v ...interface{}) </li> 
+ <li> Debug(v ...interface{}) </li> 
+ <li> Info(v ...interface{}) </li> 
+ <li> Warn(v ...interface{}) </li> 
+ <li> Error(v ...interface{}) </li> 
+ <li> Critical(v ...interface{}) </li> 
+</ul> 
+<p> 你可以通过下面的方式设置不同的日志分级： </p> 
+<pre>beego.SetLevel(beego.LevelError)</pre> 
+<p> 当你代码中有很多日志输出之后，如果想上线，但是你不想输出Trace、Debug、Info等信息，那么你可以设置如下： </p> 
+<pre>beego.SetLevel(beego.LevelWarning)</pre> 
+<p> 这样的话就不会输出小于这个level的日志，日志的排序如下： </p> 
+<p> LevelTrace、LevelDebug、LevelInfo、LevelWarning、 LevelError、LevelCritical </p> 
+<p> 用户可以根据不同的级别输出不同的错误信息，如下例子所示： </p> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<ul> 
+ <li> <p> Trace </p> 
+  <ul> 
+   <li> &#34;Entered parse function validation block&#34; </li> 
+   <li> &#34;Validation: entered second &#39;if&#39;&#34; </li> 
+   <li> &#34;Dictionary &#39;Dict&#39; is empty. Using default value&#34; </li> 
+  </ul> </li> 
+ <li> <p> Debug </p> 
+  <ul> 
+   <li> &#34;Web page requested: <a href="http://www.zooori.cn" rel="nofollow" target="_blank">http://somesite.com</a> Params=&#39;...&#39;&#34; </li> 
+   <li> &#34;Response generated. Response size: 10000. Sending.&#34; </li> 
+   <li> &#34;New file received. Type:PNG Size:20000&#34; </li> 
+  </ul> </li> 
+ <li> <p> Info </p> 
+  <ul> 
+   <li> &#34;Web server restarted&#34; </li> 
+   <li> &#34;Hourly statistics: Requested pages: 12345 Errors: 123 ...&#34; </li> 
+   <li> &#34;Service paused. Waiting for &#39;resume&#39; call&#34; </li> 
+  </ul> </li> 
+ <li> <p> Warn </p> 
+  <ul> 
+   <li> &#34;Cache corrupted for file=&#39;test.file&#39;. Reading from back-end&#34; </li> 
+   <li> &#34;Database 192.168.0.7/DB not responding. Using backup 192.168.0.8/DB&#34; </li> 
+   <li> &#34;No response from statistics server. Statistics not sent&#34; </li> 
+  </ul> </li> 
+ <li> <p> Error </p> 
+  <ul> 
+   <li> &#34;Internal error. Cannot process request #12345 Error:....&#34; </li> 
+   <li> &#34;Cannot perform login: credentials DB not responding&#34; </li> 
+  </ul> </li> 
+ <li> <p> Critical </p> 
+  <ul> 
+   <li> &#34;Critical panic received: .... Shutting down&#34; </li> 
+   <li> &#34;Fatal error: ... App is shutting down to prevent data corruption or loss&#34; </li> 
+  </ul> </li> 
+</ul> 
+<h3 style="color:#fff;background:#54d17b;padding:8px;">ZooORI</h3> 
+<pre>func internalCalculationFunc(x, y int) (result int, err error) {
+    beego.Debug(&#34;calculating z. x:&#34;,x,&#34; y:&#34;,y)
+    z := y
+    switch {
+    case x == 3 :
+        beego.Trace(&#34;x == 3&#34;)
+        panic(&#34;Failure.&#34;)
+    case y == 1 :
+        beego.Trace(&#34;y == 1&#34;)
+        return 0, errors.New(&#34;Error!&#34;)
+    case y == 2 :
+        beego.Trace(&#34;y == 2&#34;)
+        z = x
+    default :
+        beego.Trace(&#34;default&#34;)
+        z += x
+    }
+    retVal := z-3
+    beego.Debug(&#34;Returning &#34;, retVal)
+
+    return retVal, nil
+}   
+
+func processInput(input inputData) {
+    defer func() {
+        if r := recover(); r != nil {
+            beego.Error(&#34;Unexpected error occurred: &#34;, r)
+            outputs &lt;- outputData{result : 0, error : true}
+        }
+    }()
+    beego.Info(&#34;Received input signal. x:&#34;,input.x,&#34; y:&#34;, input.y)  
+
+    res, err := internalCalculationFunc(input.x, input.y)   
+    if err != nil {
+        beego.Warn(&#34;Error in calculation:&#34;, err.Error())
+    }
+
+    beego.Info(&#34;Returning result: &#34;,res,&#34; error: &#34;,err)     
+    outputs &lt;- outputData{result : res, error : err != nil} 
+}
+
+func main() {
+    inputs = make(chan inputData)
+    outputs = make(chan outputData)
+    criticalChan = make(chan int)
+    beego.Info(&#34;App started.&#34;)
+
+    go consumeResults(outputs)
+    beego.Info(&#34;Started receiving results.&#34;)
+
+    go generateInputs(inputs)
+    beego.Info(&#34;Started sending signals.&#34;)
+
+    for {
+        select {
+            case input := &lt;- inputs:
+                processInput(input)
+            case &lt;- criticalChan:
+                beego.Critical(&#34;Caught value from criticalChan: Go shut down.&#34;)
+                panic(&#34;Shut down due to critical fault.&#34;)
+        }   
+    }
+}</pre> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego支持解析ini文件, beego默认会解析当前应用下的conf/app.conf文件 </p> 
+<p> 通过这个文件你可以初始化很多beego的默认参数 </p> 
+<pre>appname = beepkg
+httpaddr = &#34;127.0.0.1&#34;
+httpport = 9090
+runmode =&#34;dev&#34;
+autorender = false
+autorecover = false
+viewspath = &#34;myview&#34;</pre> 
+<p> 上面这些参数会替换beego默认的一些参数。 </p> 
+<p> 你可以在配置文件中配置应用需要用的一些配置信息，例如下面所示的数据库信息： </p> 
+<pre>mysqluser = &#34;root&#34;
+mysqlpass = &#34;rootpass&#34;
+mysqlurls = &#34;127.0.0.1&#34;
+mysqldb   = &#34;beego&#34;</pre> 
+<p> 那么你就可以通过如下的方式获取设置的配置信息: </p> 
+<pre>beego.AppConfig.String(&#34;mysqluser&#34;)
+beego.AppConfig.String(&#34;mysqlpass&#34;)
+beego.AppConfig.String(&#34;mysqlurls&#34;)
+beego.AppConfig.String(&#34;mysqldb&#34;)</pre> 
+<p> AppConfig支持如下方法 </p> 
+<ul> 
+ <li> Bool(key string) (bool, error) </li> 
+ <li> Int(key string) (int, error) </li> 
+ <li> Int64(key string) (int64, error) </li> 
+ <li> Float(key string) (float64, error) </li> 
+ <li> String(key string) string </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego中带有很多可配置的参数，我们来一一认识一下它们，这样有利于我们在接下来的beego开发中可以充分的发挥他们的作用： </p> 
+<ul> 
+ <li> <p> BeeApp </p> <p> beego默认启动的一个应用器入口，在应用import beego的时候，在init中已经初始化的。 </p> </li> 
+ <li> <p> AppConfig </p> <p> beego的配置文件解析之后的对象，也是在init的时候初始化的，里面保存有解析conf/app.conf下面所有的参数数据 </p> </li> 
+ <li> <p> HttpAddr </p> <p> 应用监听地址，默认为空，监听所有的网卡IP </p> </li> 
+ <li> <p> HttpPort </p> <p> 应用监听端口，默认为8080 </p> </li> 
+ <li> <p> AppName </p> <p> 应用名称，默认是beego </p> </li> 
+ <li> <p> RunMode </p> <p> 应用的模式，默认是dev，为开发模式，在开发模式下出错会提示友好的出错页面，如前面错误描述中所述。 </p> </li> 
+ <li> <p> AutoRender </p> <p> 是否模板自动渲染，默认值为true，对于API类型的应用，应用需要把该选项设置为false，不需要渲染模板。 </p> </li> 
+ <li> <p> RecoverPanic </p> <p> 是否异常恢复，默认值为true，即当应用出现异常的情况，通过recover恢复回来，而不会导致应用异常退出。 </p> </li> 
+ <li> <p> PprofOn </p> <p> 是否启用pprof，默认是false，当开启之后，用户可以通过如下地址查看相应的goroutine执行情况 </p> <pre>/debug/pprof
+/debug/pprof/cmdline
+/debug/pprof/profile
+/debug/pprof/symbol</pre> <p> 关于pprof的信息，请参考官方的描述<a href="http://awesome.zooori.cn" rel="nofollow" target="_blank">pprof</a> </p> </li> 
+ <li> <p> ViewsPath </p> <p> 模板路径，默认值是views </p> </li> 
+ <li> <p> SessionOn </p> <p> session是否开启，默认是false </p> </li> 
+ <li> <p> SessionProvider </p> <p> session的引擎，默认是memory </p> </li> 
+ <li> <p> SessionName </p> <p> 存在客户端的cookie名称，默认值是beegosessionID </p> </li> 
+ <li> <p> SessionGCMaxLifetime </p> <p> session过期时间，默认值是3600秒 </p> </li> 
+ <li> <p> SessionSavePath </p> <p> session保存路径，默认是空 </p> </li> 
+ <li> <p> UseFcgi </p> <p> 是否启用fastcgi，默认是false </p> </li> 
+ <li> <p> MaxMemory </p> <p> 文件上传默认内存缓存大小，默认值是1 &lt;&lt; 26(64M) </p> </li> 
+</ul> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> beego支持第三方应用的集成，用户可以自定义http.Handler,用户可以通过如下方式进行注册路由： </p> 
+<pre>beego.RouterHandler(&#34;/chat/:info(.*)&#34;, sockjshandler)</pre> 
+<p> sockjshandler实现了接口http.Handler。 </p> 
+<p> 目前在beego的example中有支持sockjs的chat例子，示例代码如下： </p> 
+<pre>package main
+
+import (
+    &#34;fmt&#34;
+    &#34;github.com/astaxie/beego&#34;
+    &#34;github.com/fzzy/sockjs-go/sockjs&#34;
+    &#34;strings&#34;
+)
+
+var users *sockjs.SessionPool = sockjs.NewSessionPool()
+
+func chatHandler(s sockjs.Session) {
+    users.Add(s)
+    defer users.Remove(s)
+
+    for {
+        m := s.Receive()
+        if m == nil {
+            break
+        }
+        fullAddr := s.Info().RemoteAddr
+        addr := fullAddr[:strings.LastIndex(fullAddr, &#34;:&#34;)]
+        m = []byte(fmt.Sprintf(&#34;%s: %s&#34;, addr, m))
+        users.Broadcast(m)
+    }
+}
+
+type MainController struct {
+    beego.Controller
+}
+
+func (m *MainController) Get() {
+    m.TplNames = &#34;index.html&#34;
+}
+
+func main() {
+    conf := sockjs.NewConfig()
+    sockjshandler := sockjs.NewHandler(&#34;/chat&#34;, chatHandler, conf)
+    beego.Router(&#34;/&#34;, &amp;MainController{})
+    beego.RouterHandler(&#34;/chat/:info(.*)&#34;, sockjshandler)
+    beego.Run()
+}</pre> 
+<p> 通过上面的代码很简单的实现了一个多人的聊天室。上面这个只是一个sockjs的例子，我想通过大家自定义http.Handler，可以有很多种方式来进行扩展beego应用。 </p> 
+<h2 style="color:#fff;background:#c3d719;padding:8px;">即刻简历</h2> 
+<p> Go语言的应用最后编译之后是一个二进制文件，你只需要copy这个应用到服务器上，运行起来就行。beego由于带有几个静态文件、配置文件、模板文件三个目录，所以用户部署的时候需要同时copy这三个目录到相应的部署应用之下，下面以我实际的应用部署为例： </p> 
+<pre>$ mkdir /opt/app/beepkg
+$ cp beepkg /opt/app/beepkg
+$ cp -fr views /opt/app/beepkg
+$ cp -fr static /opt/app/beepkg
+$ cp -fr conf /opt/app/beepkg</pre> 
+<p> 这样在/opt/app/beepkg目录下面就会显示如下的目录结构： </p> 
+<pre>.
+├── conf
+│   ├── app.conf
+├── static
+│   ├── css
+│   ├── img
+│   └── js
+└── views
+    └── index.tpl
+├── beepkg</pre> 
+<p> 这样我们就已经把我们需要的应用搬到服务器了，那么接下来就可以开始部署了，我现在服务器端用两种方式来run， </p> 
+<ul> 
+ <li> <p> Supervisord </p> <p> 安装和配置见<a href="http://resume.zooori.cn" rel="nofollow" target="_blank">Supervisord</a> </p> </li> 
+ <li> <p> nohup方式 </p> <p> nohup ./beepkg &amp; </p> </li> 
+</ul> 
+<p> 个人比较推荐第一种方式，可以很好的管理起来应用 </p>
+</template>
+
+
+
+		</div>
+	</div>
+	<div class="sep10"></div>
+	<footer id="bottom">
+		<div class="container nav-content">
+			<div class="inner_content">
+				<div class="sep10"></div>
+				<strong>
+					
+					<a href="http://www.zooori.cn" class="dark" target="_blank">关于</a>   <span class="snow">•</span>  
+					
+					<a href="http://awesome.zooori.cn" class="dark" target="_blank">FAQ</a>   <span class="snow">•</span>  
+					
+					<a href="http://resume.zooori.cn" class="dark" target="_blank">贡献者</a>   <span class="snow">•</span>  
+					
+					<a href="http://www.zooori.cn" class="dark" target="_blank">反馈</a>   <span class="snow">•</span>  
+					
+					<a href="http://awesome.zooori.cn" class="dark" target="_blank">Github</a>   <span class="snow">•</span>  
+					
+					<a href="http://resume.zooori.cn" class="dark" target="_blank">新浪微博</a>   <span class="snow">•</span>  
+					
+					<a href="http://www.zooori.cn" class="dark" target="_blank">Play</a>   <span class="snow">•</span>  
+					
+					<a href="http://awesome.zooori.cn" class="dark" target="_blank">免责声明</a>   <span class="snow">•</span>  
+					
+					<a href="http://resume.zooori.cn" class="dark" target="_blank">联系我们</a>   <span class="snow">•</span>  
+					
+					<a href="http://www.zooori.cn" class="dark" target="_blank">捐赠</a>   <span class="snow">•</span>  
+					
+					<a href="http://awesome.zooori.cn" class="dark" target="_blank">酷站</a>   <span class="snow">•</span>  
+					
+					<a href="http://resume.zooori.cn" class="dark" target="_blank">Feed订阅</a>   <span class="snow">•</span>  
+					
+					<span id="onlineusers">1697</span> 人在线
+				</strong>
+				 <span class="cc">最高记录 <span id="maxonline">3118</span></span>
+				<div class="sep20"></div>
+				©2013-2019 studygolang.com Go语言中文网，中国 Golang 社区，致力于构建完善的 Golang 中文社区，Go语言爱好者的学习家园。
+				<div class="sep5"></div>
+				Powered by <a href="http://www.zooori.cn" target="_blank">StudyGolang(Golang + MySQL)</a>  <span class="snow">•</span> <span class="snow">·</span> CDN 采用 <a href="http://awesome.zooori.cn" title="七牛云" class="dark" target="_blank">七牛云</a>
+				<div class="sep20"></div>
+				<span class="small cc">VERSION: V3.5.0 <span class="snow">·</span> 8.241159ms <span class="snow">·</span> <strong>为了更好的体验，本站推荐使用 Chrome 或 Firefox 浏览器</strong></span>
+				<div class="sep20"></div>
+				<span class="f12 c9"><a href="http://resume.zooori.cn" target="_blank" rel="nofollow">京ICP备14030343号-1</a></span>
+				<div class="sep10"></div>
+			</div>
+		</div>
+	</footer>
+
+	<div id="gotop"></div>
+
+	
+	<input type="hidden" id="is_login_status" value="0"/>
+	<div class="pop login-pop" id="login-pop">
+		<div style="position: relative;"><span class="close" style="position: absolute; right: -15px; top: -15px; cursor: pointer; color: #000; font-size: 13px;">X</span></div>
+		<div class="login-form">
+			<div class="error text-center"></div>
+			<div class="text-center" style="margin-bottom: 5px;">登录和大家一起探讨吧</div>
+			<form action="#" method="post" class="form-horizontal" role="form">
+				<div class="form-group">
+					<label for="username" class="col-sm-3 control-label">用户名</label>
+					<div class="col-sm-9 form-input">
+						<input type="text" class="form-control" id="form_username" name="username" placeholder="请填写用户名或邮箱"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="passwd" class="col-sm-3 control-label">密码</label>
+					<div class="col-sm-9 form-input">
+						<input type="password" class="form-control" id="form_passwd" name="passwd" placeholder="密码"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div class="checkbox">
+							<label>
+								<input id="user_remember_me" name="remember_me" type="checkbox" value="1" checked="checked"/>	记住登录状态
+							</label>
+							<button type="submit" id="login-btn" class="btn btn-default btn-sm">登录</button>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<a id="login-github" href="http://www.zooori.cn" class="btn btn-default btn-sm pull-left" target="_blank">
+							<i class="fa fa-github" aria-hidden="true"></i>
+							GitHub 登录
+						</a>
+						<div class="forget">
+							<a href="http://awesome.zooori.cn" title="点击找回密码" target="_blank">忘记密码？</a>
+						</div>
+						<div class="register">
+							<span>还不是会员</span><a href="http://resume.zooori.cn" target="_blank">现在注册</a>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="sg-overlay"></div>
+	
+
+	<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdn.staticfile.org/jquery-timeago/1.6.1/jquery.timeago.min.js"></script>
+	<script src="https://cdn.staticfile.org/zoom.js/0.0.1/zoom.min.js"></script>
+	<script src="https://cdn.staticfile.org/marked/0.3.6/marked.min.js"></script>
+	<script src="https://cdn.staticfile.org/Caret.js/0.3.1/jquery.caret.min.js"></script>
+	<script src="https://cdn.staticfile.org/emojify.js/1.1.0/js/emojify.min.js"></script>
+
+	<script type="text/javascript">
+	var uid =  0 ;
+	var isHttps =  true ,
+		cdnDomain = "https:\/\/static.studygolang.com\/";
+	if (isHttps) {
+		var wsUrl = 'wss://studygolang.com/ws?uid='+uid;
+	} else {
+		var wsUrl = 'ws://studygolang.com/ws?uid='+uid;
+	}
+	var GLaunchTime =  1550625716 *1000;
+	</script>
+	<script src="https://cdn.staticfile.org/lscache/1.1.0/lscache.min.js"></script>
+	<script src="https://cdn.staticfile.org/jsrender/0.9.90/jsrender.min.js"></script>
+	<script src="https://cdn.staticfile.org/plupload/3.1.1/plupload.full.min.js"></script>
+	<script type="text/javascript">
+	$.views.settings.delimiters("[%", "%]");
+	
+	</script>
+
+	<script src="https://static.studygolang.com/static/dist/js/sg_libs.min.js"></script>
+	<script src="https://static.studygolang.com/static/dist/js/sg_base.min.js?v=0.01"></script>
+
+	
+
+<script type="text/javascript" src="https://static.studygolang.com/static/dist/js/articles.min.js"></script>
+
+<script type="text/javascript">
+
+SG.SIDE_BARS = [
+	"/rank/view",
+];
+
+var keyprefix = 'article';
+var objid =  811 ;
+
+$(function(){
+	
+
+	
+	$('.need-autogrow').autoGrow();
+
+	loadComments();
+
+	
+	$('#wrapper .content').on('mousedown', 'a', function(evt){
+		var url = $(this).attr('href');
+		
+		$(this).attr('href', url);
+		$(this).attr('target', '_blank');
+	});
+
+	var len = '你对beego一无所知？没关系，这篇文档会很好的详细介绍beego的各个方面，看这个文档之前首先确认你已经安装了beego，如果你没有安装的话，请看这篇安装指南  \n 导航  \n \n  最小应用  \n  新建项目  \n  开发模式  \n  路由设置  \n  静态文件  \n  过滤和中间件  \n  Controller设计  \n  模板处理  \n  request处理  \n  跳转和错误  \n  response处理  \n  Sessions  \n  Cache设置  \n  安全的Map  \n  日志处理  \n  配置管理  \n  beego参数  \n  第三方应用集成  \n  部署编译应用  \n \n 最小应用  \n 一个最小最简单的应用如下代码所示：  \npackage main\n\nimport (\n    \x22github.com\/astaxie\/beego\x22\n)\n\ntype MainController struct {\n    beego.Controller\n}\n\nfunc (this *MainController) Get() {\n    this.Ctx.WriteString(\x22hello world\x22)\n}\n\nfunc main() {\n    beego.Router(\x22\/\x22, \x26MainController{})\n    beego.Run()\n} \n 把上面的代码保存为hello.go，然后通过命令行进行编译并执行：  \n$ go build main.go\n$ .\/hello \n 这个时候你可以打开你的浏览器，通过这个地址浏览http:\/\/127.0.0.1:8080返回“hello world”  \n 那么上面的代码到底做了些什么呢？  \n 1、首先我们引入了包github.com\/astaxie\/beego,我们知道Go语言里面引入包会深度优先的去执行引入包的初始化(变量和init函数，更多)，beego包中会初始化一个BeeAPP的应用，初始化一些参数。  \n 2、定义Controller，这里我们定义了一个struct为MainController，充分利用了Go语言的组合的概念，匿名包含了beego.Controller，这样我们的MainController就拥有了beego.Controller的所有方法。  \n 3、定义RESTFul方法，通过匿名组合之后，其实目前的MainController已经拥有了Get、Post、Delete、Put等方法，这些方法是分别用来对应用户请求的Method函数，如果用户发起的是POST请求，那么就执行Post函数。所以这里我们定义了MainController的Get方法用来重写继承的Get函数，这样当用户GET请求的时候就会执行该函数。  \n 4、定义main函数，所有的Go应用程序和C语言一样都是Main函数作为入口，所以我们这里定义了我们应用的入口。  \n 5、Router注册路由，路由就是告诉beego，当用户来请求的时候，该如何去调用相应的Controller，这里我们注册了请求\/的时候，请求到MainController。这里我们需要知道，Router函数的两个参数函数，第一个是路径，第二个是Controller的指针。  \n 6、Run应用，最后一步就是把在1中初始化的BeeApp开启起来，其实就是内部监听了8080端口:Go默认情况会监听你本机所有的IP上面的8080端口  \n 停止服务的话，请按ctrl\x2bc  \n 新建项目  \n 通过如下命令创建beego项目，首先进入gopath目录  \nbee create hello \n 这样就建立了一个项目hello，目录结构如下所示  \n.\n├── conf\n│   └── app.conf\n├── controllers\n│   └── default.go\n├── main.go\n├── models\n├── static\n│   ├── css\n│   ├── img\n│   └── js\n└── views\n    └── index.tpl \n 开发模式  \n 通过bee创建的项目，beego默认情况下是开发模式。  \n 我们可以通过如下的方式改变我们的模式：  \nbeego.RunMode = \x22pro\x22 \n 或者我们在conf\/app.conf下面设置如下：  \nrunmode = pro \n 以上两种效果一样。  \n 开发模式中  \n \n   开发模式下，如果你的目录不存在views目录，那么会出现类似下面的错误提示：  2013\/04\/13 19:36:17 [W] [stat views: no such file or directory]  \n   模板会自动重新加载不缓存。   \n   如果服务端出错，那么就会在浏览器端显示如下类似的截图：   \n \n   \n 路由设置  \n 路由的主要功能是实现从请求地址到实现方法，beego中封装了Controller，所以路由是从路径到ControllerInterface的过程，ControllerInterface的方法有如下：  \ntype ControllerInterface interface {\n    Init(ct *Context, cn string)\n    Prepare()\n    Get()\n    Post()\n    Delete()\n    Put()\n    Head()\n    Patch()\n    Options()\n    Finish()\n    Render() error\n} \n 这些方法beego.Controller都已经实现了，所以只要用户定义struct的时候匿名包含就可以了。当然更灵活的方法就是用户可以去自定义类似的方法，然后实现自己的逻辑。  \n 用户可以通过如下的方式进行路由设置：  \nbeego.Router(\x22\/\x22, \x26controllers.MainController{})\nbeego.Router(\x22\/admin\x22, \x26admin.UserController{})\nbeego.Router(\x22\/admin\/index\x22, \x26admin.ArticleController{})\nbeego.Router(\x22\/admin\/addpkg\x22, \x26admin.AddController{}) \n 为了用户更加方便的路由设置，beego参考了sinatra的路由实现，支持多种方式的路由：  \n \n   beego.Router(\x22\/api\/:id([0-9]\x2b)\x22, \x26controllers.RController{}) 自定义正则匹配 \/\/匹配 \/api\/123 :id= 123   \n   beego.Router(\x22\/news\/:all\x22, \x26controllers.RController{}) 全匹配方式 \/\/匹配 \/news\/path\/to\/123.html :all= path\/to\/123.html   \n   beego.Router(\x22\/user\/:username([\\w]\x2b)\x22, \x26controllers.RController{}) 正则字符串匹配 \/\/匹配 \/user\/astaxie :username = astaxie   \n   beego.Router(\x22\/download\/*.*\x22, \x26controllers.RController{}) *匹配方式 \/\/匹配 \/download\/file\/api.xml :path= file\/api :ext=xml   \n   beego.Router(\x22\/download\/ceshi\/*\x22, \x26controllers.RController{}) *全匹配方式 \/\/匹配 \/download\/ceshi\/file\/api.json :splat=file\/api.json   \n   beego.Router(\x22\/int\x22, \x26controllers.RController{}) int类型设置方式 \/\/匹配 :id为int类型，框架帮你实现了正则([0-9]\x2b)   \n   beego.Router(\x22\/:hi:string\x22, \x26controllers.RController{}) string类型设置方式 \/\/匹配 :hi为string类型。框架帮你实现了正则([\\w]\x2b)   \n \n 静态文件  \n Go语言内部其实已经提供了http.ServeFile，通过这个函数可以实现静态文件的服务。beego针对这个功能进行了一层封装，通过下面的方式进行静态文件注册：  \nbeego.SetStaticPath(\x22\/static\x22,\x22public\x22) \n \n  第一个参数是路径，url路径信息  \n  第二个参数是静态文件目录（相对应用所在的目录）  \n \n beego支持多个目录的静态文件注册，用户可以注册如下的静态文件目录：  \nbeego.SetStaticPath(\x22\/images\x22,\x22images\x22)\nbeego.SetStaticPath(\x22\/css\x22,\x22css\x22)\nbeego.SetStaticPath(\x22\/js\x22,\x22js\x22) \n 设置了如上的静态目录之后，用户访问\/images\/login\/login.png，那么就会访问应用对应的目录下面的images\/login\/login.png文件。如果是访问\/static\/img\/logo.png，那么就访问public\/img\/logo.png文件。  \n 过滤和中间件  \n beego支持自定义过滤中间件，例如安全验证，强制跳转等  \n 如下例子所示，验证用户名是否是admin，应用于全部的请求：  \nvar FilterUser = func(w http.ResponseWriter, r *http.Request) {\n    if r.URL.User == nil || r.URL.User.Username() != \x22admin\x22 {\n        http.Error(w, \x22\x22, http.StatusUnauthorized)\n    }\n}\n\nbeego.Filter(FilterUser) \n 还可以通过参数进行过滤，如果匹配参数就执行  \nbeego.Router(\x22\/:id([0-9]\x2b)\x22, \x26admin.EditController{})\nbeego.FilterParam(\x22id\x22, func(rw http.ResponseWriter, r *http.Request) {\n    dosomething()\n}) \n 当然你还可以通过前缀过滤  \nbeego.FilterPrefixPath(\x22\/admin\x22, func(rw http.ResponseWriter, r *http.Request) {\n    dosomething()\n}) \n 控制器设计  \n 基于beego的Controller设计，只需要匿名组合beego.Controller就可以了，如下所示：  \ntype xxxController struct {\n    beego.Controller\n} \n beego.Controller实现了接口beego.ControllerInterface，beego.ControllerInterface定义了如下函数：  \n \n   Init(ct *Context, cn string)   这个函数主要初始化了Context、相应的Controller名称，模板名，初始化模板参数的容器Data   \n   Prepare()   这个函数主要是为了用户扩展用的，这个函数会在下面定义的这些Method方法之前执行，用户可以重写这个函数实现类似用户验证之类。   \n   Get()   如果用户请求的HTTP Method是GET, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Get请求.   \n   Post()   如果用户请求的HTTP Method是POST, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Post请求.   \n   Delete()   如果用户请求的HTTP Method是DELETE, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Delete请求.   \n   Put()   如果用户请求的HTTP Method是PUT, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Put请求.   \n   Head()   如果用户请求的HTTP Method是HEAD, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Head请求.   \n   Patch()   如果用户请求的HTTP Method是PATCH, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Patch请求.   \n   Options()   如果用户请求的HTTP Method是OPTIONS, 那么就执行该函数，默认是403，用户继承的子struct中可以实现了该方法以处理Options请求.   \n   Finish()   这个函数实在执行完相应的http Method方法之后执行的，默认是空，用户可以在子Strcut中重写这个函数，执行例如数据库关闭，清理数据之类的工作   \n   Render() error   这个函数主要用来实现渲染模板，如果beego.AutoRender为true的情况下才会执行。   \n \n 所以通过子struct的方法重写，用户就可以实现自己的逻辑，接下来我们看一个实际的例子：  \ntype AddController struct {\n    beego.Controller\n}\n\nfunc (this *AddController) Prepare() {\n\n}\n\nfunc (this *AddController) Get() {\n    this.Data[\x22content\x22] =\x22value\x22\n    this.Layout = \x22admin\/layout.html\x22\n    this.TplNames = \x22admin\/add.tpl\x22\n}\n\nfunc (this *AddController) Post() {\n    pkgname := this.GetString(\x22pkgname\x22)\n    content := this.GetString(\x22content\x22)\n    pk := models.GetCruPkg(pkgname)\n    if pk.Id == 0 {\n        var pp models.PkgEntity\n        pp.Pid = 0\n        pp.Pathname = pkgname\n        pp.Intro = pkgname\n        models.InsertPkg(pp)\n        pk = models.GetCruPkg(pkgname)\n    }\n    var at models.Article\n    at.Pkgid = pk.Id\n    at.Content = content\n    models.InsertArticle(at)\n    this.Ctx.Redirect(302, \x22\/admin\/index\x22)\n} \n 模板处理  \n 模板目录  \n beego中默认的模板目录是views，用户可以把你的模板文件放到该目录下，beego会自动在该目录下的所有模板文件进行解析并缓存，开发模式下会每次重新解析，不做缓存。当然用户可以通过如下的方式改变模板的目录：  \nbeego.ViewsPath = \x22\/myviewpath\x22 \n 自动渲染  \n beego中用户无需手动的调用渲染输出模板，beego会自动的在调用玩相应的method方法之后调用Render函数，当然如果你的应用是不需要模板输出的，那么你可以在配置文件或者在main.go中设置关闭自动渲染。  \n 配置文件配置如下：  \nautorender = false \n main.go文件中设置如下：  \nbeego.AutoRender = false \n 模板数据  \n 模板中的数据是通过在Controller中this.Data获取的，所以如果你想在模板中获取内容{{.Content}},那么你需要在Controller中如下设置：  \nthis.Data[\x22Context\x22] = \x22value\x22 \n 模板名称  \n beego采用了Go语言内置的模板引擎，所有模板的语法和Go的一模一样，至于如何写模板文件，详细的请参考模板教程。  \n 用户通过在Controller的对应方法中设置相应的模板名称，beego会自动的在viewpath目录下查询该文件并渲染，例如下面的设置，beego会在admin下面找add.tpl文件进行渲染：  \nthis.TplNames = \x22admin\/add.tpl\x22 \n 我们看到上面的模板后缀名是tpl，beego默认情况下支持tpl和html后缀名的模板文件，如果你的后缀名不是这两种，请进行如下设置：  \nbeego.AddTemplateExt(\x22你文件的后缀名\x22) \n 当你设置了自动渲染，然后在你的Controller中没有设置任何的TplNames，那么beego会自动设置你的模板文件如下：  \nc.TplNames = c.ChildName \x2b \x22\/\x22 \x2b c.Ctx.Request.Method \x2b \x22.\x22 \x2b c.TplExt \n 也就是你对应的Controller名字\x2b请求方法名.模板后缀，也就是如果你的Controller名是AddController，请求方法是POST，默认的文件后缀是tpl，那么就会默认请求\/viewpath\/AddController\/POST.tpl文件。  \n lauout设计  \n beego支持layout设计，例如你在管理系统中，其实整个的管理界面是固定的，支会变化中间的部分，那么你可以通过如下的设置：  \nthis.Layout = \x22admin\/layout.html\x22\nthis.TplNames = \x22admin\/add.tpl\x22 \n 在layout.html中你必须设置如下的变量：  \n{{.LayoutContent}} \n beego就会首先解析TplNames指定的文件，获取内容赋值给LayoutContent，然后最后渲染layout.html文件。  \n 目前采用首先把目录下所有的文件进行缓存，所以用户还可以通过类似这样的方式实现layout：  \n{{template \x22header.html\x22}}\n处理逻辑\n{{template \x22footer.html\x22}} \n 模板函数  \n beego支持用户定义模板函数，但是必须在beego.Run()调用之前，设置如下：  \nfunc hello(in string)(out string){\n    out = in \x2b \x22world\x22\n    return\n}\n\nbeego.AddFuncMap(\x22hi\x22,hello) \n 定义之后你就可以在模板中这样使用了：  \n{{.Content | hi}} \n 目前beego内置的模板函数有如下：  \n \n   markdown   实现了把markdown文本转化为html信息，使用方法{{markdown .Content}}   \n   dateformat   实现了时间的格式化，返回字符串，使用方法{{dateformat .Time \x222006-01-02T15:04:05Z07:00\x22}}   \n   date   实现了类似PHP的date函数，可以很方便的根据字符串返回时间，使用方法{{date .T \x22Y-m-d H:i:s\x22}}   \n   compare   实现了比较两个对象的比较，如果相同返回true，否者false，使用方法{{compare .A .B}}   \n   substr   实现了字符串的截取，支持中文截取的完美截取，使用方法{{substr .Str 0 30}}   \n   html2str   实现了把html转化为字符串，剔除一些script、css之类的元素，返回纯文本信息，使用方法{{html2str .Htmlinfo}}   \n   str2html   实现了把相应的字符串当作HTML来输出，不转义，使用方法{{str2html .Strhtml}}   \n   htmlquote   实现了基本的html字符转义，使用方法{{htmlquote .quote}}   \n   htmlunquote   实现了基本的反转移字符，使用方法{{htmlunquote .unquote}}   \n \n request处理  \n 我们经常需要获取用户传递的数据，包括Get、POST等方式的请求，beego里面会自动解析这些数据，你可以通过如下方式获取数据  \n \n  GetString(key string) string  \n  GetInt(key string) (int64, error)  \n  GetBool(key string) (bool, error)  \n \n 使用例子如下：  \nfunc (this *MainController) Post() {\n    jsoninfo := this.GetString(\x22jsoninfo\x22)\n    if jsoninfo == \x22\x22 {\n        this.Ctx.WriteString(\x22jsoninfo is empty\x22)\n        return\n    }\n} \n 如果你需要的数据可能是其他类型的，例如是int类型而不是int64，那么你需要这样处理：  \nfunc (this *MainController) Post() {\n    id := this.Input().Get(\x22id\x22)\n    intid, err := strconv.Atoi(id)\n} \n 更多其他的request的信息，用户可以通过this.Ctx.Request获取信息，关于该对象的属性和方法参考手册Request  \n 文件上传  \n 在beego中你可以很容易的处理文件上传，就是别忘记在你的form表单中增加这个属性enctype=\x22multipart\/form-data\x22，否者你的浏览器不会传输你的上传文件。  \n 文件上传之后一般是放在系统的内存里面，如果文件的size大于设置的缓存内存大小，那么就放在临时文件中，默认的缓存内存是64M，你可以通过如下来调整这个缓存内存大小:  \nbeego.MaxMemory = 1\x3c\x3c22 \n 或者在配置文件中通过如下设置  \nmaxmemory = 1\x3c\x3c22 \n beego提供了两个很方便的方法来处理文件上传：  \n \n   GetFile(key string) (multipart.File, *multipart.FileHeader, error)   该方法主要用于用户读取表单中的文件名the_file，然后返回相应的信息，用户根据这些变量来处理文件上传：过滤、保存文件等。   \n   SaveToFile(fromfile, tofile string) error   该方法是在GetFile的基础上实现了快速保存的功能   \n \n 保存的代码例子如下：  \nfunc (this *MainController) Post() {\n    this.SaveToFile(\x22the_file\x22,\x22\/var\/www\/uploads\/uploaded_file.txt\x22\x22)\n} \n JSON和XML输出  \n beego当初设计的时候就考虑了API功能的设计，而我们在设计API的时候经常是输出JSON或者XML数据，那么beego提供了这样的方式直接输出：  \n JSON数据直接输出，设置content-type为application\/json：  \nfunc (this *AddController) Get() {\n    mystruct := { ... }\n    this.Data[\x22json\x22] = \x26mystruct\n    this.ServeJson()\n} \n XML数据直接输出，设置content-type为application\/xml：  \nfunc (this *AddController) Get() {\n    mystruct := { ... }\n    this.Data[\x22xml\x22]=\x26mystruct\n    this.ServeXml()\n} \n 跳转和错误  \n 我们在做Web开发的时候，经常会遇到页面调整和错误处理，beego这这方面也进行了考虑，通过Redirect方法来进行跳转：  \nfunc (this *AddController) Get() {\n   this.Redirect(\x22\/\x22, 302)\n} \n @todo 错误处理还需要后期改进  \n response处理  \n response可能会有集中情况：  \n \n   模板输出   模板输出上面模板介绍里面已经介绍，beego会在执行完相应的Controller里面的对应的Method之后输出到模板。   \n   跳转   上一节介绍的跳转就是我们经常用到的页面之间的跳转   \n   字符串输出   有些时候我们只是想输出相应的一个字符串，那么我们可以通过如下的代码实现  this.Ctx.WriteString(\x22ok\x22)  \n \n Sessions  \n beego内置了session模块，目前session模块支持的后端引擎包括memory、file、mysql、redis四中，用户也可以根据相应的interface实现自己的引擎。  \n beego中使用session相当方便，只要在main入口函数中设置如下：  \nbeego.SessionOn = true \n 或者通过配置文件配置如下：  \nsessionon = true \n 通过这种方式就可以开启session，如何使用session，请看下面的例子：  \nfunc (this *MainController) Get() {\n    v := this.GetSession(\x22asta\x22)\n    if v == nil {\n        this.SetSession(\x22asta\x22, int(1))\n        this.Data[\x22num\x22] = 0\n    } else {\n        this.SetSession(\x22asta\x22, v.(int)\x2b1)\n        this.Data[\x22num\x22] = v.(int)\n    }\n    this.TplNames = \x22index.tpl\x22\n} \n 上面的例子中我们知道session有几个方便的方法：  \n \n  SetSession(name string, value interface{})  \n  GetSession(name string) interface{}  \n  DelSession(name string)  \n \n session操作主要有设置session、获取session、删除session  \n 当然你要可以通过下面的方式自己控制相应的逻辑这些逻辑：  \nsess:=this.StartSession()\ndefer sess.SessionRelease() \n sess对象具有如下方法：  \n \n  sess.Set()  \n  sess.Get()  \n  sess.Delete()  \n  sess.SessionID()  \n \n 但是我还是建议大家采用SetSession、GetSession、DelSession三个方法来操作，避免自己在操作的过程中资源没释放的问题。  \n 关于Session模块使用中的一些参数设置：  \n \n   SessionOn   设置是否开启Session，默认是false，配置文件对应的参数名：sessionon   \n   SessionProvider   设置Session的引擎，默认是memory，目前支持还有file、mysql、redis等，配置文件对应的参数名：sessionprovider   \n   SessionName   设置cookies的名字，Session默认是保存在用户的浏览器cookies里面的，默认名是beegosessionID，配置文件对应的参数名是：sessionname   \n   SessionGCMaxLifetime   设置Session过期的时间，默认值是3600秒，配置文件对应的参数：sessiongcmaxlifetime   \n   SessionSavePath   设置对应file、mysql、redis引擎的保存路径或者链接地址，默认值是空，配置文件对应的参数：sessionsavepath   \n \n 当SessionProvider为file时，SessionSavePath是只保存文件的目录，如下所示：  \nbeego.SessionProvider = \x22file\x22\nbeego.SessionSavePath = \x22.\/tmp\x22 \n 当SessionProvider为mysql时，SessionSavePath是链接地址，采用go-sql-driver，如下所示：  \nbeego.SessionProvider = \x22mysql\x22\nbeego.SessionSavePath = \x22username:password@protocol(address)\/dbname?param=value\x22 \n 当SessionProvider为redis时，SessionSavePath是redis的链接地址，采用了redigo，如下所示：  \nbeego.SessionProvider = \x22redis\x22\nbeego.SessionSavePath = \x22127.0.0.1:6379\x22 \n Cache设置  \n beego内置了一个cache模块，实现了类似memcache的功能，缓存数据在内存中，主要的使用方法如下：  \nvar (\n    urllist *beego.BeeCache\n)\n\nfunc init() {\n    urllist = beego.NewBeeCache()\n    urllist.Every = 0 \/\/不过期\n    urllist.Start()\n}\n\nfunc (this *ShortController) Post() {\n    var result ShortResult\n    longurl := this.Input().Get(\x22longurl\x22)\n    beego.Info(longurl)\n    result.UrlLong = longurl\n    urlmd5 := models.GetMD5(longurl)\n    beego.Info(urlmd5)\n    if urllist.IsExist(urlmd5) {\n        result.UrlShort = urllist.Get(urlmd5).(string)\n    } else {\n        result.UrlShort = models.Generate()\n        err := urllist.Put(urlmd5, result.UrlShort, 0)\n        if err != nil {\n            beego.Info(err)\n        }\n        err = urllist.Put(result.UrlShort, longurl, 0)\n        if err != nil {\n            beego.Info(err)\n        }\n    }\n    this.Data[\x22json\x22] = result\n    this.ServeJson()\n} \n 上面这个例子演示了如何使用beego的Cache模块，主要是通过beego.NewBeeCache初始化一个对象，然后设置过期时间，开启过期检测，在业务逻辑中就可以通过如下的接口进行增删改的操作：  \n \n  Get(name string) interface{}  \n  Put(name string, value interface{}, expired int) error  \n  Delete(name string) (ok bool, err error)  \n  IsExist(name string) bool  \n \n 安全的Map  \n 我们知道在Go语言里面map是非线程安全的，详细的atomic_maps。但是我们在平常的业务中经常需要用到线程安全的map，特别是在goroutine的情况下，所以beego内置了一个简单的线程安全的map：  \nbm := NewBeeMap()\nif !bm.Set(\x22astaxie\x22, 1) {\n    t.Error(\x22set Error\x22)\n}\nif !bm.Check(\x22astaxie\x22) {\n    t.Error(\x22check err\x22)\n}\n\nif v := bm.Get(\x22astaxie\x22); v.(int) != 1 {\n    t.Error(\x22get err\x22)\n}\n\nbm.Delete(\x22astaxie\x22)\nif bm.Check(\x22astaxie\x22) {\n    t.Error(\x22delete err\x22)\n} \n 上面演示了如何使用线程安全的Map，主要的接口有：  \n \n  Get(k interface{}) interface{}  \n  Set(k interface{}, v interface{}) bool  \n  Check(k interface{}) bool  \n  Delete(k interface{})  \n \n 日志处理  \n beego默认有一个初始化的BeeLogger对象输出内容到stdout中，你可以通过如下的方式设置自己的输出：  \nbeego.SetLogger(*log.Logger) \n 只要你的输出符合*log.Logger就可以，例如输出到文件：  \nfd,err := os.OpenFile(\x22\/var\/log\/beeapp\/beeapp.log\x22, os.O_RDWR|os.O_APPEND, 0644)\nif err != nil {\n    beego.Critical(\x22openfile beeapp.log:\x22, err)\n    return\n}\nlg := log.New(fd, \x22\x22, log.Ldate|log.Ltime)\nbeego.SetLogger(lg) \n 不同级别的log日志函数  \n \n  Trace(v ...interface{})  \n  Debug(v ...interface{})  \n  Info(v ...interface{})  \n  Warn(v ...interface{})  \n  Error(v ...interface{})  \n  Critical(v ...interface{})  \n \n 你可以通过下面的方式设置不同的日志分级：  \nbeego.SetLevel(beego.LevelError) \n 当你代码中有很多日志输出之后，如果想上线，但是你不想输出Trace、Debug、Info等信息，那么你可以设置如下：  \nbeego.SetLevel(beego.LevelWarning) \n 这样的话就不会输出小于这个level的日志，日志的排序如下：  \n LevelTrace、LevelDebug、LevelInfo、LevelWarning、 LevelError、LevelCritical  \n 用户可以根据不同的级别输出不同的错误信息，如下例子所示：  \n Examples of log messages  \n \n   Trace  \n   \n    \x22Entered parse function validation block\x22  \n    \x22Validation: entered second \x27if\x27\x22  \n    \x22Dictionary \x27Dict\x27 is empty. Using default value\x22  \n    \n   Debug  \n   \n    \x22Web page requested: http:\/\/somesite.com Params=\x27...\x27\x22  \n    \x22Response generated. Response size: 10000. Sending.\x22  \n    \x22New file received. Type:PNG Size:20000\x22  \n    \n   Info  \n   \n    \x22Web server restarted\x22  \n    \x22Hourly statistics: Requested pages: 12345 Errors: 123 ...\x22  \n    \x22Service paused. Waiting for \x27resume\x27 call\x22  \n    \n   Warn  \n   \n    \x22Cache corrupted for file=\x27test.file\x27. Reading from back-end\x22  \n    \x22Database 192.168.0.7\/DB not responding. Using backup 192.168.0.8\/DB\x22  \n    \x22No response from statistics server. Statistics not sent\x22  \n    \n   Error  \n   \n    \x22Internal error. Cannot process request #12345 Error:....\x22  \n    \x22Cannot perform login: credentials DB not responding\x22  \n    \n   Critical  \n   \n    \x22Critical panic received: .... Shutting down\x22  \n    \x22Fatal error: ... App is shutting down to prevent data corruption or loss\x22  \n    \n \n Example  \nfunc internalCalculationFunc(x, y int) (result int, err error) {\n    beego.Debug(\x22calculating z. x:\x22,x,\x22 y:\x22,y)\n    z := y\n    switch {\n    case x == 3 :\n        beego.Trace(\x22x == 3\x22)\n        panic(\x22Failure.\x22)\n    case y == 1 :\n        beego.Trace(\x22y == 1\x22)\n        return 0, errors.New(\x22Error!\x22)\n    case y == 2 :\n        beego.Trace(\x22y == 2\x22)\n        z = x\n    default :\n        beego.Trace(\x22default\x22)\n        z \x2b= x\n    }\n    retVal := z-3\n    beego.Debug(\x22Returning \x22, retVal)\n\n    return retVal, nil\n}   \n\nfunc processInput(input inputData) {\n    defer func() {\n        if r := recover(); r != nil {\n            beego.Error(\x22Unexpected error occurred: \x22, r)\n            outputs \x3c- outputData{result : 0, error : true}\n        }\n    }()\n    beego.Info(\x22Received input signal. x:\x22,input.x,\x22 y:\x22, input.y)  \n\n    res, err := internalCalculationFunc(input.x, input.y)   \n    if err != nil {\n        beego.Warn(\x22Error in calculation:\x22, err.Error())\n    }\n\n    beego.Info(\x22Returning result: \x22,res,\x22 error: \x22,err)     \n    outputs \x3c- outputData{result : res, error : err != nil} \n}\n\nfunc main() {\n    inputs = make(chan inputData)\n    outputs = make(chan outputData)\n    criticalChan = make(chan int)\n    beego.Info(\x22App started.\x22)\n\n    go consumeResults(outputs)\n    beego.Info(\x22Started receiving results.\x22)\n\n    go generateInputs(inputs)\n    beego.Info(\x22Started sending signals.\x22)\n\n    for {\n        select {\n            case input := \x3c- inputs:\n                processInput(input)\n            case \x3c- criticalChan:\n                beego.Critical(\x22Caught value from criticalChan: Go shut down.\x22)\n                panic(\x22Shut down due to critical fault.\x22)\n        }   \n    }\n} \n 配置管理  \n beego支持解析ini文件, beego默认会解析当前应用下的conf\/app.conf文件  \n 通过这个文件你可以初始化很多beego的默认参数  \nappname = beepkg\nhttpaddr = \x22127.0.0.1\x22\nhttpport = 9090\nrunmode =\x22dev\x22\nautorender = false\nautorecover = false\nviewspath = \x22myview\x22 \n 上面这些参数会替换beego默认的一些参数。  \n 你可以在配置文件中配置应用需要用的一些配置信息，例如下面所示的数据库信息：  \nmysqluser = \x22root\x22\nmysqlpass = \x22rootpass\x22\nmysqlurls = \x22127.0.0.1\x22\nmysqldb   = \x22beego\x22 \n 那么你就可以通过如下的方式获取设置的配置信息:  \nbeego.AppConfig.String(\x22mysqluser\x22)\nbeego.AppConfig.String(\x22mysqlpass\x22)\nbeego.AppConfig.String(\x22mysqlurls\x22)\nbeego.AppConfig.String(\x22mysqldb\x22) \n AppConfig支持如下方法  \n \n  Bool(key string) (bool, error)  \n  Int(key string) (int, error)  \n  Int64(key string) (int64, error)  \n  Float(key string) (float64, error)  \n  String(key string) string  \n \n 系统默认参数  \n beego中带有很多可配置的参数，我们来一一认识一下它们，这样有利于我们在接下来的beego开发中可以充分的发挥他们的作用：  \n \n   BeeApp   beego默认启动的一个应用器入口，在应用import beego的时候，在init中已经初始化的。   \n   AppConfig   beego的配置文件解析之后的对象，也是在init的时候初始化的，里面保存有解析conf\/app.conf下面所有的参数数据   \n   HttpAddr   应用监听地址，默认为空，监听所有的网卡IP   \n   HttpPort   应用监听端口，默认为8080   \n   AppName   应用名称，默认是beego   \n   RunMode   应用的模式，默认是dev，为开发模式，在开发模式下出错会提示友好的出错页面，如前面错误描述中所述。   \n   AutoRender   是否模板自动渲染，默认值为true，对于API类型的应用，应用需要把该选项设置为false，不需要渲染模板。   \n   RecoverPanic   是否异常恢复，默认值为true，即当应用出现异常的情况，通过recover恢复回来，而不会导致应用异常退出。   \n   PprofOn   是否启用pprof，默认是false，当开启之后，用户可以通过如下地址查看相应的goroutine执行情况  \/debug\/pprof\n\/debug\/pprof\/cmdline\n\/debug\/pprof\/profile\n\/debug\/pprof\/symbol  关于pprof的信息，请参考官方的描述pprof   \n   ViewsPath   模板路径，默认值是views   \n   SessionOn   session是否开启，默认是false   \n   SessionProvider   session的引擎，默认是memory   \n   SessionName   存在客户端的cookie名称，默认值是beegosessionID   \n   SessionGCMaxLifetime   session过期时间，默认值是3600秒   \n   SessionSavePath   session保存路径，默认是空   \n   UseFcgi   是否启用fastcgi，默认是false   \n   MaxMemory   文件上传默认内存缓存大小，默认值是1 \x3c\x3c 26(64M)   \n \n 第三方应用集成  \n beego支持第三方应用的集成，用户可以自定义http.Handler,用户可以通过如下方式进行注册路由：  \nbeego.RouterHandler(\x22\/chat\/:info(.*)\x22, sockjshandler) \n sockjshandler实现了接口http.Handler。  \n 目前在beego的example中有支持sockjs的chat例子，示例代码如下：  \npackage main\n\nimport (\n    \x22fmt\x22\n    \x22github.com\/astaxie\/beego\x22\n    \x22github.com\/fzzy\/sockjs-go\/sockjs\x22\n    \x22strings\x22\n)\n\nvar users *sockjs.SessionPool = sockjs.NewSessionPool()\n\nfunc chatHandler(s sockjs.Session) {\n    users.Add(s)\n    defer users.Remove(s)\n\n    for {\n        m := s.Receive()\n        if m == nil {\n            break\n        }\n        fullAddr := s.Info().RemoteAddr\n        addr := fullAddr[:strings.LastIndex(fullAddr, \x22:\x22)]\n        m = []byte(fmt.Sprintf(\x22%s: %s\x22, addr, m))\n        users.Broadcast(m)\n    }\n}\n\ntype MainController struct {\n    beego.Controller\n}\n\nfunc (m *MainController) Get() {\n    m.TplNames = \x22index.html\x22\n}\n\nfunc main() {\n    conf := sockjs.NewConfig()\n    sockjshandler := sockjs.NewHandler(\x22\/chat\x22, chatHandler, conf)\n    beego.Router(\x22\/\x22, \x26MainController{})\n    beego.RouterHandler(\x22\/chat\/:info(.*)\x22, sockjshandler)\n    beego.Run()\n} \n 通过上面的代码很简单的实现了一个多人的聊天室。上面这个只是一个sockjs的例子，我想通过大家自定义http.Handler，可以有很多种方式来进行扩展beego应用。  \n 部署编译应用  \n Go语言的应用最后编译之后是一个二进制文件，你只需要copy这个应用到服务器上，运行起来就行。beego由于带有几个静态文件、配置文件、模板文件三个目录，所以用户部署的时候需要同时copy这三个目录到相应的部署应用之下，下面以我实际的应用部署为例：  \n$ mkdir \/opt\/app\/beepkg\n$ cp beepkg \/opt\/app\/beepkg\n$ cp -fr views \/opt\/app\/beepkg\n$ cp -fr static \/opt\/app\/beepkg\n$ cp -fr conf \/opt\/app\/beepkg \n 这样在\/opt\/app\/beepkg目录下面就会显示如下的目录结构：  \n.\n├── conf\n│   ├── app.conf\n├── static\n│   ├── css\n│   ├── img\n│   └── js\n└── views\n    └── index.tpl\n├── beepkg \n 这样我们就已经把我们需要的应用搬到服务器了，那么接下来就可以开始部署了，我现在服务器端用两种方式来run，  \n \n   Supervisord   安装和配置见Supervisord   \n   nohup方式   nohup .\/beepkg \x26   \n \n 个人比较推荐第一种方式，可以很好的管理起来应用'.length;
+	var readTime = Math.round(len / 900);
+	if (readTime >= 1) {
+		$('.read-time').text('预计阅读时间 '+readTime+' 分钟');
+	} else {
+		$('.read-time').text('预计阅读时间不到 1 分钟');
+	}
+});
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/ckeditor/4.6.2/ckeditor.js"></script>
+<script type="text/javascript" src="https://static.studygolang.com/static/ckeditor/config.js"></script>
+<script type="text/javascript" src="https://static.studygolang.com/static/ckeditor/article.js"></script>
+
+
+<script type="text/javascript">
+$(function(){
+	$('code[class*="language-"]').parent('pre').addClass('line-numbers');
+});
+</script>
+<script src="https://cdn.staticfile.org/prism/9000.0.1/prism.min.js"></script>
+<script src="https://cdn.staticfile.org/prism/9000.0.1/components/prism-go.min.js"></script>
+<script src="https://cdn.staticfile.org/prism/1.9.0/components/prism-json.min.js"></script>
+<script src="https://cdn.staticfile.org/prism/9000.0.1/components/prism-bash.min.js"></script>
+<script src="https://cdn.staticfile.org/prism/9000.0.1/components/prism-python.min.js"></script>
+<script src="https://cdn.staticfile.org/prism/9000.0.1/components/prism-nasm.min.js"></script>
+<script src="https://cdn.staticfile.org/prism/9000.0.1/components/prism-yaml.min.js"></script>
+<script src="https://cdn.staticfile.org/prism/9000.0.1/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<script type="text/javascript">
+Prism.languages.xml = Prism.languages.markup;
+Prism.languages.html = Prism.languages.markup;
+Prism.languages.mathml = Prism.languages.markup;
+Prism.languages.svg = Prism.languages.markup;
+Prism.languages.text = Prism.languages.go;
+Prism.languages.golang = Prism.languages.go;
+Prism.languages.none = Prism.languages.go;
+Prism.languages.console = Prism.languages.bash;
+Prism.languages.shell = Prism.languages.bash;
+Prism.languages.asm = Prism.languages.nasm;
+Prism.languages.makefile = Prism.languages.bash;
+Prism.languages.Dockerfile = Prism.languages.bash;
+Prism.languages.protobuf = Prism.languages.clike;
+Prism.languages.c = Prism.languages.clike;
+Prism.languages.cpp = Prism.languages.clike;
+</script>
+
+
+
+	
+
+
+
+	
+
+
+
+
+	<script type="text/javascript" src="https://static.studygolang.com/static/dist/js/sidebar.min.js"></script>
+
+	
+		
+		
+
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-4512014793067058",
+    enable_page_level_ads: true
+  });
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-18275235-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+<script>
+var _hmt = _hmt || [];
+if (uid > 0) {
+	_hmt.push(['_setUserTag', ''+uid, 1]);
+}
+
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script>
+(function(){
+  var bp = document.createElement('script');
+  var curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https') {
+    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  } else {
+    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+	
+
+
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><script src="http://localhost:9999/static/js/design.js"></script></body></html>

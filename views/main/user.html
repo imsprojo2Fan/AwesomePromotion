@@ -6,75 +6,10 @@
     <title>用户信息管理</title>
     <!-- ========== Css Files ========== -->
     <link href="../../static/css/root.css" rel="stylesheet">
-    <style>
-        html{
-            overflow-y:auto;
-            overflow-x: hidden;
-        }
-        .page-header {
-            padding-bottom: 0px;
-            margin: 40px 0 20px;
-            border-bottom: 0px solid #eee;
-        }
-        .content{
-            padding-top:140px;
-        }
-        /*下拉框宽度设置*/
-        .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-            width: 140px;
-            height: 34px;
-        }
-        .red{
-            color: red;
-        }
-        .col-center-block {
-            float: none;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .modal-dialog{
-            /*margin-left:35%;*/
-        }
-        #tip{
-            color: red;
-            font-size: 12px;
-        }
-
-        .active{
-            color: #6195ff;
-            cursor: pointer;
-        }
-
-        .transparent_class {
-            filter:alpha(opacity=85);
-            -moz-opacity:0.85;
-            -khtml-opacity: 0.85;
-            opacity: 0.85;
-        }
-        .table.dataTable thead th, table.dataTable td{
-            text-align: center;
-            vertical-align: middle;
-        }
-        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
-            padding: 8px;
-            line-height: 1.42857143;
-            vertical-align: middle;
-            border-top: 1px solid #ddd;
-        }
-        table.dataTable.no-footer {
-            border-bottom: 1px solid #ddd;
-        }
-        textarea {
-            padding: 10px 10px;
-            min-height: 60px;
-            max-height: 60px;
-            resize: vertical;
-        }
-    </style>
+    <link href="../../static/css/design.css" rel="stylesheet">
 </head>
 <body style="padding-bottom: 8%">
-<input type="hidden" value="{{ ._xsrf}}" id="token">
+<input type="hidden" value="<% ._xsrf%>" id="token">
 <div id="loading" class="loading-wrap">
     <div class="loader" >
         <div class="la-ball-clip-rotate-multiple la-3x">
@@ -174,7 +109,7 @@
                                     </div>
                                 </div>
 
-                            {{/*<div class="form-group">
+                            <%/*<div class="form-group">
                                     <label for="name" class="col-sm-2 control-label form-label">用户昵称</label>
                                     <div class="col-sm-10">
                                         <input type="text" maxlength="15" onkeyup="value=value.replace(/[^/a-zA-Z\0-9\u4E00-\u9FA5]/g,'')" class="form-control" id="name" placeholder="Name" >
@@ -186,7 +121,7 @@
                                     <div class="col-sm-10">
                                         <input type="text" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" maxlength="11" id="phone" placeholder="Phone" >
                                     </div>
-                                </div>*/}}
+                                </div>*/%>
 
                                 <div class="form-group">
                                     <label for="email" class="col-sm-2 control-label form-label">用户邮箱</label>
@@ -328,7 +263,7 @@
                             </div>
                         </div>
 
-                    {{/*<div class="form-group">
+                    <%/*<div class="form-group">
                                     <label for="name" class="col-sm-2 control-label form-label">用户昵称</label>
                                     <div class="col-sm-10">
                                         <input type="text" maxlength="15" onkeyup="value=value.replace(/[^/a-zA-Z\0-9\u4E00-\u9FA5]/g,'')" class="form-control" id="name" placeholder="Name" >
@@ -340,7 +275,7 @@
                                     <div class="col-sm-10">
                                         <input type="text" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" maxlength="11" id="phone" placeholder="Phone" >
                                     </div>
-                                </div>*/}}
+                                </div>*/%>
 
                         <div class="form-group">
                             <label for="email" class="col-sm-2 control-label form-label">用户邮箱</label>
@@ -466,8 +401,8 @@ Data Tables
 
                     } },
                 { data: 'created',"render":function (data,type,row,meta) {
-                        var unixTimestamp = new Date(data) ;
-                        var commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
+                        var unixTimestamp = new Date(data);
+                        var commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
                         return commonTime;
                     }},
                 { data: null,"render":function () {

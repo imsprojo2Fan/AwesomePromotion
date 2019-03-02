@@ -4,6 +4,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	"time"
 	"fmt"
+	"strconv"
 )
 
 
@@ -46,7 +47,7 @@ func(this *Template) Insert(model *Template) int {
 func(this *Template) Update(Template *Template) bool {
 
 	o := orm.NewOrm()
-	_,err := o.Update(Template)
+	_,err := o.Update(Template,"remark","updated")
 	if err!=nil{
 		return false
 	}else{
@@ -125,6 +126,65 @@ func(this *Template) Insert4k2t(qMap map[string]interface{}) int64 {
 		fmt.Println("mysql row affected nums: ", num)
 	}
 	return count
+}
+
+func(this *Template) Del4k2t(tid int64) int64 {
+
+	o := orm.NewOrm()
+	res,_:=o.Raw("delete from keyword2template WHERE tid=?",tid).Exec()
+	count,_ := res.RowsAffected()
+	return count
+}
+
+func(this *Template) List4k2t() []orm.Params {
+	var maps []orm.Params
+	o := orm.NewOrm()
+	o.Raw("select k.id,k.keyword,t.id as tid from template t,key_word k,keyword2template kt WHERE t.id=kt.tid AND k.id=kt.kid").Values(&maps)
+
+	return maps
+}
+
+func(this *Template) Count(qMap map[string]interface{})int64{
+	var count int64
+	o := orm.NewOrm()
+	if qMap["uid"]!=""{
+		cnt,_ := o.QueryTable(new(Template)).Filter("label__startswith",qMap["searchKey"]).Filter("uid",qMap["uid"]).Count() // SELECT COUNT(*) FROM USER
+		count = cnt
+	}else{
+		cnt,_ := o.QueryTable(new(Template)).Filter("label__startswith",qMap["searchKey"]).Count() // SELECT COUNT(*) FROM USER
+		count = cnt
+	}
+	//cnt,_ := o.QueryTable("resume").Count()
+	//var count[] Resume
+	//o.Raw("select count(*) from resume where 1=1 and name like %?%",searchKey).QueryRows(count)
+	return count
+}
+
+func(this *Template) ListByPage(qMap map[string]interface{})[]orm.Params{
+	var maps []orm.Params
+	o := orm.NewOrm()
+	//qs := o.QueryTable("login_log")
+	sql := "select id, url,label,m_url,remark,updated,created from template where 1=1"
+	if qMap["uid"]!=""{
+		sql = sql+ " and uid="+qMap["uid"].(string)
+	}
+	if qMap["searchKey"]!=""{
+		sql = sql+" and label like '%"+qMap["searchKey"].(string)+"%'"
+	}
+	if qMap["sortCol"]!=""{
+		sortCol := qMap["sortCol"].(string)
+		sortType := qMap["sortType"].(string)
+		sql = sql+" order by "+sortCol+" "+sortType
+	}else{
+		sql = sql+" order by id desc"
+	}
+	pageNow := qMap["pageNow"].(int64)
+	pageNow_ := strconv.FormatInt(pageNow,10)
+	pageSize := qMap["pageSize"].(int64)
+	pageSize_ := strconv.FormatInt(pageSize,10)
+	sql = sql+" LIMIT "+pageNow_+","+pageSize_
+	o.Raw(sql).Values(&maps)
+	return maps
 }
 
 

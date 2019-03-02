@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <!-- Favicon -->
-    {{/*<link rel="icon" type="image/ico" href="../../static/img/logo/icon.png">*/}}
+    <%/*<link rel="icon" type="image/ico" href="../../static/img/logo/icon.png">*/%>
     <link rel="stylesheet" href="../../static/css/root.css">
     <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
     <style>
@@ -39,7 +39,7 @@
 <script>
 
     $(function () {
-        $("#token", parent.document).val({{._xsrf}});
+        $("#token", parent.document).val(<%._xsrf%>);
     });
 
 

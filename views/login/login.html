@@ -21,7 +21,7 @@
 	<!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
 	<link rel="stylesheet" href="../../static/back/assets/css/demo.css">
 	<!-- GOOGLE FONTS -->
-	{{/*<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">*/}}
+	<%/*<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">*/%>
 	<!-- ICONS -->
 	<link rel="apple-touch-icon" sizes="76x76" href="../../static/back/assets/img/apple-icon.png">
 
@@ -62,8 +62,8 @@
 </head>
 
 <body>
-<input type="hidden" value="{{ ._xsrf}}" id="token">
-<input type="hidden" value="{{ .timeout}}" id="timeout">
+<input type="hidden" value="<% ._xsrf%>" id="token">
+<input type="hidden" value="<% .timeout%>" id="timeout">
 <div id="loading" class="loading-wrap" style="display: none">
     <div class="loader" >
         <div class="la-fire la-3x">
