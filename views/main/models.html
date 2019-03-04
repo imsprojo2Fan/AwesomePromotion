@@ -36,7 +36,7 @@
 </head>
 <body>
 
-    {{/*<input type="hidden" value="{{ ._xsrf}}" id="token">*/}}
+    <%/*<input type="hidden" value="<% ._xsrf%>" id="token">*/%>
     <div id="loading" class="loading-wrap" style="display: none;">
         <div class="loader" >
             <div class="la-ball-clip-rotate-multiple la-3x">
@@ -252,7 +252,7 @@
     </div><!-- /.modal -->
 
     <!-- Javascript -->
-    {{/*<script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>*/}}
+    <%/*<script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>*/%>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="../../static/plugins/datatables/datatables.min.js"></script>
@@ -264,7 +264,7 @@
         $(function () {
 
             //由于调用父页面loading和swal可能导致token失效，所以使用全局token
-            $("#token", parent.document).val({{._xsrf}});
+            $("#token", parent.document).val(<%._xsrf%>);
 
             //tab导航栏切换
             $(".breadcrumb a").each(function (i,item) {
@@ -328,7 +328,7 @@
                             var unixTimestamp = new Date(data) ;
                             var commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
                             return commonTime;
-                        }},
+                        %>,
                     { data: null,"render":function () {
                             var html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
                             html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"

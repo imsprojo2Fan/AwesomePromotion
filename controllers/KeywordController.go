@@ -106,6 +106,10 @@ func(this *KeywordController) Update() {
 	if obj.Id==0|| obj.Keyword==""{
 		this.jsonResult(200,-1,"参数错误！",nil)
 	}
+	if obj.Id==6{
+		this.jsonResult(200,-1,"当前数据不可更新！",nil)
+	}
+
 	obj.Updated = time.Now()
 	if obj.Update(obj){
 		this.jsonResult(200,1,"更新数据成功！",nil)
@@ -120,6 +124,9 @@ func(this *KeywordController) Delete() {
 
 	if obj.Id==0{
 		this.jsonResult(200,-1,"参数错误！",nil)
+	}
+	if obj.Id==6{
+		this.jsonResult(200,-1,"当前数据不可删除！",nil)
 	}
 	if obj.Delete(obj){
 		this.jsonResult(200,1,"删除数据成功！",nil)

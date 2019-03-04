@@ -24,11 +24,11 @@ func InitLogs() {
 	level := beego.AppConfig.String("logs::level")
 	cur := time.Now().Format("2006-01-02")
 	fileLogs.SetLogger(logs.AdapterMultiFile, `{"filename":"logs/`+cur+`.log",
-		"separate":["critical", "error", "info", "debug"],
+		"separate":["error", "info", "debug"],
 		"level":`+level+`,
 		"daily":true,
 		"maxdays":10}`)
-	fileLogs.Async() //异步
+	fileLogs.Async(1000) //异步
 	runmode = strings.TrimSpace(strings.ToLower(beego.AppConfig.String("runmode")))
 	if runmode == "" {
 		runmode = "dev"

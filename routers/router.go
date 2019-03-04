@@ -19,7 +19,10 @@ func init() {
 	//模板页相关
 	beego.Router("/template", &controllers.TemplateController{},"*:Redirect")
 	beego.Router("/main/template/add",&controllers.TemplateController{},"POST:Add")
+	beego.Router("/main/template/delete",&controllers.TemplateController{},"POST:Delete")
+	beego.Router("/main/template/list",&controllers.TemplateController{},"POST:List")
 	beego.Router("/main/template/update",&controllers.TemplateController{},"POST:Update")
+	beego.Router("/main/kt/reset",&controllers.TemplateController{},"POST:Reset")
 
 	//关键字相关
 	beego.Router("/main/keyword/add",&controllers.KeywordController{},"POST:Add")

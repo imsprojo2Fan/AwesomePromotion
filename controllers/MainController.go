@@ -39,12 +39,22 @@ func(this *MainController) Redirect()  {
 	session,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
 	htmlName := this.GetString("htmlName")
 	this.Data["_xsrf"] = this.XSRFToken()
+	uid := session.Get("id").(int64)
+	uids := strconv.FormatInt(uid, 10)
+	uType := session.Get("type").(int)
+
+	if htmlName=="template"{
+		//获取所有关键词
+		keyword := new(models.KeyWord)
+		if uType>2{
+			uids = ""
+		}
+		this.Data["dataList"] = keyword.All(uids)
+	}
+
 	if htmlName=="keyword"{
 		//获取广告页可选项
 		ad := new(models.Ad)
-		uid := session.Get("id").(int64)
-		uids := strconv.FormatInt(uid, 10)
-		uType := session.Get("type").(int)
 		if uType>2{
 			uids = ""
 		}

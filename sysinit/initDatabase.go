@@ -31,6 +31,8 @@ func InitDatabase() {
 		dbCharset := beego.AppConfig.String(dbType + "::db_charset")
 		orm.RegisterDataBase(dbAlias, dbType, dbUser+":"+dbPwd+"@tcp("+dbHost+":"+
 			dbPort+")/"+dbName+"?parseTime=true&loc=Local&charset="+dbCharset, 30)
+		/*orm.RegisterDataBase(dbAlias, dbType, dbUser+":"+dbPwd+"@tcp("+dbHost+":"+
+			dbPort+")/"+dbName+"?parseTime=true&loc=Local", 30)*/
 	}
 	//如果是开发模式，则显示命令信息
 	isDev := (beego.AppConfig.String("runmode") == "dev")

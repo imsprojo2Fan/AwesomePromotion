@@ -1,76 +1,41 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AwesomePromotion</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <!-- Favicon -->
-    <link rel="icon" type="image/ico" href="../../static/img/logo/logoPic.png">
-    <link rel="stylesheet" href="../../static/css/root.css">
-    <link rel="stylesheet" href="https://cdn.staticfile.org/awesome-bootstrap-checkbox/v0.2.3/awesome-bootstrap-checkbox.min.css">
-    <link href="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcss.com/bootstrap-slider/10.2.1/css/bootstrap-slider.min.css" rel="stylesheet">
+    <title>模板页管理</title>
+    <!-- ========== Css Files ========== -->
+    <link href="../../static/css/root.css" rel="stylesheet">
+    <link href="../../static/css/design.css" rel="stylesheet">
     <style>
-        .resume-item{
-            padding-bottom: 10px;
-            margin-bottom: 0px;
-            border: 1px solid #DCE6EB;
-            margin-bottom: 15px;
-            min-height: 355px;
-        }
-        .resume-item:hover{
-            border-color:#6195FF;
-        }
-        .resume-item img {
-            display: block;
-            margin: auto;
-            max-width: 100%;
-            height: auto;
-            transition: opacity 0.35s, -webkit-transform 0.35s;
-            transition: opacity 0.35s, transform 0.35s;
-            -o-transition: opacity 0.35s, -o-transform 0.35s;
-            vertical-align: middle;
-        }
-        .resume-item .head{
-            box-sizing:inherit;
-            width: 100%;
-            background: rgba(43, 51, 62, 0.95);
-            color: #ffffff;
-            position: relative;
-            top:0px;
-            padding:8px;
-        }
-        .resume-item .head h{
-            margin-bottom: 5px;
-        }
-        .resume-item .bottom{
-            width: calc(100% - 35px);
-            box-sizing:inherit;
-            text-align: center;
-            position: absolute;
-            bottom:5px;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-        .resume-item .used{
-            width: calc(100% - 32px);
-            box-sizing:inherit;
-            text-align: center;
-            position: absolute;
-            bottom:16px;
-            color: #ffffff;
-            font-size: 18px;
-            background: rgba(245,0,0,0.75);
-            padding-top: 15px;
-            padding-bottom: 14px;
-        }
 
+        .checkbox-inline+.checkbox-inline, .radio-inline+.radio-inline {
+            margin-top: 0;
+            margin-left: 0px;
+        }
+        .checkbox-inline, .radio-inline{
+            padding-left: 0px;
+            margin-right: 12px;
+        }
+        /* blue */
+        .icheckbox_flat-blue,
+        .iradio_flat-blue {
+            display: inline-block;
+            *
+            display: inline;
+            vertical-align: middle;
+            margin-right: 3px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
-<body style="padding-bottom: 15%">
-<div id="loading" class="loading-wrap" style="display: none;">
+<body style="padding-bottom: 8%">
+<input type="hidden" value="<% ._xsrf%>" id="token">
+<div id="loading" class="loading-wrap">
     <div class="loader" >
         <div class="la-ball-clip-rotate-multiple la-3x">
             <div></div>
@@ -79,119 +44,606 @@
         <div class="loaderTxt">数据交互中...</div>
     </div>
 </div>
-<div id="mainContent" class="panel panel-headline">
-    <div class="panel-heading">
-        <h3 class="panel-title">我的制作</h3>
-        <hr>
-        <p>温馨提示:如果您不想别人随意的查看您的简历,通过'编辑简历'重置简历分享链接即可.</p>
+
+<div style="position: fixed;top:0px;width: 100%;z-index: 99;background: #f5f5f5;">
+    <!-- Start Page Header -->
+    <div class="page-header" style="padding-left: 15px;">
+        <h2 class="title">模板页管理</h2>
+        <ol class="breadcrumb">
+            <li><span id="tabHref01" href="javascript:void(0)">数据列表</span></li>
+            <li><span id="tabHref02" class="active" href="javascript:void(0)">新增数据</span></li>
+        </ol>
     </div>
-    <div class="panel-body">
-        <div class="row" id="resumeWrap">
-            <div class="col-md-3" >
-                <div class="resume-item">
-                    <div class="head">
-                        <h4>全屏简约个人主页模板</h4>
-                        <div class="type">分类:时尚创意</div>
-                    </div>
-                    <img src="../../static/img/zooori.jpg">
-                    <div class="bottom">
-                        <button class="btn btn-primary">使用模板</button>&nbsp;&nbsp;&nbsp;
-                        <button class="btn btn-default">预览模板</button>
-                    </div>
-                    <div class="used" style="display: none">已使用</div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </div>
 
+<!-- START CONTENT -->
+<div class="content">
+
+    <!-- START CONTAINER -->
+    <div class="container-padding" >
+
+        <!-- Start Row -->
+        <div class="row">
+
+            <!-- Start Panel -->
+            <div id="panel" class="col-sm-12">
+                <div class="panel panel-default">
+                    <div id="tab1" class="panel-body table-responsive">
+                        <table id="myTable" class="table display">
+                            <thead>
+                            <tr>
+                                <th>页面标题</th>
+                                <th>关键词</th>
+                                <th>本站预览</th>
+                                <th>源网页</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- End Panel -->
+
+        </div>
+        <!-- End Row -->
+
+    </div>
+    <!-- END CONTAINER -->
+
+    <!-- 模态框-detail（Modal） -->
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        查看详情
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >页面标题：<span id="detail_title"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >关键词：<span id="detail_keyword"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >操作一：<span id="detail_url"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >操作二：<span id="detail_murl"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >备注信息：<span id="detail_remark"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >创建时间：<span id="detail_created"></span></p>
+                    </div>
+                    <div class="col-sm-offset-1">
+                        <p class="form-control-static" >最近更新：<span id="detail_updated"></span></p>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- 新建模板页-模态框（Modal） -->
+    <div class="modal fade" id="myModal02" style="overflow-y: auto;z-index: 9999" tabindex="-1" role="dialog" aria-labelledby="myModal02Label" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" id="modalClose" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h3 style="font-weight: 700" class="modal-title" id="editModalLabel">
+                        新建模板页<span id="tip" style="font-size: 13px;font-weight: normal;"><span style="color: red">*</span>为必填</span>
+                    </h3>
+
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" autocomplete="off">
+
+                        <div >
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label form-label">链接地址<span style="color: red">*</span></label>
+                                <div class="col-sm-8">
+                                    <input id="urlInput" type="text" class="form-control" placeholder="请输入要拷贝的网页地址">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label form-label">关键词<span style="color: red">*</span></label>
+                                <div id="checkWrap" class="col-sm-8">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" id="inlineCheckbox1" value="option1"> 选项 1
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label form-label">备注信息</label>
+                                <div class="col-sm-8">
+                                    <textarea id="remark" class="form-control" placeholder=""></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="addTemplete" class="btn btn-default" >
+                        提交
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- 模态框-edit（Modal） -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="editModalLabel">
+                        编辑信息&nbsp;&nbsp;<span id="tip"></span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" autocomplete="off">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label form-label"></label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="account" class="col-sm-2 control-label form-label"><span class="red">*</span>页面标题</label>
+                            <div class="col-sm-10">
+                                <%/*onKeyUp="value=value.replace(/[^/a-zA-Z0-9]/g,'')"*/%>
+                                <input type="hidden" id="Id">
+                                <input type="text" class="form-control" disabled maxlength="20" style="ime-mode:disabled" id="title_edit" placeholder="请输入页面标题">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="account" class="col-sm-2 control-label form-label"><span class="red"></span>关键词</label>
+                            <div id="checkWrap" class="col-sm-10">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox1" value="option1"> 选项0
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label form-label">备注信息</label>
+                            <div class="col-sm-10">
+                                <textarea id="remark_edit" class="form-control" placeholder=""></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="edit()" class="btn btn-default">
+                        提交更新
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</div>
+<!-- End Content -->
+
+
+<script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://cdn.bootcss.com/bootstrap-slider/10.2.1/bootstrap-slider.min.js"></script>
-<script src="../../static/plugins/citySelect/distpicker.data.js"></script>
-<script src="../../static/plugins/citySelect/distpicker.js"></script>
+<script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
 <script src="../../static/js/util.js"></script>
+
+<!-- ================================================
+Data Tables
+================================================ -->
+<script src="../../static/plugins/datatables/datatables.min.js"></script>
+
 <script>
 
-    $(function () {
-        $("#token", parent.document).val({{._xsrf}});
-    });
+    keywords = <%.dataList%>;
 
-    //获取所有模板
-    var dataAll = [];
-    var dataMade = [];
-    var dataUse = [];
-    var parentWin = window.parent;
-    $.post("/index/resume/list", {_xsrf:{{._xsrf}}},function (r1) {
-        if(r1.code==1){
-            dataAll = r1.data;
-            //获取已使用模板
-            $.post("/main/resume/made", {_xsrf:{{._xsrf}}},function (r2) {
-                if(r2.code==1){
-                    dataMade = r2.data;
-                    for(var i=0;i<dataAll.length;i++){
-                        var eid = dataAll[i].Eid;
-                        dataAll[i].isUse = false;
-                        for(var j=0;j<dataMade.length;j++){
-                            var rid = dataMade[j].Rid;
-                            if(eid===rid){
-                                var obj = dataMade[j];
-                                obj.modelName = dataAll[i].Name;
-                                obj.Theme = dataAll[i].Theme;
-                                obj.Img = dataAll[i].Img;
-                                dataUse.push(obj);
-                                break;
-                            }
-                        }
-                    }
-                    $('#loading').fadeOut(200);
-                    //渲染ui
-                    $('#resumeWrap').html("");
-                    parentWin.GlobalDataArr = dataUse;
-                    for(var k=0;k<dataUse.length;k++){
-                        var obj = dataUse[k];
-                        var title = obj.modelName;
-                        var type = obj.Theme;
-                        var imgUrl = "/file/"+obj.Img;
-                        var uid = obj.Uid;
-                        var rid = obj.Rid;
-                        $('#resumeWrap').append('<div class="col-md-3" >\n' +
-                                '                <div class="resume-item">\n' +
-                                '                    <div class="head">\n' +
-                                '                        <h4 style="margin-bottom: 5px;margin-top: 5px;">'+title+'</h4>\n' +
-                                '                        <div class="type">分类:'+type+'</div>\n' +
-                                '                    </div>\n' +
-                                '                    <img src="'+imgUrl+'">\n' +
-                                '                    <div class="bottom">\n' +
-                                '                        <button onclick="edit('+k+')" class="btn btn-primary"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;编辑简历</button>&nbsp;&nbsp;&nbsp;\n' +
-                                '                        <button onclick="preview('+k+')" class="btn btn-success"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;预览简历</button>\n' +
-                                '                    </div>\n' +
-                                '                </div>\n' +
-                                '            </div>')
-                    }
+    var myTable;
+    $(document).ready(function() {
 
-                }
+        //调用父页面弹窗通知
+        //window.parent.swalInfo('TEST',666,'error')
+
+        //tab导航栏切换
+        $('#tabHref01').on("click",function () {
+            var isActive = $(this).attr("class");
+            if(!isActive){
+                return
+            }else{
+                $('#tabHref02').addClass("active");
+                $(this).removeClass("active");
+                $('#myModal02').modal('hide');
+                $("#tab1").fadeIn(100);
+                refresh();
+            }
+        });
+
+        $('#addTemplete').on('click',function () {
+            var url = $('#urlInput').val().trim();
+            var keyArr = "";
+            $('input[name="keyword"]:checked').each(function() {
+                keyArr = keyArr+","+$(this).val();
             });
+            keyArr = keyArr.substring(1,keyArr.length);
+
+            if(!url||!IsURL(url)){
+                tipTip("tip","错误提示:请输入正确的网页地址!");
+                return
+            }
+            if(!keyArr){
+                tipTip("tip","错误提示:请选择关键词!");
+                return
+            }
+            var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(url)[0];
+            $('#loading').show();
+            $.post("/main/template/add",{_xsrf:$('#token').val(),inputUrl:url,keywords:keyArr,domain:origin,remark:$('#remark').val().trim()},function (res) {
+                $('#loading').hide();
+                if(res.code===1){
+                    $('#myModal02').modal("hide");
+                    $('#urlInput').val("");
+                    $('#keyword').val("");
+                    $('#remark').val("");
+                    $('#tabHref01').click();
+                    swal("系统提示",res.msg,"success");
+                    window.open("/template?v="+res.data,"_blank");
+                }else{
+                    tipTip("tip",res.msg);
+                }
+
+            });
+
+        });
+
+        $('#tabHref02').on("click",function () {
+            var isActive = $(this).attr("class");
+            if(!isActive){
+                return
+            }else{
+                $('#tabHref01').addClass("active");
+                $(this).removeClass("active");
+                $('#tab1').fadeOut(100);
+                $('#myModal02').modal('show');
+            }
+        });
+
+        if(!keywords){
+            $('#checkWrap').html("暂无关键词可选!请前往'关键词管理'添加关键词。");
+            $('#checkWrap').css("margin-top","7px");
+        }else{
+            $('#checkWrap').html("");
+            //keywords=keywords.concat(keywords);
+            for(var i=0;i<keywords.length;i++){
+                var item = keywords[i];
+                $('#checkWrap').append('' +
+                        '<label class="checkbox-inline">\n' +
+                        '   <input type="checkbox" name="keyword"  value="'+item.id+'">' +item.keyword+
+                        '</label>');
+            }
         }
 
-    });
+        //渲染关键字
+        $('input[type=checkbox]').iCheck({
+            checkboxClass: 'icheckbox_flat-blue',  // 注意square和blue的对应关系
+            radioClass: 'iradio_flat-blue'
+        });
 
-    function edit(index) {
-        var resume = dataUse[index];
-        resume.Index = index;
-        parentWin.renderForm(index);  //method为父页面的方法
-        $('#wrapper',parent.document).hide(200);
-        $('#madeModal',parent.document).modal("show");
+        $('input[type=checkbox]').on('ifChecked', function(event){ //ifCreated 事件应该在插件初始化之前绑定
+            var length = selectedCount('keyword');
+            console.log(length);
+            if(length==3){
+                $("input[name='keyword']:not(:checked)").each(function() {
+                    $(this).iCheck('disable');
+                });
+            }
+        });
+        $('input[type=checkbox]').on('ifUnchecked', function(event){ //ifCreated 事件应该在插件初始化之前绑定
+            var length = selectedCount('keyword');
+            if(length<3){
+                $("input[name='keyword']:not(:checked)").each(function() {
+                    $(this).iCheck('enable');
+                });
+            }
+        });
+
+        //datatable setting
+        myTable =$('#myTable').DataTable({
+            /*scrollY:        '100vh',*/
+            autoWidth: true,
+            scrollCollapse: true,
+            "processing": true,
+            serverSide: true,
+            //bSort:false,//排序
+            "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,1,2,3,5 ] }],//指定哪些列不排序
+            "order": [[ 4, "desc" ]],//默认排序
+            ajax: {
+                url: '/main/template/list',
+                type: 'POST',
+                data:{
+                    _xsrf:$("#token", parent.document).val()
+                }
+            },
+            columns: [
+                { data: 'label',"render":function (data) {
+                    var temp = data;
+                        if(data.length>10){
+                            data = data.substring(0,6)+"...";
+                        }
+                        return "<span title='"+temp+"'>"+data+"</span>" ;
+                    }},
+                { data: 'keyword',"render":function (data) {
+                        var str = "";
+                        var temp = "";
+                        if(data){
+                            for(var i=0;i<data.length;i++){
+                                var obj = data[i];
+                                str = str+","+obj.keyword;
+                            }
+                            str = str.substring(1,str.length);
+                            temp = str;
+                            if(str.length>10){
+                                str = str.substring(0,9)+"...";
+                            }
+                        }
+                        return "<span title='"+temp+"'>"+str+"</span>";
+                    } },
+                { data: 'url',"render":function (data) {
+                        var url = "/template?v="+data;
+                        return "<a href='"+url+"' target='_blank'>点击预览</a>";
+                    } },
+                { data: 'm_url',"render":function (url) {
+                        var dom = "";
+                        if(url.indexOf("http")>-1){
+                            var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(url)[0];
+                            dom =  "<a target='_blank' href='"+url+"'>"+origin+"</a>";
+                        }else{
+                            dom =  "<a target='_blank' href='/ad?v="+url+"'>点击预览</a>";
+                        }
+                        return dom;
+                    } },
+                { data: 'created',"render":function (data,type,row,meta) {
+                        var unixTimestamp = new Date(data);
+                        var commonTime = unixTimestamp.toLocaleString('chinese', {hour12: false});
+                        return commonTime;
+                    }},
+                { data: null,"render":function () {
+                        var html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'>查看</a>&nbsp;"
+                        html += "<a href='javascript:void(0);' class='up btn btn-info btn-xs'></i>编辑</a>&nbsp;"
+                        html += "<a href='javascript:void(0);' class='down btn btn-danger btn-xs'>删除</a>"
+                        return html;
+                    } }
+            ],
+            language: {
+                url: '../../static/plugins/datatables/zh_CN.json'
+            },
+            "createdRow": function ( row, data, index ) {//回调函数用于格式化返回数据
+                /*if(!data.name){
+                    $('td', row).eq(2).html("暂未填写");
+                }*/
+            }
+        });
+
+        $('.dataTables_wrapper .dataTables_filter input').css("background","blue");
+
+        var rowData;
+        $('#myTable').on("click",".btn-default",function(e){//查看
+            rowData = myTable.row($(this).closest('tr')).data();
+            $('#detail_title').html(rowData.label);
+            var data = rowData.keyword;
+            var str = "";
+            if(data){
+                for(var i=0;i<data.length;i++){
+                    var obj = data[i];
+                    str = str+","+obj.keyword;
+                }
+                str = str.substring(1,str.length);
+            }
+
+            $('#detail_keyword').html(str);
+
+            var url = rowData.url;
+            var dom =  "<a target='_blank' href='/template?v="+url+"'>本站预览</a>";
+            $('#detail_url').html(dom);
+            var mUrl = rowData.m_url;
+            dom =  "<a target='_blank' href='"+mUrl+"'>源网页预览</a>";
+            $('#detail_murl').html(dom);
+            var remark = rowData.remark;
+            if(!remark){
+                remark = "暂未填写";
+            }
+            $('#detail_remark').html(remark);
+            var created = rowData.created;
+            var unixTimestamp = new Date(created) ;
+            var commonTime = unixTimestamp.toLocaleString('chinese',{hour12:false});
+            $('#detail_created').html(commonTime);
+
+            var updated = rowData.updated;
+            if(updated){
+                var unixTimestamp = new Date(updated) ;
+                updated = unixTimestamp.toLocaleString('chinese',{hour12:false});
+            }else{
+                updated = "暂无更新";
+            }
+
+            $('#detail_updated').html(updated);
+            $('#detailModal').modal("show");
+        });
+        $('#myTable').on("click",".btn-info",function(e){//编辑
+            rowData = myTable.row($(this).closest('tr')).data();
+            $('#Id').val(rowData.id);
+            $('#title_edit').val(rowData.label);
+            var keywords = rowData.keyword;
+            for(var i=0;i<keywords.length;i++){
+                $('input[type=checkbox]').each(function () {
+                    if($(this).val()==keywords[i].id){
+                        $(this).iCheck('check');
+                    }
+                })
+            }
+
+            $('#remark_edit').val(rowData.remark);
+            $('#tip').html("");
+            $('#editModal').modal("show");
+        });
+        $('#myTable').on("click",".btn-danger",function(e){//删除
+            rowData = myTable.row($(this).closest('tr')).data();
+            console.log(rowData);
+            var id = rowData.id;
+
+            swal({
+                title: "确定删除吗?",
+                text: '删除将无法恢复该信息!',
+                type: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#ff1200',
+                cancelButtonColor: '#474747',
+                confirmButtonText: '确定',
+                cancelButtonText:'取消'
+            },function(){
+                del(id);
+            });
+
+        });
+
+    } );
+
+    function edit(){
+        var id = $('#Id').val();
+        var keyArr = "";
+        $('input[name="keyword"]:checked').each(function() {
+            keyArr = keyArr+","+$(this).val();
+        });
+        keyArr = keyArr.substring(1,keyArr.length);
+        if(!keyArr){
+            tipTip("请选择关键词!","","error");
+            return
+        }
+        $.ajax({
+            url : "/main/template/update",
+            type : "POST",
+            dataType : "json",
+            cache : false,
+            data : {
+                _xsrf:$("#token", parent.document).val(),
+                id:id,
+                keyArr:keyArr,
+                remark:$('#remark_edit').val().trim()
+            },
+            beforeSend:function(){
+                $('#loading').fadeIn(200);
+            },
+            success : function(r) {
+                $('#editModal').modal("hide");
+                var type = "error";
+                if (r.code == 1) {
+                    type = "success";
+                    refresh();
+                }
+                swal(r.msg,' ',type);
+            },
+            complete:function () {
+                $('#loading').fadeOut(200);
+            }
+        });
     }
-    function preview(index) {
-        var sid = parentWin.GlobalDataArr[index].Sid;
-        var url = "/share?v="+sid;
-        window.open(url,"_blank");
+
+    function del(id){
+
+        $.ajax({
+            url : "/main/template/delete",
+            type : "POST",
+            dataType : "json",
+            cache : false,
+            data : {
+                _xsrf:$("#token", parent.document).val(),
+                id:id
+            },
+            beforeSend:function(){
+                $('#loading').fadeIn(200);
+            },
+            success : function(r) {
+                if (r.code == 1) {
+                    swal(r.msg,' ', "success");
+                    refresh();
+                }else{
+                    swal(r.msg,' ', "error");
+                }
+            },
+            complete:function () {
+                $('#loading').fadeOut(200);
+            }
+        })
+    }
+
+    function reset() {
+        $(":input").each(function () {
+            $(this).val("");
+        });
+        $("textarea").each(function () {
+            $(this).val("");
+        });
+    }
+
+    function refresh() {
+        myTable.ajax.reload();
+    }
+
+    function swal(title,msg,type) {
+        window.parent.swalInfo(title,msg,type);
+    }
+
+    //选中数量
+    function selectedCount(name) {
+        return $("input[name='" + name + "']:checked").length;
+    }
+
+    function tipTip(id,msg) {
+        $('#'+id).show();
+        $('#'+id).html(msg);
+        $('#'+id).css({
+            "color":"#ff0002b5",
+            "font-size":"13px",
+            "margin-left":"12px"
+        });
+        setTimeout(function () {
+            $('#'+id).hide();
+        },2000);
     }
 
 </script>
+
 
 </body>
 </html>
