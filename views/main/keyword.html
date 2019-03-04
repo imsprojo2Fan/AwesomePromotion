@@ -272,7 +272,7 @@ Data Tables
     var ads;
     $(document).ready(function() {
 
-        ads = <%.ads%>
+        ads = <%.dataList%>
 
         //调用父页面弹窗通知
         //window.parent.swalInfo('TEST',666,'error')
@@ -521,7 +521,7 @@ Data Tables
         var description = $('#description').val().trim();
         var remark = $('#remark').val().trim();
         if (!keyword){
-            swal("关键字不能为空!",' ',"warning");
+            swal("系统提示",'关键字不能为空!',"warning");
             return;
         }
         $.ajax({
@@ -547,7 +547,7 @@ Data Tables
                     type = "success";
                     reset();
                 }
-                swal(r.msg,' ',type);
+                swal("系统提示",r.msg,type);
             },
             complete:function () {
                 $('#loading').fadeOut(200);
@@ -564,7 +564,7 @@ Data Tables
         var description = $('#description_edit').val().trim();
         var remark = $('#remark_edit').val().trim();
         if (!keyword){
-            swal("关键字不能为空!",' ',"warning");
+            swal("系统提示",'关键字不能为空!',"warning");
             return;
         }
         $.ajax({
@@ -616,10 +616,10 @@ Data Tables
             },
             success : function(r) {
                 if (r.code == 1) {
-                    swal(r.msg,' ', "success");
+                    swal("系统提示",r.msg, "success");
                     refresh();
                 }else{
-                    swal(r.msg,' ', "error");
+                    swal("系统提示",r.msg, "error");
                 }
             },
             complete:function () {

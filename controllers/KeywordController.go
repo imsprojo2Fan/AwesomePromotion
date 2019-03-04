@@ -86,7 +86,7 @@ func(this *KeywordController) Add()  {
 	if obj.Id>0{
 		this.jsonResult(200,-1,"当前关键词已存在！",nil)
 	}
-	id :=obj.ReadOrCreate(*obj)//插入表记录
+	id :=obj.Insert(obj)//插入表记录
 	if id>0{
 		this.jsonResult(200,1,"提交成功",nil)
 	}else{
@@ -140,7 +140,7 @@ func (this *KeywordController) All() {
 	uid := sesion.Get("id").(int64)
 	uids := strconv.FormatInt(uid, 10)
 	uType := sesion.Get("type").(int)
-	obj:= new(models.Ad)
+	obj:= new(models.KeyWord)
 	if uType>2{
 		uids = ""
 	}

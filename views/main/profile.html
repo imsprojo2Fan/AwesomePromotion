@@ -209,9 +209,9 @@
                 success:function (r) {
                     if(r.code===1){
                         renderForm();
-                        parentWin.swalInfo("即刻提示",r.msg,"success");
+                        parentWin.swalInfo("系统提示",r.msg,"success");
                     }else{
-                        parentWin.swalInfo("即刻提示",r.msg,"error");
+                        parentWin.swalInfo("系统提示",r.msg,"error");
                     }
                 },
                 complete:function () {
@@ -240,19 +240,19 @@
                       }, function(){
                           var code_ = $('#code').val().trim();
                           if(!code_){
-                              parentWin.swalInfo("即刻提示","验证码不能为空!","error");
+                              parentWin.swalInfo("系统提示","验证码不能为空!","error");
                           }
                           $.post("/main/user/mail4confirm",{_xsrf:$('#token').val(),code:code_},function (r) {
                                 if(r.code==1){
-                                    parentWin.swalInfo("即刻提示",r.msg,"success");
+                                    parentWin.swalInfo("系统提示",r.msg,"success");
                                     renderForm();
                                 }else{
-                                    parentWin.swalInfo("即刻提示",r.msg,"error");
+                                    parentWin.swalInfo("系统提示",r.msg,"error");
                                 }
                           });
                       });
                   }else{
-                      parentWin.swalInfo("即刻提示",r.msg,"error");
+                      parentWin.swalInfo("系统提示",r.msg,"error");
                   }
                });
 
@@ -300,10 +300,10 @@
                     $('#editEmail').val("");
                     $('#editCode').val("");
                     $('#emailModal').modal("hide");
-                    parentWin.swalInfo("即刻提示",r.msg,"success");
+                    parentWin.swalInfo("系统提示",r.msg,"success");
                     renderForm();
                 }else{
-                    parentWin.swalInfo("即刻提示",r.msg,"error");
+                    parentWin.swalInfo("系统提示",r.msg,"error");
                 }
             });
         });
@@ -354,7 +354,7 @@
         });
     }
     function tipTip(dom,str) {
-        parentWin.swalInfo("即刻提示",str,"error");
+        parentWin.swalInfo("系统提示",str,"error");
     }
 </script>
 </body>

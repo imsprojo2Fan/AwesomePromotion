@@ -13,9 +13,12 @@ type Template struct {
 	Uid  	 int64
 	Url      string
 	Label    string
+	Description string
 	Domain   string
 	MUrl	 string
 	Content	 string
+	Redirect int
+	RedirectPage string
 	Remark string
 	Updated time.Time `orm:"auto_now_add;type(datetime)"`
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
@@ -47,7 +50,7 @@ func(this *Template) Insert(model *Template) int {
 func(this *Template) Update(Template *Template) bool {
 
 	o := orm.NewOrm()
-	_,err := o.Update(Template,"remark","updated")
+	_,err := o.Update(Template,"label","redirect","redirect_page","description","remark","updated")
 	if err!=nil{
 		return false
 	}else{

@@ -58,7 +58,7 @@ func(this *MainController) Redirect()  {
 		if uType>2{
 			uids = ""
 		}
-		this.Data["ads"] = ad.All(uids)
+		this.Data["dataList"] = ad.All(uids)
 	}
 	htmlName = "main/"+htmlName+".html"
 	this.TplName = htmlName

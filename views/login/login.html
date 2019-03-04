@@ -130,9 +130,9 @@
         var isPassKeyLogin = false;
 		$(function () {
 		    if(!isPhone()){
-		        $('.content').css({
+		        $('.left .content').css({
                     "position": "relative",
-                    "top":"-375px"
+                    "top":"-35px"
                 })
             }
 		    //alert(document.body.clientHeight);
@@ -154,7 +154,7 @@
                     passKey = $('#passKey').val().trim();
                     if(!passKey){
                         sweetAlert(
-                                '即刻提示',
+                                '系统提示',
                                 '登录密钥不能为空！',
                                 'warning'
                         )
@@ -166,7 +166,7 @@
                     password = $('#password').val().trim();
                     if(!account){
                         sweetAlert(
-                                '即刻提示',
+                                '系统提示',
                                 '账号不能为空！',
                                 'warning'
                         )
@@ -175,7 +175,7 @@
                     }
                     if(!password){
                         sweetAlert(
-                                '即刻提示',
+                                '系统提示',
                                 '请填写密码！',
                                 'warning'
                         )
@@ -218,7 +218,7 @@
                             window.location.href = "/main";
                             //swal("登录成功!",' ',"success");
                         } else {
-                            sweetAlert("即刻提示",r.msg,"error");
+                            sweetAlert("系统提示",r.msg,"error");
                             $(".swal2-confirm").trigger("blur");
                         }
                     },
@@ -249,13 +249,13 @@
                 var email = $('#email').val().trim();
                 if(!email){
                     setTimeout(function () {
-                        swal("即刻提示","您似乎什么都没填","error");
+                        swal("系统提示","您似乎什么都没填","error");
                     },200);
                     return
                 }
                 if(!checkEmail(email)){
                     setTimeout(function () {
-                        swal("即刻提示","邮箱格式好像不正确","error");
+                        swal("系统提示","邮箱格式好像不正确","error");
                     },200);
                     return
                 }
@@ -280,30 +280,30 @@
                                 var code = $('#code').val().trim();
                                 if(!password){
                                     setTimeout(function () {
-                                        swal("即刻提示","您未填写密码!","error");
+                                        swal("系统提示","您未填写密码!","error");
                                     },200);
                                     return
                                 }
                                 if(password.length<6){
                                     setTimeout(function () {
-                                        swal("即刻提示","密码过简单了!","error");
+                                        swal("系统提示","密码过简单了!","error");
                                     },200);
                                     return
                                 }
                                 if(!code){
                                     setTimeout(function () {
-                                        swal("即刻提示","验证码不能为空!","error");
+                                        swal("系统提示","验证码不能为空!","error");
                                     },200);
                                     return
                                 }
                                 $.post("/reset",{_xsrf:$('#token').val(),email:email,password:password,code:code},function (r) {
                                     if(r.code===1){
                                         setTimeout(function () {
-                                            swal("即刻提示",r.msg,"success");
+                                            swal("系统提示",r.msg,"success");
                                         },200);
                                     }else{
                                         setTimeout(function () {
-                                            swal("即刻提示",r.msg,"error");
+                                            swal("系统提示",r.msg,"error");
                                         },200);
                                     }
                                 })
@@ -312,7 +312,7 @@
 
                     }else{
                         setTimeout(function () {
-                            swal("即刻提示",r.msg,"error");
+                            swal("系统提示",r.msg,"error");
                         },200);
                     }
                 })

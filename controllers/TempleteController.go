@@ -44,16 +44,17 @@ func (this *TemplateController) Redirect() {
 	fmt.Println(dataList)
 	var kArr []string
 	var urlArr []string
+	var ks4title string
 	var ks string
 	var description string
 	for _,item := range dataList{
 		keyword := item["keyword"]
 		ks = ks+","+keyword.(string)
+		ks4title = ks4title+" | "+keyword.(string)
 		description = (item["description"]).(string)
 		kArr = append(kArr,keyword.(string))
 		urlArr = append(urlArr,(item["url"]).(string))
 	}
-	//ks = utils.Substr(ks,1,len(ks))
 
 	if len(dataList)==0{
 		//设置token
@@ -72,21 +73,32 @@ func (this *TemplateController) Redirect() {
 	htmlDoc, _ :=goquery.NewDocumentFromReader(bytes.NewReader(b))
 	//动态渲染关键字及链接等
 	//更改title
-	//htmlDoc.Find("title").AppendHtml(ks)
+	var tempTitle = template.Label
+	ks4title = ks4title+" | "+tempTitle
+	nameRune := []rune(ks4title)
+	ks4title = string(nameRune[2:])
+	htmlDoc.Find("title").ReplaceWith(ks4title)
+	htmlDoc.Find("head").AppendHtml("<title>"+ks4title+"</title>")
 
 	metaArr := htmlDoc.Find("meta")
 	for i := 0; i < metaArr.Length(); i++ {
 		name, _ := metaArr.Eq(i).Attr("name")
 		content, _ := metaArr.Eq(i).Attr("content")
 		if name=="keywords"{//添加keywords
-		if strings.Index(content,ks)<1{
-			metaArr.Eq(i).SetAttr("content",content+ks)
-		}
+			if strings.Index(content,ks)<1{
+				metaArr.Eq(i).SetAttr("content",content+ks)
+			}
 		}
 		if name=="description"{
-			metaArr.Eq(i).SetAttr("content",description)
+			var tempDes = template.Description
+			metaArr.Eq(i).SetAttr("content",tempDes+","+description)
 		}
 	}
+
+	//解决oschina网页错误
+	htmlDoc.Find(".question").Each(func(i int, selection *goquery.Selection) {
+		selection.Remove()
+	})
 
 	if len(kArr)==1{
 		keyWord := kArr[0]
@@ -102,6 +114,10 @@ func (this *TemplateController) Redirect() {
 		htmlDoc.Find("h3").Each(func(i int, selection *goquery.Selection) {
 			selection.ReplaceWithHtml("<h3 style='color:#fff;background:#54d17b;padding:8px;'>"+keyWord+"</h3>")
 		})
+		//添加固定栏位替换
+		htmlDoc.Find("#myWrap01").ReplaceWithHtml("<div id='myWrap01'><a href='"+urlArr[0]+"' target='_blank'>"+keyWord+"</a></div>")
+		//添加友情链接
+		htmlDoc.Find("#myLink01").ReplaceWithHtml("<div id='myLink01'><a href='"+urlArr[0]+"' target='_blank'>"+keyWord+"</a></div>")
 	}else if len(kArr)==2{
 		keyWord01 := kArr[0]
 		keyWord02 := kArr[1]
@@ -117,6 +133,14 @@ func (this *TemplateController) Redirect() {
 		htmlDoc.Find("h3").Each(func(i int, selection *goquery.Selection) {
 			selection.ReplaceWithHtml("<h3 style='color:#fff;background:#2e5853;padding:8px;'>"+keyWord01+"</h3>")
 		})
+
+		//添加固定栏位替换
+		htmlDoc.Find("#myWrap01").ReplaceWithHtml("<div id='myWrap01'><a href='"+urlArr[0]+"' target='_blank'>"+keyWord01+"</a></div>")
+		htmlDoc.Find("#myWrap02").ReplaceWithHtml("<div id='myWrap02'><a href='"+urlArr[1]+"' target='_blank'>"+keyWord02+"</a></div>")
+		//添加友情链接
+		htmlDoc.Find("#myLink01").ReplaceWithHtml("<div id='myLink01'><a href='"+urlArr[0]+"' target='_blank'>"+keyWord01+"</a></div>")
+		htmlDoc.Find("#myLink02").ReplaceWithHtml("<div id='myLink02'><a href='"+urlArr[1]+"' target='_blank'>"+keyWord02+"</a></div>")
+
 	}else{
 		keyWord01 := kArr[0]
 		keyWord02 := kArr[1]
@@ -124,7 +148,7 @@ func (this *TemplateController) Redirect() {
 		//更改h1标题
 		h1Arr :=htmlDoc.Find("h4")
 		if h1Arr.Length()<3{
-			htmlDoc.Find("#myWrap01").ReplaceWithHtml("<div id='myWrap01' style='position:fixed;z-index:9999;left:3%;top:25%;padding:8px;color:#fff;background:#5e6cd9;font-size:30px;'>"+keyWord01+"</div>")
+			//htmlDoc.Find("#myWrap01").ReplaceWithHtml("<div id='myWrap01' style='position:fixed;z-index:9999;left:3%;top:25%;padding:8px;color:#fff;background:#5e6cd9;font-size:30px;'>"+keyWord01+"</div>")
 		}else{
 			htmlDoc.Find("h4").Each(func(i int, selection *goquery.Selection) {
 				selection.ReplaceWithHtml("<h4 style='color:#fff;background:#5e6cd9;padding:8px;'>"+keyWord01+"</h4>")
@@ -133,7 +157,7 @@ func (this *TemplateController) Redirect() {
 		//更改h2标题
 		h2Arr :=htmlDoc.Find("h2")
 		if h2Arr.Length()<3{
-			htmlDoc.Find("#myWrap02").ReplaceWithHtml("<div id='myWrap02' style='position:fixed;z-index:9999;left:3%;top:50%;padding:8px;color:#fff;background:#c3d719;font-size:26px;'>"+keyWord02+"</div>")
+			//htmlDoc.Find("#myWrap02").ReplaceWithHtml("<div id='myWrap02' style='position:fixed;z-index:9999;left:3%;top:50%;padding:8px;color:#fff;background:#c3d719;font-size:26px;'>"+keyWord02+"</div>")
 		}else{
 			htmlDoc.Find("h2").Each(func(i int, selection *goquery.Selection) {
 				selection.ReplaceWithHtml("<h2 style='color:#fff;background:#c3d719;padding:8px;'>"+keyWord02+"</h2>")
@@ -142,16 +166,29 @@ func (this *TemplateController) Redirect() {
 		//更改h3标题
 		h3Arr :=htmlDoc.Find("h3")
 		if h3Arr.Length()<3{
-			htmlDoc.Find("#myWrap03").ReplaceWithHtml("<div id='myWrap03' style='position:fixed;z-index:9999;left:3%;top:75%;padding:8px;color:#fff;background:#54d17b;font-size:23px;'>"+keyWord03+"</div>")
+			//htmlDoc.Find("#myWrap03").ReplaceWithHtml("<div id='myWrap03' style='position:fixed;z-index:9999;left:3%;top:75%;padding:8px;color:#fff;background:#54d17b;font-size:23px;'>"+keyWord03+"</div>")
 		}else{
 			htmlDoc.Find("h3").Each(func(i int, selection *goquery.Selection) {
 				selection.ReplaceWithHtml("<h3 style='color:#fff;background:#54d17b;padding:8px;'>"+keyWord03+"</h3>")
 			})
 		}
 
+		//添加固定栏位替换
+		htmlDoc.Find("#myWrap01").ReplaceWithHtml("<div id='myWrap01'><a href='"+urlArr[0]+"' target='_blank'>"+keyWord01+"</a></div>")
+		htmlDoc.Find("#myWrap02").ReplaceWithHtml("<div id='myWrap02'><a href='"+urlArr[1]+"' target='_blank'>"+keyWord02+"</a></div>")
+		htmlDoc.Find("#myWrap03").ReplaceWithHtml("<div id='myWrap03'><a href='"+urlArr[2]+"' target='_blank'>"+keyWord03+"</a></div>")
+		//添加友情链接
+		htmlDoc.Find("#myLink01").ReplaceWithHtml("<div id='myLink01'><a href='"+urlArr[0]+"' target='_blank'>"+keyWord01+"</a></div>")
+		htmlDoc.Find("#myLink02").ReplaceWithHtml("<div id='myLink02'><a href='"+urlArr[1]+"' target='_blank'>"+keyWord02+"</a></div>")
+		htmlDoc.Find("#myLink03").ReplaceWithHtml("<div id='myLink03'><a href='"+urlArr[2]+"' target='_blank'>"+keyWord03+"</a></div>")
+
 	}
 
-	hrefArr := htmlDoc.Find("a")
+
+
+
+	//替换a标签链接
+	/*hrefArr := htmlDoc.Find("a")
 	for i := 0; i < hrefArr.Length(); i++ {
 		selection := hrefArr.Eq(i)
 		if len(urlArr)==1{
@@ -173,14 +210,16 @@ func (this *TemplateController) Redirect() {
 				selection.SetAttr("href",urlArr[2])
 			}
 		}
-		//selection.SetAttr("target","_blank")
-	}
+		selection.SetAttr("target","_blank")
+	}*/
 
+	//设置token
+	htmlDoc.Find("#token").SetAttr("value",this.XSRFToken())
 	content,_:=htmlDoc.Html()
 	os.Remove(filePath)
 	WriteFile(filePath,content)
 	//设置token
-	this.Data["_xsrf"] = this.XSRFToken()
+	//this.Data["_xsrf"] = this.XSRFToken()
 	htmlName:= "template/"+url+".html"
 	this.TplName = htmlName
 
@@ -282,6 +321,7 @@ func(this *TemplateController) Add()  {
 	//爬虫获取网页dom信息
 	bMap := Reptile(inputUrl)
 	template.Label = (bMap["title"]).(string)
+	template.Description = bMap["description"].(string)
 	template.Content = (bMap["content"]).(string)
 	content := (bMap["content"]).(string)
 	id :=template.ReadOrCreate(*template)//插入记录
@@ -307,10 +347,13 @@ func(this *TemplateController) Update() {
 
 	obj := new(models.Template)
 	obj.Id,_ = this.GetInt64("id")
+	obj.Label = this.GetString("title")
+	obj.Description = this.GetString("description")
+	obj.Redirect,_ = this.GetInt("redirect")
+	obj.RedirectPage = this.GetString("redirectPage")
 	if obj.Id==0{
 		this.jsonResult(200,-1,"id不能为空！",nil)
 	}
-
 	keyword := this.GetString("keyArr")
 	if keyword==""{
 		this.jsonResult(200,-1,"请输入关键字！",nil)
@@ -369,6 +412,19 @@ func(this *TemplateController) Reset() {
 	}
 }
 
+func(this *TemplateController) IsRedirect() {
+	obj := new(models.Template)
+	obj.Url = this.GetString("key")
+	if obj.Url==""{
+		this.jsonResult(200,-1,"参数错误！",nil)
+	}
+	obj.SelectByCol(obj,"url")
+	bMap := make(map[string]string)
+	bMap["redirect"] = strconv.Itoa(obj.Redirect)
+	bMap["redirectPage"] = obj.RedirectPage
+	this.jsonResult(200,1,"查询成功！",bMap)
+}
+
 func (c *TemplateController) jsonResult(status enums.JsonResultCode,code int, msg string, data interface{}) {
 	r := &other.JsonResult{status, code, msg,data}
 	c.Data["json"] = r
@@ -425,25 +481,33 @@ func Reptile(rUrl string) (map[string]interface{}) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		//添加域名获取样式等
+		htmlDoc.Find("title").AfterHtml("<base href=\"http://"+u.Host+"\"/>")
 		//添加蜘蛛抓取规则
 		htmlDoc.Find("title").AfterHtml("<meta name=\"Robots\" contect=\"INDEX,FOLLOW\">")
 		//禁止百度快照
 		htmlDoc.Find("title").AfterHtml("<meta name=\"baiduspider\" content=\"noarchive\">")
-		//添加域名获取样式等
-		htmlDoc.Find("title").AfterHtml("<base href=\"http://"+u.Host+"\"/>")
+		//添加自定义样
+		htmlDoc.Find("head").AppendHtml("<link href=\""+lHost+"/static/css/myWrap.css\" rel=\"stylesheet\">")
 		//添加token
-		htmlDoc.Find("div").First().AfterHtml("<input type=\"hidden\" value=\"{{ ._xsrf}}\" id=\"token\"/>")
+		htmlDoc.Find("div").First().AfterHtml("<input type=\"hidden\" id=\"token\"/>")
 		//添加定制容器01
 		htmlDoc.Find("div").First().AfterHtml("<div id=\"myWrap01\"></div>")
 		//添加定制容器02
 		htmlDoc.Find("div").First().AfterHtml("<div id=\"myWrap02\"></div>")
 		//添加定制容器03
 		htmlDoc.Find("div").First().AfterHtml("<div id=\"myWrap03\"></div>")
+		//添加友情链接01
+		htmlDoc.Find("body").AppendHtml("<div id=\"myLink01\"></div>")
+		//添加友情链接02
+		htmlDoc.Find("body").AppendHtml("<div id=\"myLink02\"></div>")
+		//添加友情链接03
+		htmlDoc.Find("body").AppendHtml("<div id=\"myLink03\"></div>")
 		//添加jquery
 		htmlDoc.Find("body").AppendHtml("<script src=\"https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js\"></script>")
 		//添加定制js
 		htmlDoc.Find("body").AppendHtml("<script src=\""+lHost+"/static/js/design.js\"></script>")
-
+		bMap["description"]=htmlDoc.Find("description").Text()
 		content,_ := htmlDoc.Html()//获取文档内容
 		// 去除空格
 		//content = strings.Replace(content, " ", "", -1)

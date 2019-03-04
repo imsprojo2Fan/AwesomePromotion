@@ -18,6 +18,7 @@ func init() {
 
 	//模板页相关
 	beego.Router("/template", &controllers.TemplateController{},"*:Redirect")
+	beego.Router("/template/is_redirect", &controllers.TemplateController{},"POST:IsRedirect")
 	beego.Router("/main/template/add",&controllers.TemplateController{},"POST:Add")
 	beego.Router("/main/template/delete",&controllers.TemplateController{},"POST:Delete")
 	beego.Router("/main/template/list",&controllers.TemplateController{},"POST:List")
