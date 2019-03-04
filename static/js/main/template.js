@@ -1,6 +1,7 @@
 var myTable;
+var redirectState = 0;
+var redirectState4edit = 0;
 $(document).ready(function() {
-
     //调用父页面弹窗通知
     //window.parent.swalInfo('TEST',666,'error')
 
@@ -32,11 +33,31 @@ $(document).ready(function() {
     $('#addTemplete').on('click',function () {
         add();
     });
-    //渲染checkbox
-    $('input[type=radio]').iCheck({
-        checkboxClass: 'icheckbox_flat-blue',  // 注意square和blue的对应关系
-        radioClass: 'iradio_flat-blue'
+    //渲染switch开关
+    $("#redirectSwitch").bootstrapSwitch({
+        onText:'是',
+        offText:'否'
     });
+    //点击触发事件，监听按钮状态
+    $('#redirectSwitch').on('switchChange.bootstrapSwitch',function(event,state){
+        //内置对象、内置属性
+        //console.log(event);
+        //获取状态
+        redirectState = state;
+    });
+    //渲染switch开关
+    $("#redirectSwitch_edit").bootstrapSwitch({
+        onText:'是',
+        offText:'否'
+    });
+    //点击触发事件，监听按钮状态
+    $('#redirectSwitch_edit').on('switchChange.bootstrapSwitch',function(event,state){
+        //内置对象、内置属性
+        //console.log(event);
+        //获取状态
+        redirectState4edit = state;
+    });
+
 
     // 中文重写select 查询为空提示信息
     $('.selectpicker').selectpicker({
@@ -207,8 +228,15 @@ $(document).ready(function() {
         });
         $('#selectEdit').val(arr);
         $('#selectEdit').selectpicker('refresh');
-        $('input[name=redirect_edit]').val(rowData.redirect);
-        $('#redirectPage_edit').val(rowData.redirectPage);
+        var redirect = rowData.redirect;
+        if(redirect==1){
+            $('#redirectSwitch_edit').bootstrapSwitch('state',true);
+            redirectState4edit = 1;
+        }else{
+            $('#redirectSwitch_edit').bootstrapSwitch('state',false);
+            redirectState4edit = 0;
+        }
+        $('#redirectPage_edit').val(rowData.redirect_page);
         $('#description').val(rowData.description);
         $('#remark_edit').val(rowData.remark);
         $('#tip').html("");
@@ -216,9 +244,7 @@ $(document).ready(function() {
     });
     $('#myTable').on("click",".btn-danger",function(e){//删除
         rowData = myTable.row($(this).closest('tr')).data();
-        console.log(rowData);
         var id = rowData.id;
-
         swal({
             title: "确定删除吗?",
             text: '删除将无法恢复该信息!',
@@ -253,20 +279,28 @@ function add() {
         keyArr = keyArr+","+item;
     });
     keyArr = keyArr.substring(1,keyArr.length);
+    var redirectPage = $('#redirectPage').val().trim();
+    if(redirectState&&!redirectPage){
+        tipTip("tip","错误提示:请填写目标跳转页地址!");
+        return
+    }
+    if(redirectState){
+        redirectState = 1;
+    }
 
     var origin = /^https?:\/\/[\w-.]+(:\d+)?/i.exec(url)[0];
-    $('#loading').show();
+    loading(true);
     $.post("/main/template/add",
         {
             _xsrf:$('#token').val(),
             inputUrl:url,
             keywords:keyArr,
             domain:origin,
-            redirect:$('input:radio[name=redirect]:checked').val(),
-            redirectPage:$('#redirectPage').val().trim(),
+            redirect:redirectState,
+            redirectPage:redirectPage,
             remark:$('#remark').val().trim()},
         function (res) {
-        $('#loading').hide();
+            loading(false);
         if(res.code===1){
             $('#myModal02').modal("hide");
             $('#urlInput').val("");
@@ -299,15 +333,13 @@ function edit(){
         keyArr = keyArr+","+item;
     });
     keyArr = keyArr.substring(1,keyArr.length);
-    console.log($('input[name=redirect_edit]:checked'));
-    var val = $('input[name=redirect_edit]:checked').val();
     var redirectPage = $('#redirectPage_edit').val().trim();
-    debugger
-    if(val==1){
-        if(!redirectPage){
-            tipTip("请填写目标跳转页!","","error");
-            return
-        }
+    if(redirectState4edit&&!redirectPage){
+        tipTip("tip","错误提示:请填写目标跳转页地址!");
+        return
+    }
+    if(redirectState4edit){
+        redirectState4edit = 1;
     }
     $.ajax({
         url : "/main/template/update",
@@ -319,13 +351,13 @@ function edit(){
             id:id,
             title:title,
             keyArr:keyArr,
-            redirect:val,
+            redirect:redirectState4edit,
             redirectPage:redirectPage,
             description:$('#description').val().trim(),
             remark:$('#remark_edit').val().trim()
         },
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loading(true);
         },
         success : function(r) {
             $('#editModal').modal("hide");
@@ -337,7 +369,7 @@ function edit(){
             swal(r.msg,' ',type);
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loading(false);
         }
     });
 }
@@ -354,7 +386,7 @@ function del(id){
             id:id
         },
         beforeSend:function(){
-            $('#loading').fadeIn(200);
+            loading(true);
         },
         success : function(r) {
             if (r.code == 1) {
@@ -365,7 +397,7 @@ function del(id){
             }
         },
         complete:function () {
-            $('#loading').fadeOut(200);
+            loading(false);
         }
     })
 }
@@ -385,6 +417,10 @@ function refresh() {
 
 function swal(title,msg,type) {
     window.parent.swalInfo(title,msg,type);
+}
+
+function loading(flag) {
+    window.parent.loading(flag);
 }
 
 function tipTip(id,msg) {

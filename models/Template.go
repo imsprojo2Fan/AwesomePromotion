@@ -175,7 +175,7 @@ func(this *Template) ListByPage(qMap map[string]interface{})[]orm.Params{
 	var maps []orm.Params
 	o := orm.NewOrm()
 	//qs := o.QueryTable("login_log")
-	sql := "select id, url,label,m_url,remark,updated,created from template where 1=1"
+	sql := "select id, url,label,m_url,redirect,redirect_page,remark,updated,created from template where 1=1"
 	if qMap["uid"]!=""{
 		sql = sql+ " and uid="+qMap["uid"].(string)
 	}

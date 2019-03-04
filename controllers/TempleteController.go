@@ -99,6 +99,10 @@ func (this *TemplateController) Redirect() {
 	htmlDoc.Find(".question").Each(func(i int, selection *goquery.Selection) {
 		selection.Remove()
 	})
+	//解决""=""错误解析
+	htmlDoc.Find("a:contains(\"\"=\"\")").Each(func(i int, selection *goquery.Selection) {
+		selection.Remove()
+	})
 
 	if len(kArr)==1{
 		keyWord := kArr[0]
@@ -183,9 +187,6 @@ func (this *TemplateController) Redirect() {
 		htmlDoc.Find("#myLink03").ReplaceWithHtml("<div id='myLink03'><a href='"+urlArr[2]+"' target='_blank'>"+keyWord03+"</a></div>")
 
 	}
-
-
-
 
 	//替换a标签链接
 	/*hrefArr := htmlDoc.Find("a")
@@ -310,6 +311,8 @@ func(this *TemplateController) Add()  {
 	template.MUrl = inputUrl
 	template.Url = utils.RandomString(12)
 	template.Domain = this.GetString("domain")
+	template.Redirect,_ = this.GetInt("redirect")
+	template.RedirectPage = this.GetString("redirectPage")
 	template.Remark = this.GetString("remark")
 	keyArr := strings.Split(keyword, ",")
 

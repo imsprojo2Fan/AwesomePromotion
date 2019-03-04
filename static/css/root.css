@@ -20,8 +20,13 @@ Plugin Css
 @import url('https://cdn.bootcss.com/bootstrap-slider/10.2.1/css/bootstrap-slider.min.css');
 /* Sweet Alert */
 @import url('https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.css');
-/* iCheck */
+/* Bootstrap iCheck */
 @import url('https://cdn.bootcss.com/iCheck/1.0.2/skins/all.css');
+/* Bootstrap switch */
+@import url('https://cdn.bootcss.com/bootstrap-switch/4.0.0-alpha.1/css/bootstrap-switch.min.css');
+/* Bootstrap toggle */
+@import url('https://cdn.bootcss.com/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css');
+
 
 /* Data Tables */
 @import url('../../static/plugins/datatables/datatables.css');
