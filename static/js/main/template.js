@@ -304,7 +304,10 @@ function add() {
         if(res.code===1){
             $('#myModal02').modal("hide");
             $('#urlInput').val("");
-            $('#selectAdd').val("");
+            $('#selectAdd').attr("multiple",true).val('').selectpicker({
+                noneSelectedText: '下拉选择关键词' //默认显示内容
+            });
+            $("#selectAdd").selectpicker('refresh');//刷新
             $('#remark').val("");
             $('#tabHref01').click();
             swal("系统提示",res.msg,"success");

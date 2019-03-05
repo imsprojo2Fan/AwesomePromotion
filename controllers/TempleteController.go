@@ -69,6 +69,9 @@ func (this *TemplateController) Redirect() {
 
 	//读取本地html文档并解析，动态更改节点信息
 	filePath := "./views/template/"+template.Url+".html"
+	temp := template.Content
+	//移除所有无用字符
+	temp = strings.Replace(temp,"\"=\"\"","",-1)
 	WriteFile(filePath,template.Content)
 	b, err := ioutil.ReadFile(filePath)
 	if err != nil {
@@ -355,7 +358,7 @@ func(this *TemplateController) Add()  {
 	//爬虫获取网页dom信息
 	bMap := Reptile(inputUrl)
 	template.Title = (bMap["title"]).(string)
-	template.Description = bMap["description"].(string)
+	template.Description = (bMap["description"]).(string)
 	template.Content = (bMap["content"]).(string)
 	content := (bMap["content"]).(string)
 	id :=template.ReadOrCreate(*template)//插入记录
@@ -499,7 +502,7 @@ func Reptile(rUrl string) (map[string]interface{}) {
 	c.OnHTML("title", func(e *colly.HTMLElement) {
 		//e.Request.Visit(e.Attr("href"))
 		//获取文档标题
-		bMap["title"] = e.Text
+		//bMap["title"] = e.Text
 	})
 
 	// 发现并访问下一个连接
@@ -511,13 +514,25 @@ func Reptile(rUrl string) (map[string]interface{}) {
 	c.OnResponse(func(resp *colly.Response) {
 		fmt.Println("response received", resp.StatusCode)
 		// goquery直接读取resp.Body的内容
-		res := transcode.FromByteArray(resp.Body).Decode("GBK").ToString()
-		utf8 := bytes.NewReader([]byte(res))
-		htmlDoc, err := goquery.NewDocumentFromReader(utf8)
-		if err != nil {
-			log.Fatal(err)
+		var htmlDoc *goquery.Document
+		htmlDoc,_= goquery.NewDocumentFromReader(bytes.NewReader(resp.Body))
+		temp,_ := htmlDoc.Find("head").Html()
+		//encoding, _, _ := charset.DetermineEncoding(resp.Body, "")
+		if !strings.Contains(temp,"utf-8")&&!strings.Contains(temp,"UTF-8"){
+			res := transcode.FromByteArray(resp.Body).Decode("GBK").ToString()
+			resBody := bytes.NewReader([]byte(res))
+			htmlDoc,_ = goquery.NewDocumentFromReader(resBody)
 		}
 
+		metaArr := htmlDoc.Find("meta")
+		for i := 0; i < metaArr.Length(); i++ {
+			name, _ := metaArr.Eq(i).Attr("name")
+			if name=="description"{
+				bMap["description"],_ = metaArr.Eq(i).Attr("content")
+			}
+		}
+
+		bMap["title"] = htmlDoc.Find("title").Text()
 		//添加域名获取样式等
 		htmlDoc.Find("title").AfterHtml("<base href=\"http://"+u.Host+"\"/>")
 		//添加蜘蛛抓取规则
@@ -528,8 +543,6 @@ func Reptile(rUrl string) (map[string]interface{}) {
 		htmlDoc.Find("body").AppendHtml("<script src=\"https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js\"></script>")
 		//添加定制js
 		htmlDoc.Find("body").AppendHtml("<script src=\""+lHost+"/static/js/design.js\"></script>")
-
-		bMap["description"]=htmlDoc.Find("description").Text()
 		content,_ := htmlDoc.Html()//获取文档内容
 		bMap["content"] = content
 
