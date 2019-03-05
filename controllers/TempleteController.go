@@ -19,7 +19,7 @@ import (
 	"strings"
 	"strconv"
 	"time"
-	"github.com/mahonia"
+	"github.com/piex/transcode"
 )
 
 type TemplateController struct {
@@ -511,9 +511,9 @@ func Reptile(rUrl string) (map[string]interface{}) {
 	c.OnResponse(func(resp *colly.Response) {
 		fmt.Println("response received", resp.StatusCode)
 		// goquery直接读取resp.Body的内容
-		dec := mahonia.NewDecoder("utf-8")
-		rd := dec.NewReader(bytes.NewReader(resp.Body))
-		htmlDoc, err := goquery.NewDocumentFromReader(rd)
+		res := transcode.FromByteArray(resp.Body).Decode("GBK").ToString()
+		utf8 := bytes.NewReader([]byte(res))
+		htmlDoc, err := goquery.NewDocumentFromReader(utf8)
 		if err != nil {
 			log.Fatal(err)
 		}
