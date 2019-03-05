@@ -178,16 +178,16 @@ function add(){
     var email = $('#email').val().trim();
     var remark = $('#remark').val().trim();
     if (!account){
-        swal("账号不能为空!",' ',"warning");
+        swal("系统提示",'账号不能为空!',"warning");
         return;
     }
     if(email){
         if (!checkEmail(email)){
-            swal("邮箱格式不正确!",' ',"warning");
+            swal("系统提示",'邮箱格式不正确!',"warning");
         }
     }
     if (!password){
-        swal("密码不能为空!",' ',"warning");
+        swal("系统提示",'密码不能为空!',"warning");
         return;
     }
     $.ajax({
@@ -213,7 +213,7 @@ function add(){
                 type = "success";
                 reset();
             }
-            swal(r.msg,' ',type);
+            swal("系统提示",r.msg,type);
         },
         complete:function () {
             $('#loading').fadeOut(200);
@@ -229,12 +229,12 @@ function edit(){
     var email = $('#email_edit').val().trim();
     var remark = $('#remark_edit').val().trim();
     if (!password){
-        swal("密码不能为空!",' ',"warning");
+        swal("系统提示",'密码不能为空!',"warning");
         return;
     }
     if(email){
         if (!checkEmail(email)){
-            swal("邮箱格式不正确!",' ',"warning");
+            swal("系统提示",'邮箱格式不正确!',"warning");
         }
     }
     $.ajax({
@@ -262,7 +262,7 @@ function edit(){
                 type = "success";
                 refresh();
             }
-            swal(r.msg,' ',type);
+            swal("系统提示",r.msg,type);
         },
         complete:function () {
             $('#loading').fadeOut(200);
@@ -286,10 +286,10 @@ function del(id){
         },
         success : function(r) {
             if (r.code == 1) {
-                swal(r.msg,' ', "success");
+                swal("系统提示",r.msg, "success");
                 refresh();
             }else{
-                swal(r.msg,' ', "error");
+                swal("系统提示",r.msg, "error");
             }
         },
         complete:function () {

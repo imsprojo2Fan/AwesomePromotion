@@ -12,9 +12,9 @@ type Template struct {
 	Id       int64
 	Uid  	 int64
 	Url      string
-	Label    string
+	Title    string
 	Description string
-	Domain   string
+	Host   string
 	MUrl	 string
 	Content	 string
 	Redirect int
@@ -50,7 +50,7 @@ func(this *Template) Insert(model *Template) int {
 func(this *Template) Update(Template *Template) bool {
 
 	o := orm.NewOrm()
-	_,err := o.Update(Template,"label","redirect","redirect_page","description","remark","updated")
+	_,err := o.Update(Template,"title","redirect","redirect_page","description","remark","updated")
 	if err!=nil{
 		return false
 	}else{
@@ -108,21 +108,21 @@ func(this *Template) SelectByCol(model *Template,col string) {
 func(this *Template) SelectByKey(model *Template)[]orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	o.Raw("SELECT k.keyword,k.description,k.url FROM template t,key_word k,keyword2template kt WHERE t.id = kt.tid and  kt.kid=k.id and t.url=?", model.Url).Values(&maps)
+	o.Raw("SELECT k.keyword,k.description,k.url FROM template t,key_word k,k2t kt WHERE t.id = kt.tid and  kt.kid=k.id and t.url=?", model.Url).Values(&maps)
 	return maps
 }
 
 func(this *Template) SelectLatest()[]orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	o.Raw("SELECT label,url FROM template  order by id desc limit 0,100").Values(&maps)
+	o.Raw("SELECT title,url FROM template  order by id desc limit 0,100").Values(&maps)
 	return maps
 }
 
 func(this *Template) Insert4k2t(qMap map[string]interface{}) int64 {
 	var count int64
 	o := orm.NewOrm()
-	res, err := o.Raw("insert into keyword2template(kid,tid) values(?,?)", qMap["kid"],qMap["tid"]).Exec()
+	res, err := o.Raw("insert into k2t(kid,tid) values(?,?)", qMap["kid"],qMap["tid"]).Exec()
 	if err == nil {
 		num, _ := res.RowsAffected()
 		count = num
@@ -134,7 +134,7 @@ func(this *Template) Insert4k2t(qMap map[string]interface{}) int64 {
 func(this *Template) Reset4k2t() int64 {
 
 	o := orm.NewOrm()
-	res,_:=o.Raw("update keyword2template set kid=6").Exec()
+	res,_:=o.Raw("update k2t set kid=6").Exec()
 	count,_ := res.RowsAffected()
 	return count
 }
@@ -142,7 +142,7 @@ func(this *Template) Reset4k2t() int64 {
 func(this *Template) Del4k2t(tid int64) int64 {
 
 	o := orm.NewOrm()
-	res,_:=o.Raw("delete from keyword2template WHERE tid=?",tid).Exec()
+	res,_:=o.Raw("delete from k2t WHERE tid=?",tid).Exec()
 	count,_ := res.RowsAffected()
 	return count
 }
@@ -150,7 +150,7 @@ func(this *Template) Del4k2t(tid int64) int64 {
 func(this *Template) List4k2t() []orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	o.Raw("select k.id,k.keyword,t.id as tid from template t,key_word k,keyword2template kt WHERE t.id=kt.tid AND k.id=kt.kid").Values(&maps)
+	o.Raw("select k.id,k.keyword,t.id as tid from template t,key_word k,k2t kt WHERE t.id=kt.tid AND k.id=kt.kid").Values(&maps)
 
 	return maps
 }
@@ -159,10 +159,10 @@ func(this *Template) Count(qMap map[string]interface{})int64{
 	var count int64
 	o := orm.NewOrm()
 	if qMap["uid"]!=""{
-		cnt,_ := o.QueryTable(new(Template)).Filter("label__startswith",qMap["searchKey"]).Filter("uid",qMap["uid"]).Count() // SELECT COUNT(*) FROM USER
+		cnt,_ := o.QueryTable(new(Template)).Filter("title__startswith",qMap["searchKey"]).Filter("uid",qMap["uid"]).Count() // SELECT COUNT(*) FROM USER
 		count = cnt
 	}else{
-		cnt,_ := o.QueryTable(new(Template)).Filter("label__startswith",qMap["searchKey"]).Count() // SELECT COUNT(*) FROM USER
+		cnt,_ := o.QueryTable(new(Template)).Filter("title__startswith",qMap["searchKey"]).Count() // SELECT COUNT(*) FROM USER
 		count = cnt
 	}
 	//cnt,_ := o.QueryTable("resume").Count()
@@ -175,12 +175,12 @@ func(this *Template) ListByPage(qMap map[string]interface{})[]orm.Params{
 	var maps []orm.Params
 	o := orm.NewOrm()
 	//qs := o.QueryTable("login_log")
-	sql := "select id, url,label,m_url,redirect,redirect_page,remark,updated,created from template where 1=1"
+	sql := "select id, url,title,m_url,redirect,redirect_page,remark,updated,created from template where 1=1"
 	if qMap["uid"]!=""{
 		sql = sql+ " and uid="+qMap["uid"].(string)
 	}
 	if qMap["searchKey"]!=""{
-		sql = sql+" and label like '%"+qMap["searchKey"].(string)+"%'"
+		sql = sql+" and title like '%"+qMap["searchKey"].(string)+"%'"
 	}
 	if qMap["sortCol"]!=""{
 		sortCol := qMap["sortCol"].(string)

@@ -60,7 +60,7 @@ func(this *KeyWord) Delete(KeyWord *KeyWord) bool {
 	o := orm.NewOrm()
 	o.Begin()
 	//删除模板-关键字关联表
-	_, err01 := o.Raw("delete from keyword2template where kid=?",KeyWord.Id).Exec()
+	_, err01 := o.Raw("delete from k2t where kid=?",KeyWord.Id).Exec()
 	if err01!=nil{
 		o.Rollback()
 		return false

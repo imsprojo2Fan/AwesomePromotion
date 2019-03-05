@@ -157,7 +157,7 @@ function add(){
     var description = $('#description').val().trim();
     var remark = $('#remark').val().trim();
     if (!title){
-        swal("页面标题不能为空!",' ',"warning");
+        swal("系统提示","页面标题不能为空!","error");
         return;
     }
     $.ajax({
@@ -181,7 +181,7 @@ function add(){
                 type = "success";
                 reset();
             }
-            swal(r.msg,' ',type);
+            swal("系统提示",r.msg,type);
         },
         complete:function () {
             loading(false);
@@ -196,7 +196,7 @@ function edit(){
     var description = $('#description_edit').val().trim();
     var remark = $('#remark_edit').val().trim();
     if (!title){
-        swal("页面不能为空!",' ',"warning");
+        swal("系统提示","页面标题不能为空!","error");
         return;
     }
     $.ajax({
@@ -222,7 +222,7 @@ function edit(){
                 type = "success";
                 refresh();
             }
-            swal(r.msg,' ',type);
+            swal("系统提示",r.msg,type);
         },
         complete:function () {
             loading(false);
@@ -246,10 +246,10 @@ function del(id){
         },
         success : function(r) {
             if (r.code == 1) {
-                swal(r.msg,' ', "success");
+                swal("系统提示",r.msg,"success");
                 refresh();
             }else{
-                swal(r.msg,' ', "error");
+                swal("系统提示",r.msg,"error");
             }
         },
         complete:function () {

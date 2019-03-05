@@ -33,19 +33,19 @@
     background:#54d17b;
     font-size:23px;
 }
+#linkWrap{
+    text-align: center;
+    padding: 15px 0px;
+}
 
-#myLink01{
-    font-size: 18px;
-    text-align: center;
-    padding: 6px 0px;
+#linkWrap p{
+    border-bottom:1px solid #EEE;
+    padding-bottom:5px;
 }
-#myLink02{
-    font-size: 18px;
-    text-align: center;
-    padding: 6px 0px;
+#linkWrap div{
+    margin-top: 10px;
 }
-#myLink03{
-    font-size: 18px;
-    text-align: center;
-    padding: 6px 0px;
+#linkWrap span{
+    font-size: 16px;
+    padding: 6px;
 }

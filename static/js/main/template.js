@@ -113,7 +113,7 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 'label',"render":function (data) {
+            { data: 'title',"render":function (data) {
                     var temp = data;
                     if(data.length>10){
                         data = data.substring(0,6)+"...";
@@ -177,7 +177,7 @@ $(document).ready(function() {
     var rowData;
     $('#myTable').on("click",".btn-default",function(e){//查看
         rowData = myTable.row($(this).closest('tr')).data();
-        $('#detail_title').html(rowData.label);
+        $('#detail_title').html(rowData.title);
         var data = rowData.keyword;
         var str = "";
         if(data){
@@ -220,7 +220,7 @@ $(document).ready(function() {
     $('#myTable').on("click",".btn-info",function(e){//编辑
         rowData = myTable.row($(this).closest('tr')).data();
         $('#Id').val(rowData.id);
-        $('#title_edit').val(rowData.label);
+        $('#title_edit').val(rowData.title);
         var keywords = rowData.keyword;
         var arr = [];
         $.each(keywords,function (i,item) {
@@ -266,12 +266,12 @@ function add() {
     var url = $('#urlInput').val().trim();
 
     if(!url||!isURL(url)){
-        tipTip("tip","错误提示:请输入正确的网页地址!");
+        swal("系统提示","请输入正确的网页地址!", "error");
         return
     }
     var val = $('#selectAdd').val();
     if(!val){
-        tipTip("tip","错误提示:请选择关键词!");
+        swal("系统提示","请选择关键词!", "error");
         return
     }
     var keyArr = "";
@@ -281,7 +281,7 @@ function add() {
     keyArr = keyArr.substring(1,keyArr.length);
     var redirectPage = $('#redirectPage').val().trim();
     if(redirectState&&!redirectPage){
-        tipTip("tip","错误提示:请填写目标跳转页地址!");
+        swal("系统提示","错误提示:请填写目标跳转页地址!", "error");
         return
     }
     if(redirectState){
@@ -310,7 +310,7 @@ function add() {
             swal("系统提示",res.msg,"success");
             window.open("/template?v="+res.data,"_blank");
         }else{
-            tipTip("tip",res.msg);
+            swal("系统提示",res.msg, "error");
         }
 
     });
@@ -320,12 +320,12 @@ function edit(){
     var id = $('#Id').val();
     var title = $('#title_edit').val().trim();
     if(!title){
-        tipTip("标题不能为空!","","error");
+        swal("系统提示","标题不能为空!","error");
         return
     }
     var val = $('#selectEdit').val();
     if(!val){
-        tipTip("请选择关键词!","","error");
+        swal("系统提示","请选择关键词!","error");
         return
     }
     var keyArr = "";
@@ -335,7 +335,7 @@ function edit(){
     keyArr = keyArr.substring(1,keyArr.length);
     var redirectPage = $('#redirectPage_edit').val().trim();
     if(redirectState4edit&&!redirectPage){
-        tipTip("tip","错误提示:请填写目标跳转页地址!");
+        swal("系统提示","请填写目标跳转页地址!","error");
         return
     }
     if(redirectState4edit){
@@ -366,7 +366,7 @@ function edit(){
                 type = "success";
                 refresh();
             }
-            swal(r.msg,' ',type);
+            swal("系统提示",r.msg,type);
         },
         complete:function () {
             loading(false);
@@ -390,10 +390,10 @@ function del(id){
         },
         success : function(r) {
             if (r.code == 1) {
-                swal(r.msg,' ', "success");
+                swal("系统提示",r.msg, "success");
                 refresh();
             }else{
-                swal(r.msg,' ', "error");
+                swal("系统提示",r.msg, "error");
             }
         },
         complete:function () {

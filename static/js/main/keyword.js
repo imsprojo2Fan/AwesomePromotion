@@ -245,7 +245,7 @@ function add(){
     var description = $('#description').val().trim();
     var remark = $('#remark').val().trim();
     if (!keyword){
-        swal("系统提示",'关键字不能为空!',"warning");
+        swal("系统提示",'关键词不能为空!',"warning");
         return;
     }
     $.ajax({

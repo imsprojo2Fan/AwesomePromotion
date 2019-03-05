@@ -1,3 +1,78 @@
+var gUrl;
+
+//动态更改iframe高度
+$(window.parent.document).find("#mainframe").load(function(){
+    var main = $(window.parent.document).find("#mainframe");
+    var thisHeight = window.innerHeight-80;
+    //var width = window.innerWidth;
+    main.height(thisHeight);
+});
+
+$(function () {
+
+    if(userInfo.Type>2){
+        $('#user').show();
+        $('#resetBtn').show();
+    }
+    //$('#account').html(userInfo.Account);
+    if(isPhone()){//设置导航栏箭头方向
+        $('.btn-toggle-fullwidth').find("i").removeClass("lnr-arrow-left-circle");
+        $('.btn-toggle-fullwidth').find("i").addClass("lnr-arrow-right-circle");
+    }
+
+    var myFrame = document.getElementById('mainframe');
+    myFrame.onload = myFrame.onreadystatechange = function () {
+        if (this.readyState && this.readyState != 'complete') {
+            //console.log("加载中。。。");
+        }
+        else {
+            //console.log("加载完成。。。");
+            $('#loading').hide();
+        }
+
+    };
+
+    //默认选中
+    $('#home').click();
+
+    $('#navBtn').on('click',function () {
+        $('#myModal').modal('show');
+    });
+    $('#confirm').on('click',function () {
+        var url = $('input:radio:checked').val();
+        gUrl = url;
+        //$('#mainframe').attr("src",url);
+        $('#myModal').modal("hide");
+        $('#home').click();
+    });
+
+    $('#resetBtn').on('click',function () {
+        swal({
+            title: "确定重置关键词吗?",
+            text: '重置将无法恢复该信息!',
+            type: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#ff1200',
+            cancelButtonColor: '#474747',
+            confirmButtonText: '确定',
+            cancelButtonText:'取消'
+        },function(){
+            $.post('/main/kt/reset',{_xsrf:$('#token').val()},function (res) {
+                if(res.code==1){
+                    swal("系统提示",res.msg,"success");
+                }else{
+                    swal("系统提示",res.msg,"error");
+                }
+
+            }) ;
+        });
+
+
+    });
+
+});
+
+
 //选中数量
 function selectedCount(name) {
     return $("input[name='" + name + "']:checked").length;

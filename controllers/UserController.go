@@ -120,13 +120,13 @@ func(this *UserController) Update() {
 	dbUser := new(models.User)
 	dbUser.Id,_ = this.GetInt64("id")
 	dbUser.Read(dbUser)//查询数据库的用户信息
-	user.Email = this.GetString("email")
+	/*user.Email = this.GetString("email")
 	if dbUser.Email==""{
 		user.SelectByCol(user,"email")//查询邮箱是否已被用
 		if user.Id>0{
 			this.jsonResult(200,-1,"当前邮箱不可用",nil)
 		}
-	}
+	}*/
 	user.Id,_ = this.GetInt64("id")
 	user.Password = this.GetString("password")
 	if user.Password!=dbUser.Password{

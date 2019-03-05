@@ -30,7 +30,7 @@ func InitDatabase() {
 	case "mysql":
 		dbCharset := beego.AppConfig.String(dbType + "::db_charset")
 		orm.RegisterDataBase(dbAlias, dbType, dbUser+":"+dbPwd+"@tcp("+dbHost+":"+
-			dbPort+")/"+dbName+"?parseTime=true&loc=Local&charset="+dbCharset, 30)
+			dbPort+")/"+dbName+"?parseTime=true&loc=Local&charset=utf8,"+dbCharset, 30)
 		/*orm.RegisterDataBase(dbAlias, dbType, dbUser+":"+dbPwd+"@tcp("+dbHost+":"+
 			dbPort+")/"+dbName+"?parseTime=true&loc=Local", 30)*/
 	}
