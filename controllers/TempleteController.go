@@ -31,6 +31,7 @@ func (this *TemplateController) Redirect() {
 	//utils.Global#fffis.Get("host")
 
 	lHost = "http://"+this.Ctx.Request.Host
+	fmt.Println("-------->:",lHost)
 
 	url := this.GetString("v")
 	//查询resume表获取模板url
@@ -129,7 +130,8 @@ func (this *TemplateController) Redirect() {
 
 
 		//添加自定义样式
-		htmlDoc.Find("head").AppendHtml("<link href=\""+lHost+"/static/css/myWrap.css\" rel=\"stylesheet\">")
+		htmlDoc.Find("#wrapCss").Remove()
+		htmlDoc.Find("head").AppendHtml("<link id='wrapCss' href=\""+lHost+"/static/css/myWrap.css\" rel=\"stylesheet\">")
 		//添加token
 		htmlDoc.Find("div").First().AfterHtml("<input type=\"hidden\" id=\"token\"/>")
 		//添加定制容器01
