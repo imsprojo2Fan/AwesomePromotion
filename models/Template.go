@@ -116,7 +116,7 @@ func(this *Template) SelectByKey(model *Template)[]orm.Params {
 func(this *Template) SelectLatest()[]orm.Params {
 	var maps []orm.Params
 	o := orm.NewOrm()
-	o.Raw("SELECT type,title,url FROM template  order by id desc limit 0,100").Values(&maps)
+	o.Raw("SELECT type,title,url,created FROM template  order by id desc limit 0,100").Values(&maps)
 	return maps
 }
 

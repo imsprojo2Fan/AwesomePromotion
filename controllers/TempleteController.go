@@ -31,7 +31,6 @@ func (this *TemplateController) Redirect() {
 	//utils.Global#fffis.Get("host")
 
 	lHost = "http://"+this.Ctx.Request.Host
-	fmt.Println("-------->:",lHost)
 
 	url := this.GetString("v")
 	//查询resume表获取模板url
@@ -163,7 +162,7 @@ func (this *TemplateController) Redirect() {
 			//添加固定栏位替换
 			htmlDoc.Find("#myWrap01").ReplaceWithHtml("<div id='myWrap01'><a href='"+urlArr[0]+"' target='_blank'>"+keyWord+"</a></div>")
 			//添加友情链接
-			htmlDoc.Find("#myLink01").ReplaceWithHtml("<span id='myLink01'><a href='"+urlArr[0]+"' target='_blank'>"+keyWord+"</a></span>")
+			htmlDoc.Find("#myLink01").ReplaceWithHtml("<span id='myLink01' style=\"margin-left:28px\"><a href='"+urlArr[0]+"' target='_blank'>"+keyWord+"</a></span>")
 		}else if len(kArr)==2{
 			keyWord01 := kArr[0]
 			keyWord02 := kArr[1]
