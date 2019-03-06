@@ -69,10 +69,10 @@ func (this *TemplateController) Redirect() {
 
 	//读取本地html文档并解析，动态更改节点信息
 	filePath := "./views/template/"+template.Url+".html"
-	temp := template.Content
-	//移除所有无用字符
-	temp = strings.Replace(temp,"\"=\"\"","",-1)
-	WriteFile(filePath,template.Content)
+	//文件不存在则创建
+	if !utils.CheckFileIsExist(filePath){
+		WriteFile(filePath,template.Content)
+	}
 	b, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		fmt.Print(err)
@@ -110,14 +110,23 @@ func (this *TemplateController) Redirect() {
 		htmlDoc.Find(".question").Each(func(i int, selection *goquery.Selection) {
 			selection.Remove()
 		})
-		//解决""=""错误解析
-		htmlDoc.Find("a:contains(\"\"=\"\")").Each(func(i int, selection *goquery.Selection) {
-			selection.Remove()
-		})
 		//移除google广告
 		htmlDoc.Find("script:contains(adsbygoogle)").Each(func(i int, selection *goquery.Selection) {
 			selection.Remove()
 		})
+		//兼容全集网
+		htmlDoc.Find("a:contains(留言建议)").Each(func(i int, selection *goquery.Selection) {
+			selection.Remove()
+		})
+		if template.RedirectPage!=""{
+			if htmlDoc.Find("#myFrame").Length()==0{
+				//添加iframe
+				htmlDoc.Find("body").BeforeHtml("<iframe id=\"myFrame\"  width=\"100%\" height=\"550px\" src=\""+template.RedirectPage+"\" frameborder=\"0\" ></iframe>")
+			}else{
+				htmlDoc.Find("#myFrame").SetAttr("src",template.RedirectPage)
+			}
+		}
+
 
 		//添加自定义样式
 		htmlDoc.Find("head").AppendHtml("<link href=\""+lHost+"/static/css/myWrap.css\" rel=\"stylesheet\">")
@@ -432,20 +441,6 @@ func(this *TemplateController) Delete() {
 		this.jsonResult(200,1,"删除数据成功！",nil)
 	}else{
 		this.jsonResult(200,-1,"删除数据失败,请稍后再试！",nil)
-	}
-}
-
-func(this *TemplateController) Reset() {
-	obj := new(models.Template)
-	sesion,_ := utils.GlobalSessions.SessionStart(this.Ctx.ResponseWriter, this.Ctx.Request)
-	uType := sesion.Get("type").(int)
-	if uType<=2{
-		this.jsonResult(200,-1,"当前操作无权限！",nil)
-	}
-	if obj.Reset4k2t()>0{
-		this.jsonResult(200,1,"关键词重置成功！",nil)
-	}else{
-		this.jsonResult(200,-1,"关键词重置失败,请稍后再试！",nil)
 	}
 }
 

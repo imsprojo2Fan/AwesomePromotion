@@ -11,10 +11,6 @@ $(function () {
             tipTip($('#account').parent().find("span"),"请填写账号!");
             return
         }
-        if(account.length<6){
-            tipTip($('#account').parent().find("span"),"账号信息过简单!");
-            return
-        }
         if(!password1){
             tipTip($('#password').parent().find("span"),"请填写密码!");
             return

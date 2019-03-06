@@ -60,6 +60,11 @@ func(this *MainController) Redirect()  {
 		}
 		this.Data["dataList"] = ad.All(uids)
 	}
+
+	if htmlName=="sysSetting"{
+		setting := new(models.Setting)
+		this.Data["sysSetting"] = setting.All()
+	}
 	htmlName = "main/"+htmlName+".html"
 	this.TplName = htmlName
 }

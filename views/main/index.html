@@ -69,11 +69,11 @@
 					<ul class="nav navbar-nav navbar-right" style="height: 80px;">
 
 						<li onclick="changeDrop()" class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../../static/img/avatar.png" style="width: 35px;" class="avatar" alt="Avatar"> <span id="account"><%.account%></span> <i id="drop" class="fa fa-angle-down" aria-hidden="true"></i></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../../static/img/avatar.png" style="width: 35px;" class="avatar" alt="Avatar"> <span id="account">Hi，<%.account%></span> <i id="drop" class="fa fa-angle-down" aria-hidden="true"></i></a>
 							<ul class="dropdown-menu">
 								<li><a href="javascript:$('#profileSetting').click();"><i class="fa fa-user-o" aria-hidden="true"></i> <span>个人设置</span></a></li>
 								<li><a href="javascript:$('#message').click();"><i class="fa fa-envelope-o" aria-hidden="true"></i> <span>消息提醒</span></a></li>
-								<li><a href="javascript:void(0);"><i class="fa fa-cogs" aria-hidden="true"></i> <span>系统设置</span></a></li>
+								<li id="sysSetting"><a href="javascript:redirect('sysSetting',this)"><i class="fa fa-cogs" aria-hidden="true"></i> <span>系统设置</span></a></li>
 								<li ><a href="/timeout" style="color: red"><i class="fa fa-sign-out" aria-hidden="true"></i> <span >退出</span></a></li>
 							</ul>
 						</li>
@@ -96,7 +96,7 @@
                         <li id="customerNav" onclick="redirect('ad',this)"><i class="fa fa-money" aria-hidden="true"></i> <span>客户管理</span></li>
 						<li id="message" onclick="redirect('news',this)"><i class="fa fa-envelope-o" aria-hidden="true"></i> <span>消息提醒</span></li>
 						<li id="profileSetting" onclick="redirect('profile',this)"><i class="fa fa-user-o" aria-hidden="true"></i> <span>个人信息</span></li>
-                        <li id="user" style="display: none" onclick="redirect('user',this)"><i class="fa fa-users" aria-hidden="true"></i> <span>用户管理</span></li>
+                        <li id="user" onclick="redirect('user',this)"><i class="fa fa-users" aria-hidden="true"></i> <span>用户管理</span></li>
                         <li id="testPage" onclick="redirect('test',this)"><i class="fa fa-random" aria-hidden="true"></i> <span>模板页测试</span></li>
 					</ul>
 				</nav>
@@ -110,12 +110,8 @@
 		</div>
 		<!-- END MAIN -->
 
-        <div id="navBtn" style="position: fixed;right:150px;bottom: 18px;display: none;">
+        <div id="navBtn" style="position: fixed;right:20px;bottom: 20px;display: none;">
             <button class="btn btn-default">切换导航页</button>
-        </div>
-
-        <div id="resetBtn" style="position: fixed;right:28px;bottom: 18px;display: none;">
-            <button class="btn btn-danger">一键重置</button>
         </div>
 
 		<div class="clearfix"></div>

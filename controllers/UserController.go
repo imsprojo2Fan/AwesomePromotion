@@ -115,18 +115,18 @@ func(this *UserController) Add()  {
 
 func(this *UserController) Update() {
 
-	str:= "更新用户信息成功"
 	user := new(models.User)
 	dbUser := new(models.User)
 	dbUser.Id,_ = this.GetInt64("id")
 	dbUser.Read(dbUser)//查询数据库的用户信息
-	/*user.Email = this.GetString("email")
-	if dbUser.Email==""{
-		user.SelectByCol(user,"email")//查询邮箱是否已被用
-		if user.Id>0{
-			this.jsonResult(200,-1,"当前邮箱不可用",nil)
-		}
-	}*/
+	dType:=this.GetString("type")
+	if dType==""{
+		user.Type = dbUser.Type
+		user.Actived = dbUser.Actived
+	}else{
+		user.Type,_ = this.GetInt("type")
+		user.Actived,_ = this.GetInt("actived")
+	}
 	user.Id,_ = this.GetInt64("id")
 	user.Password = this.GetString("password")
 	if user.Password!=dbUser.Password{
@@ -140,8 +140,10 @@ func(this *UserController) Update() {
 		user.Password = base64.StdEncoding.EncodeToString(result)
 	}
 	user.Updated = time.Now()
+	user.Remark = this.GetString("remark")
+
 	if user.Update(user){
-		this.jsonResult(200,1,str,nil)
+		this.jsonResult(200,1,"更新用户信息成功",nil)
 	}else{
 		this.jsonResult(200,-1,"更新用户信息失败,请稍后再试",nil)
 	}

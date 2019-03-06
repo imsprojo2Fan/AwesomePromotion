@@ -10,9 +10,9 @@ $(window.parent.document).find("#mainframe").load(function(){
 
 $(function () {
 
-    if(userInfo.Type>2){
-        $('#user').show();
-        $('#resetBtn').show();
+    if(userInfo.Type<3){
+        $('#user').remove();
+        $('#sysSetting').remove();
     }
     //$('#account').html(userInfo.Account);
     if(isPhone()){//设置导航栏箭头方向
@@ -44,30 +44,6 @@ $(function () {
         //$('#mainframe').attr("src",url);
         $('#myModal').modal("hide");
         $('#home').click();
-    });
-
-    $('#resetBtn').on('click',function () {
-        swal({
-            title: "确定重置关键词吗?",
-            text: '重置将无法恢复该信息!',
-            type: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#ff1200',
-            cancelButtonColor: '#474747',
-            confirmButtonText: '确定',
-            cancelButtonText:'取消'
-        },function(){
-            $.post('/main/kt/reset',{_xsrf:$('#token').val()},function (res) {
-                if(res.code==1){
-                    swal("系统提示",res.msg,"success");
-                }else{
-                    swal("系统提示",res.msg,"error");
-                }
-
-            }) ;
-        });
-
-
     });
 
 });

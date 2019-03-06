@@ -70,6 +70,21 @@ func(this *LoginController) Validate()  {
 		if user.Password != resultStr{
 			this.jsonResult(http.StatusOK,-1, "账号或密码不正确!", nil)
 		}
+
+		if user.Type<3{
+
+			if user.Actived==0{
+				this.jsonResult(http.StatusOK,-1, "当前账号已被禁用!", nil)
+			}
+
+			setting := new(models.Setting)
+			setting.Key = "RootMode"
+			setting.SelectByCol(setting,"key")
+			if setting.Value=="true"{
+				this.jsonResult(http.StatusOK,-1, "Root模式-用户不可登录!", nil)
+			}
+		}
+
 		session.Set("user",user)
 		session.Set("account",user.Account)
 		session.Set("id",user.Id)
@@ -77,6 +92,7 @@ func(this *LoginController) Validate()  {
 		utils.GlobalRedis.Put("host",host,1000000*time.Hour)
 		fmt.Println("Account:",user.Account)
 		fmt.Println("id:",session.Get("id"))
+
 		this.jsonResult(http.StatusOK,1, "账号验证登录成功!", user.Id)
 	} else if oType=="logout"{//退出登录
 		session.Set("id",nil)

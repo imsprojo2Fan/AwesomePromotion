@@ -23,7 +23,6 @@ func init() {
 	beego.Router("/main/template/delete",&controllers.TemplateController{},"POST:Delete")
 	beego.Router("/main/template/list",&controllers.TemplateController{},"POST:List")
 	beego.Router("/main/template/update",&controllers.TemplateController{},"POST:Update")
-	beego.Router("/main/kt/reset",&controllers.TemplateController{},"POST:Reset")
 
 	//关键字相关
 	beego.Router("/main/keyword/add",&controllers.KeywordController{},"POST:Add")
@@ -43,6 +42,9 @@ func init() {
 	//后台管理相关
     beego.Router("/main",&controllers.MainController{},"*:Index")
 	beego.Router("/main/redirect",&controllers.MainController{},"*:Redirect")
+	//系统设置相关
+	beego.Router("/main/setting",&controllers.SettingController{},"POST:Setting")
+	beego.Router("/main/setting/reset",&controllers.SettingController{},"POST:Reset")
 	//图片上传
 	beego.Router("/main/upload4pic",&controllers.MainController{},"POST:Upload4Pic")
 

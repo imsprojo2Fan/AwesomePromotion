@@ -52,7 +52,7 @@ func(this *User) Insert(user *User) int {
 func(this *User) Update(User *User) bool {
 
 	o := orm.NewOrm()
-	_,err := o.Update(User,"actived","password","type","email","remark","created")
+	_,err := o.Update(User,"actived","password","email","type","remark","updated")
 	if err!=nil{
 		return false
 	}else{
