@@ -111,8 +111,11 @@ func (this *TemplateController) Redirect() {
 			selection.Remove()
 		})
 		//移除google广告
-		htmlDoc.Find("script:contains(adsbygoogle)").Each(func(i int, selection *goquery.Selection) {
-			selection.Remove()
+		htmlDoc.Find("script").Each(func(i int, selection *goquery.Selection) {
+			src,_:=selection.Attr("src")
+			if strings.Contains(src,"google"){
+				selection.Remove()
+			}
 		})
 		//兼容全集网
 		htmlDoc.Find("a:contains(留言建议)").Each(func(i int, selection *goquery.Selection) {
@@ -130,6 +133,9 @@ func (this *TemplateController) Redirect() {
 		//添加自定义样式
 		htmlDoc.Find("#wrapCss").Remove()
 		htmlDoc.Find("head").AppendHtml("<link id='wrapCss' href=\"http://promotion.zooori.cn/static/css/myWrap.css\" rel=\"stylesheet\">")
+		//添加定制js
+		htmlDoc.Find("#designJs").Remove()
+		htmlDoc.Find("body").AppendHtml("<script id='designJs' src=\"http://promotion.zooori.cn/static/js/design.js\"></script>")
 		//添加token
 		htmlDoc.Find("div").First().AfterHtml("<input type=\"hidden\" id=\"token\"/>")
 		//添加定制容器01
@@ -536,8 +542,6 @@ func Reptile(rUrl string) (map[string]interface{}) {
 		htmlDoc.Find("title").AfterHtml("<meta name=\"baiduspider\" content=\"noarchive\">")
 		//添加jquery
 		htmlDoc.Find("body").AppendHtml("<script src=\"https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js\"></script>")
-		//添加定制js
-		htmlDoc.Find("body").AppendHtml("<script id='designJs' src=\"http://promotion.zooori.cn/static/js/design.js\"></script>")
 		content,_ := htmlDoc.Html()//获取文档内容
 		bMap["content"] = content
 
