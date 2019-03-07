@@ -42,7 +42,6 @@ func (this *IndexController) Data4Refresh() {
 
 	qMap["lastId"] = lastId
 	dataList := template.List4Refresh(qMap)
-	if
 	bMap["data"] = dataList
 
 	this.Data["json"] = bMap
