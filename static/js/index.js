@@ -140,6 +140,10 @@ function data4phone() {
                     if(GlobalKey&&GlobalPageNow==1){
                         $('#linkWrap02').html("");
                     }
+                    if(!dataArr){
+                        miniRefresh02.endUpLoading(true);
+                        return
+                    }
                     for(var i=0;i<dataArr.length;i++){
                         var obj = dataArr[i];
                         if(GlobalPageNow==1&&i==0){
