@@ -199,5 +199,39 @@ func(this *Template) ListByPage(qMap map[string]interface{})[]orm.Params{
 	return maps
 }
 
+func(this *Template) List4Refresh(qMap map[string]interface{})[]orm.Params{
+	var maps []orm.Params
+	o := orm.NewOrm()
+	//qs := o.QueryTable("login_log")
+	sql := "select id,type, url,title,description,created from template where id>"+qMap["lastId"].(string)
+	o.Raw(sql).Values(&maps)
+	return maps
+}
+
+func(this *Template) List4Page(qMap map[string]interface{})[]orm.Params{
+	var maps []orm.Params
+	o := orm.NewOrm()
+	sql := "select id,type, url,title,description,created from template where 1=1"
+	if qMap["searchKey"]!=""{
+		sql = sql+" and title like '%"+qMap["searchKey"].(string)+"%'"
+	}
+	sql = sql+" order by id desc"
+	pageNow := qMap["pageNow"].(int)
+	pageNow_ := strconv.Itoa(pageNow)
+	pageSize := qMap["pageSize"].(int)
+	pageSize_ := strconv.Itoa(pageSize)
+	sql = sql+" LIMIT "+pageNow_+","+pageSize_
+	o.Raw(sql).Values(&maps)
+	return maps
+}
+
+func(this *Template) Count4Index(qMap map[string]interface{})int64{
+	var count int64
+	o := orm.NewOrm()
+	cnt,_ := o.QueryTable(new(Template)).Filter("title__startswith",qMap["searchKey"]).Count() // SELECT COUNT(*) FROM USER
+	count = cnt
+	return count
+}
+
 
 

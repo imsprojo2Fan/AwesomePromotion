@@ -4,53 +4,94 @@
 <head>
     <meta charset="utf-8">
     <title>极光推客</title>
-    <meta name="keywords" charset="">
-    <meta name="description" content="">
+    <meta content="【极光推客】是一个完全在线配置和云采集的网页数据采集和发布平台。它功能强大，操作非常简单，并且不需要安装任何客户端或插件；支持在线可视化点选；集成智能提取引擎，自动识别数据和规则；独家首创书签一键采集发布；无缝对接各种CMS网站（wordpress,dedeCMS等）、Http接口，数据库等。是免费的在线网页数据采集软件平台。支持站群发布。" name="description">
+    <meta content="在线数据采集器，采集软件推荐，免费数据采集软件，文章采集器，wordpress自动采集发布，织梦DeDe 采集系统，网页采集器，站群" name="keywords">
     <meta name="msapplication-tap-highlight" content="yes" />
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0" />
     <!-- Favicon -->
     <link rel="icon" type="image/ico" href="../static/img/logo/icon.png">
     <!-- Web Font -->
     <link rel="stylesheet" type="text/css" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
-
     <!--  Bootstrap 3-->
     <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.min.css" rel="stylesheet">
 
     <!-- Loader Style -->
     <link rel="stylesheet" href="../static/css/loader-2.css">
     <!--Sweet alert-->
     <link rel="stylesheet" href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.css">
     <script src="../static/plugins/sweetalert/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="../static/css/util.css">
     <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="../static/plugins/minirefresh/minirefresh.css" />
 </head>
 
 <body>
     <input type="hidden" id="token" value="<%._xsrf%>">
 
-    <div class="AppHeader">
-        <div class="headWrap">
-            <div class="headWrap01">
-                <span class="active4span">推荐</span>
-                <span>最新</span>
-                <span>热榜</span>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="preloader">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <!-- /Preloader -->
+
+    <div id="PCWrap">
+        <div class="AppHeader">
+            <div class="headWrap">
+                <div class="headWrap01">
+                    <span class="active4span">推荐</span>
+                    <span>最新</span>
+                    <span>热榜</span>
+                </div>
+                <div class="headWrap02">
+                    <input id="keyInput" class="Input" placeholder="搜索你感兴趣的内容…" value="">
+                    <img style="margin-left: -45px" width="20" src="../static/img/search.png">
+                    <button type="button" class="btn btn-primary">搜索</button>
+                </div>
             </div>
-            <div class="headWrap02">
-                <input class="Input" placeholder="搜索你感兴趣的内容…" value="">
-                <img style="margin-left: -45px" width="20" src="../static/img/search.png">
-                <button type="button" class="btn btn-primary">搜索</button>
+
+        </div>
+        <div class="content">
+            <div class="content01" >
+                <div style="z-index: 99999;" id="minirefresh01" class="minirefresh-wrap-pc">
+                    <div class="minirefresh-scroll">
+                        <div id="linkWrap"></div>
+                    </div>
+                </div>
             </div>
         </div>
-
-    </div>
-    <div class="content">
-        <div class="content01" id="linkWrap"></div>
-        <div class="content02" id=""></div>
+        <div class="content02" id="">
+        </div>
         <div class="content03" id=""></div>
+
     </div>
 
+    <div id="phoneWrap">
+        <div id="minirefresh02" class="minirefresh-wrap" style="margin-top: 13%">
+            <div class="minirefresh-scroll">
+                <ul class="data-list" id="listData">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to top -->
+    <div id="scroll-top"></div>
+    <!-- /Back to top -->
 
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+    <script src="//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script type="text/javascript" src="../static/plugins/minirefresh/minirefresh.js"></script>
+    <%/*<script type="text/javascript" src="../static/plugins/minirefresh/themes/taobao/minirefresh.theme.taobao.js"></script>*/%>
+    <script type="text/javascript" src="../static/plugins/minirefresh/common/common.js"></script>
     <script>var dataList = <%.dataList%>;</script>
+    <script src="../static/js/util.js"></script>
     <script src="../static/js/index.js"></script>
 
 </body>

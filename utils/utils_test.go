@@ -3,13 +3,13 @@ package utils
 import (
 	"testing"
 	"fmt"
-	"encoding/base64"
-	"AwesomeResume/utils"
+	"math/rand"
+	"time"
 )
 
 func Test(t *testing.T) {
 	//密码加密
-	password := "123456"
+	/*password := "123456"
 	salt := "AwesomePromotion_"
 	key := "0123456789abcdef"
 	result, err := utils.AesEncrypt([]byte(password+salt), []byte(key))
@@ -30,5 +30,12 @@ func Test(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(origData))
+	fmt.Println(string(origData))*/
+
+	for a := 0; a < 10; a++ {
+		time.Sleep(100)
+		rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+		vcode := fmt.Sprintf("%06v", rnd.Int31n(1000000))
+		fmt.Println(vcode)
+	}
 }

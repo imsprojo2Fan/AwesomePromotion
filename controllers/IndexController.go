@@ -14,22 +14,71 @@ type IndexController struct {
 	beego.Controller
 }
 
-func (c *IndexController) Index() {
+func (this *IndexController) Index() {
 
 	//跳转页面及传递数据
-	c.Data["Website"] = "beego.me"
-	c.Data["Email"] = "astaxie@gmail.com"
-
+	this.Data["Website"] = "beego.me"
+	this.Data["Email"] = "astaxie@gmail.com"
 	//设置token
-	token := c.XSRFToken()
-	c.Data["_xsrf"] = token
+	token := this.XSRFToken()
+	this.Data["_xsrf"] = token
 	fmt.Println(token)
 	//获取最近添加的100条模板数据
 	template := new(models.Template)
-	c.Data["dataList"] = template.SelectLatest()
-	c.TplName = "index.html"
+	this.Data["dataList"] = template.SelectLatest()
+	this.TplName = "index.html"
 
 }
+
+func (this *IndexController) Data4Refresh() {
+
+	lastId := this.GetString("id")
+	if lastId==""{
+		this.jsonResult(200,-1,"参数错误",nil)
+	}
+	template := new(models.Template)
+	qMap := make(map[string]interface{})
+	bMap := make(map[string]interface{})
+
+	qMap["lastId"] = lastId
+	dataList := template.List4Refresh(qMap)
+	bMap["data"] = dataList
+
+	this.Data["json"] = bMap
+	this.ServeJSON()
+	this.StopRun()
+
+}
+
+func (this *IndexController) Data4Page() {
+
+	pageNow,err01 := this.GetInt("pageNow")
+	pageSize,err02 := this.GetInt("pageSize")
+	key := this.GetString("key")
+	if err01!=nil||err02!=nil{
+		this.jsonResult(200,-1,"参数错误",nil)
+	}
+	template := new(models.Template)
+	qMap := make(map[string]interface{})
+	bMap := make(map[string]interface{})
+
+	pageNow = (pageNow-1)*pageSize
+	qMap["pageNow"] = pageNow
+	qMap["pageSize"] = pageSize
+	qMap["searchKey"] = key
+
+	recordsTotal:= template.Count4Index(qMap)
+	dataList := template.List4Page(qMap)
+	bMap["data"] = dataList
+	bMap["recordsTotal"] = recordsTotal
+
+	this.Data["json"] = bMap
+	this.ServeJSON()
+	this.StopRun()
+
+}
+
+
 
 func (this *IndexController) Mail4Index()  {
 	contact := this.GetString("contact")

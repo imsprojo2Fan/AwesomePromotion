@@ -5,6 +5,26 @@
 body{
     background: #f6f6f6;
 }
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+    width:3px;
+}
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow:inset006pxrgba(0,0,0,0.3);
+    border-radius:1px;
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+    border-radius:1px;
+    background:rgba(0,0,0,0.1);
+    -webkit-box-shadow:inset006pxrgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(0, 0, 0, 0.1);
+}
+
 .AppHeader {
     height: 52px;
     width: 100%;
@@ -45,7 +65,7 @@ body{
     font-weight: bold;
 }
 .active4span{
-    border-bottom: 5px solid #0084FF;
+    border-bottom: 5px solid #6195FF;
     font-weight: bold;
 }
 .headWrap02{
@@ -79,8 +99,8 @@ body{
 .headWrap02 button{
     margin-left: 30px;
     margin-bottom: 2px;
-    background-color: #0084FF;
-    border: 1px solid #0084FF;
+    background-color: #6195FF;
+    border: 1px solid #6195FF;
 }
 .headWrap02 button:hover{
     border-color: hsl(208.94117647058823, 100%, 45%);
@@ -93,19 +113,21 @@ body{
 .content01{
     float: left;
     width: 69%;
-    background: #ffffff;
+    background: #f6f6f6;
     overflow: hidden;
     border-radius: 2px;
     box-shadow: 0 1px 3px rgba(26, 26, 26, 0.1);
     box-sizing: border-box;
     padding: 15px;
+    height: 375px;
 }
 .content02{
-    height: 255px;
+    height: 275px;
     background: #ffffff;
-    float: right;
+    position: relative;
     border: 0px solid green;
-    width: 30%;
+    width: 285px;
+    left: 10px;
     overflow: hidden;
     border-radius: 2px;
     box-shadow: 0 1px 3px rgba(26, 26, 26, 0.1);
@@ -113,11 +135,12 @@ body{
 }
 .content03{
     margin-top: 10px;
-    height: 255px;
+    height: 275px;
     background: #ffffff;
-    float: right;
+    position: relative;
     border: 0px solid green;
-    width: 30%;
+    width: 285px;
+    left: 10px;
     overflow: hidden;
     border-radius: 2px;
     box-shadow: 0 1px 3px rgba(26, 26, 26, 0.1);

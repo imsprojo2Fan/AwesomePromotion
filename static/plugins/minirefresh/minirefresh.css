@@ -1,12 +1,13 @@
-.minirefresh-wrap {
+.minirefresh-wrap-pc {
   position: absolute;
 /*
      * 标明了top和bottom  滑动的就是minirefresh-wrap而不再是document.body
      */
-  top: 0;
+  top: 65px;
   bottom: 0;
-  left: 0;
-  width: 100%;
+  left: 25%;
+  width: 34.5%;
+  padding: 15px;
 /*
      * 去除wrap层的滚动条，确保只有scrol层有滚动条
      */
@@ -20,6 +21,8 @@
      * 如果处理不当会极大的影响性能，可以用chrome的rending查看
      */
   z-index: 1;
+  background: #ffffff;
+  border-radius: 2px;
 }
 .minirefresh-scroll {
   position: relative;
