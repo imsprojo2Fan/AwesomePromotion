@@ -75,10 +75,19 @@
     </div>
 
     <div id="phoneWrap">
-        <div id="minirefresh02" class="minirefresh-wrap" style="margin-top: 13%">
+        <div class="phone-head">
+            <div class="headWrap01">
+                <span class="active4span">推荐</span>
+                <span>最新</span>
+                <span>热榜</span>
+                <img width="25" src="../static/img/search.png">
+            </div>
+        </div>
+        <div id="minirefresh02" class="minirefresh-wrap-phone">
             <div class="minirefresh-scroll">
-                <ul class="data-list" id="listData">
-                </ul>
+                <div class="minirefresh-scroll">
+                    <div id="linkWrap02"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -89,7 +98,6 @@
 
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
-    <script src="//cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.concat.min.js"></script>
     <script type="text/javascript" src="../static/plugins/minirefresh/minirefresh.js"></script>
     <%/*<script type="text/javascript" src="../static/plugins/minirefresh/themes/taobao/minirefresh.theme.taobao.js"></script>*/%>
     <script type="text/javascript" src="../static/plugins/minirefresh/common/common.js"></script>
