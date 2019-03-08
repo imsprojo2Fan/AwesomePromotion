@@ -43,9 +43,16 @@ body{
     height: 52px;
     margin: 0 auto;
 }
+.headWrap h1{
+    font-family: Panxiang;
+    top:-12px;
+    position: absolute;
+    z-index: 99;
+    cursor: pointer;
+}
 .headWrap01{
     float: left;
-    padding-left: 30px;
+    padding-left: 55px;
     border: 0px solid red;
     width: 70%;
     height: inherit;
@@ -179,7 +186,7 @@ a{
     line-height: 52px;
 }
 .phone-head img{
-    margin-left: 100px;
+    margin-left: 80px;
 }
 
 #linkWrap02{

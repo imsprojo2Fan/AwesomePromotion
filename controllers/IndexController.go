@@ -8,6 +8,7 @@ import (
 	"net/smtp"
 	"strings"
 	"AwesomePromotion/models"
+	"AwesomePromotion/utils"
 )
 
 type IndexController struct {
@@ -55,6 +56,7 @@ func (this *IndexController) Data4Page() {
 	pageNow,err01 := this.GetInt("pageNow")
 	pageSize,err02 := this.GetInt("pageSize")
 	key := this.GetString("key")
+	dType := this.GetString("type")
 	if err01!=nil||err02!=nil{
 		this.jsonResult(200,-1,"参数错误",nil)
 	}
@@ -66,12 +68,22 @@ func (this *IndexController) Data4Page() {
 	qMap["pageNow"] = pageNow
 	qMap["pageSize"] = pageSize
 	qMap["searchKey"] = key
+	if dType=="recommend"{
+		qMap["sortCol"] ="id"
+	}else if dType=="latest"{
+		qMap["sortCol"] ="id"
+	}else{
+		qMap["sortCol"] ="views"
+	}
+	qMap["sortType"] = "DESC"
 
 	recordsTotal:= template.Count4Index(qMap)
 	dataList := template.List4Page(qMap)
+	if dType=="recommend"{
+		dataList = utils.Shuffle(dataList)
+	}
 	bMap["data"] = dataList
 	bMap["recordsTotal"] = recordsTotal
-
 	this.Data["json"] = bMap
 	this.ServeJSON()
 	this.StopRun()

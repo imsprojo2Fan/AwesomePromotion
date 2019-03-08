@@ -8,6 +8,7 @@ import "strconv"
 import (
 	"strings"
 	"encoding/hex"
+	"github.com/astaxie/beego/orm"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -149,3 +150,27 @@ func Substr(str string, start int, end int) string {
 
 	return string(rs[start:end])
 }
+
+func KnuthDurstenfeldShuffle(array []orm.Params) []orm.Params {
+	for i := len(array) - 1; i >= 0; i-- {
+		p := RandInt64(0, int64(i))
+		fmt.Printf("每次生成的随机数：%d\n", p)
+		a := array[i]
+		array[i] = array[p]
+		array[p] = a
+		fmt.Println("置换后的数组为：", array)
+	}
+	return array
+}
+func Shuffle(vals []orm.Params) []orm.Params {
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	ret := make([]orm.Params, len(vals))
+	n := len(vals)
+	for i := 0; i < n; i++ {
+		randIndex := r.Intn(len(vals))
+		ret[i] = vals[randIndex]
+		vals = append(vals[:randIndex], vals[randIndex+1:]...)
+	}
+	return ret
+}
+

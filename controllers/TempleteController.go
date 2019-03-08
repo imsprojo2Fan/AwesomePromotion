@@ -41,6 +41,9 @@ func (this *TemplateController) Redirect() {
 		this.TplName = "tip/404.html"
 		return
 	}
+	//更新views
+	template.UpdateViews(url)
+
 	//获取关键字及外链
 	var dataList []orm.Params
 	dataList = template.SelectByKey(template)

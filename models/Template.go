@@ -21,6 +21,7 @@ type Template struct {
 	Redirect int
 	RedirectPage string
 	Remark string
+	Views int64
 	Updated time.Time `orm:"auto_now_add;type(datetime)"`
 	Created time.Time `orm:"auto_now_add;type(datetime)"`
 }
@@ -215,7 +216,13 @@ func(this *Template) List4Page(qMap map[string]interface{})[]orm.Params{
 	if qMap["searchKey"]!=""{
 		sql = sql+" and title like '%"+qMap["searchKey"].(string)+"%'"
 	}
-	sql = sql+" order by id desc"
+	if qMap["sortCol"]!=""{
+		sortCol := qMap["sortCol"].(string)
+		sortType := qMap["sortType"].(string)
+		sql = sql+" order by "+sortCol+" "+sortType
+	}else{
+		sql = sql+" order by id desc"
+	}
 	pageNow := qMap["pageNow"].(int)
 	pageNow_ := strconv.Itoa(pageNow)
 	pageSize := qMap["pageSize"].(int)
@@ -231,6 +238,12 @@ func(this *Template) Count4Index(qMap map[string]interface{})int64{
 	cnt,_ := o.QueryTable(new(Template)).Filter("title__startswith",qMap["searchKey"]).Count() // SELECT COUNT(*) FROM USER
 	count = cnt
 	return count
+}
+
+func(this *Template) UpdateViews(url string){
+	o := orm.NewOrm()
+	sql := "update template set views=views+1 where url=\""+url+"\""
+	o.Raw(sql).Exec()
 }
 
 
