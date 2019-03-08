@@ -50,7 +50,7 @@ $(function () {
 
        GlobalPageNow = 0;
        if(isPhone()){
-           debugger
+           GlobalKey = "";
            var index = 0;
            if(text==="推荐"){
                $('#phone_minirefresh0').show();
@@ -183,7 +183,6 @@ function data4phone(index) {
             callback: function() {
                 preLoading();
                 GlobalPageNow++;
-                GlobalKey = $('#keyInput').val().trim();
                 $.post("/data4page",{_xsrf:$('#token').val(),pageNow:GlobalPageNow,pageSize:10,key:GlobalKey,type:GlobalType},function (r) {
                     //console.log(r);
                     var dataArr = r.data;
@@ -236,9 +235,7 @@ function search() {
         preConfirm: function(val) {               //功能执行前确认操作，支持function
             return new Promise(function(resolve, reject) {
                 //$('#search').val(val);
-                GlobalKey = val;
-                GlobalPageNow = 0;
-                data4phone(GlobalIndex);
+
                 resolve();
                 /*setTimeout(function() {                 //添加一个时间函数，在俩秒后执行，这里可以用作异步操作数据
                     if (email === 'taken@example.com') {  //这里的意思是：如果输入的值等于'taken@example.com',数据已存在，提示信息
@@ -252,5 +249,8 @@ function search() {
         allowOutsideClick: true
     }).then(function(val) {
         console.log(val)
+        GlobalKey = val.value;
+        GlobalPageNow = 0;
+        data4phone(GlobalIndex);
     });
 }
