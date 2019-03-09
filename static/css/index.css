@@ -47,7 +47,7 @@ body{
     font-family: Panxiang;
     top:-12px;
     position: absolute;
-    z-index: 99;
+    z-index: 100;
     cursor: pointer;
 }
 .headWrap01{
@@ -104,6 +104,9 @@ body{
     border: 1px solid #8590A6;
 }
 .headWrap02 button{
+    position: absolute;
+    top:8px;
+    z-index: 100;
     margin-left: 30px;
     margin-bottom: 2px;
     background-color: #6195FF;

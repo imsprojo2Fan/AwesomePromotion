@@ -1,7 +1,5 @@
 var RefreshId;
 var GlobalPageNow = 0;
-var linkWrap;
-var miniRefresh;
 var GlobalKey;
 var GlobalType = "recommend";
 var GlobalIndex = 0;
@@ -12,9 +10,11 @@ $(function () {
 
     if(isPhone()){
         $('#PCWrap').hide();
+        //初始化tab推荐
         data4phone(0);
     }else{
         $('#phoneWrap').hide();
+        //初始化tab推荐
         data4pc(0);
     }
 
@@ -47,50 +47,60 @@ $(function () {
        $('.minirefresh-wrap-phone').each(function () {
            $(this).hide() ;
        });
-
        GlobalPageNow = 0;
+       GlobalKey = "";
+       $('#keyInput').val("");
        if(isPhone()){
-           GlobalKey = "";
-           var index = 0;
            if(text==="推荐"){
+               GlobalIndex = 0;
                $('#phone_minirefresh0').show();
-               GlobalType = "recommend";
            }else if(text==="最新"){
-               index = 1;
                $('#phone_minirefresh1').show();
-               GlobalType = "latest";
+               if(!$('#phone_linkWrap1').children[0]){
+                   //初始化tab最新
+                   GlobalType = "latest";
+                   data4phone(1);
+               }
+               GlobalIndex = 1;
            }else{
-               index = 2;
                $('#phone_minirefresh2').show();
-               GlobalType = "hot"
+               if(!$('#phone_linkWrap2').children[0]){
+                   //初始化tab最新
+                   GlobalType = "hot";
+                   data4phone(2);
+               }
+               GlobalIndex = 2;
            }
-           data4phone(index);
        }else{
-           var index = 0;
            if(text==="推荐"){
+               GlobalIndex = 0;
                $('#pc_minirefresh0').show();
-               GlobalType = "recommend";
            }else if(text==="最新"){
-               index = 1;
                $('#pc_minirefresh1').show();
-               GlobalType = "latest";
+               if(!$('#pc_linkWrap1').children[0]){
+                   //初始化tab最新
+                   GlobalType = "latest";
+                   data4pc(1);
+               }
+               GlobalIndex = 1;
            }else{
-               index = 2;
                $('#pc_minirefresh2').show();
-               GlobalType = "hot"
+               if(!$('#pc_linkWrap2').children[0]){
+                   //初始化tab最新
+                   GlobalType = "hot";
+                   data4pc(2);
+               }
+               GlobalIndex = 2;
            }
-           data4pc(index);
        }
-       GlobalIndex = index;
+
    }) ;
-
-
 
 });
 
 function data4pc(index) {
-    linkWrap = document.querySelector('#pc_linkWrap'+index);
-    miniRefresh = new MiniRefresh({
+    var linkWrap = document.querySelector('#pc_linkWrap'+index);
+    var miniRefresh = new MiniRefresh({
         container: '#pc_minirefresh'+index,
         down: {
             isLock:true,
@@ -119,7 +129,7 @@ function data4pc(index) {
                         $('#pc_linkWrap'+index).html("");
                     }
                     if(!dataArr){
-                        miniRefresh.endUpLoading(false);
+                        miniRefresh.endUpLoading(true);
                     }
                     for(var i=0;i<dataArr.length;i++){
                         var obj = dataArr[i];
@@ -144,8 +154,8 @@ function data4pc(index) {
 }
 
 function data4phone(index) {
-    linkWrap = document.querySelector('#phone_linkWrap'+index);
-    miniRefresh = new MiniRefresh({
+    var linkWrap = document.querySelector('#phone_linkWrap'+index);
+    var miniRefresh = new MiniRefresh({
         container: '#phone_minirefresh'+index,
         down: {
             isLock:false,
@@ -156,10 +166,10 @@ function data4phone(index) {
                     preLoading();
                     $.post("/data4refresh", {_xsrf:$('#token').val(),id: RefreshId}, function (r) {
                         var dataArr = r.data;
-                        /*if(!dataArr){
+                        if(!dataArr){
                             miniRefresh.endDownLoading();
                             return
-                        }*/
+                        }
                         for(var i=0;i<r.data.length;i++){
                             var obj = dataArr[i];
                             if(i==0){
